@@ -1,5 +1,5 @@
 ---
 home: true
-heroText: Tamarous' blog
+heroText: Tamarous's blog
 tagline: null
 ---
