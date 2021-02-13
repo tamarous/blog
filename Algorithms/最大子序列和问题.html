@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>最大子序列和问题</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/36.7ff07fed.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="最大子序列和问题"><a href="#最大子序列和问题" class="header-anchor">#</a> 最大子序列和问题</h1> <p>最大子序列和问题是「数据结构与算法分析」一书开篇提出的问题，问题的描述是这样的：给定N个整数，求其中子序列之和的最大值。</p> <p>那么最简单的方法，当然也是最低效的一种算法便是暴力求解法了，这种方法的思路是对数组进行双重遍历，将每一种可能性都计算出来与当前的最大值进行比较，如果大于该最大值，就将最大值更新为新计算出来的值。代码如下：</p> <div class="language- extra-class"><pre><code>int maxSubSequence(const int array[], int N) {
+    int thisSum,maxSum,i,j,k;
+    thisSum = maxSum = 0;
+    for (i = 0; i &lt; N;i++) {
+        for(j = i;j &lt; N;j++) {
+            thisSum = 0;
+            for (k = i;k &lt;= j;k++) {
+                thisSum += array[k];
+            }
+            if (thisSum &gt; maxSum) {
+                maxSum = thisSum;
+            }
+        }
+    }
+    return maxSum;
+}
+</code></pre></div><p>易知该算法的时间复杂度为O(N^3)。</p> <p>显然时间复杂度这么高的算法是不可以被接受的，因此有必要寻找一个更为简单高效的方法。
+书中紧接着给出了一个递归算法，该算法的时间复杂度为O(NlogN)，思路如下：首先我们知道，一个数组的最大子序列，要么出现在这个数组的前一半，要么出现在这个数组的后一半，要么横跨这个数组的左右两半，由两半的最大值求和得到。因此我们就可以缩小这个问题的规模，将这个问题转化为：<strong>求前后两半以及中间数组的子序列的最大值，然后将这三个值的最大值作为整个数组的最大值</strong>。</p> <p>实现如下：</p> <div class="language- extra-class"><pre><code>class Solution {
+public:
+    static int maxSubSum(const int a[], int left, int right) {
+        int leftSum,rightSum,maxLeftSum,maxRightSum,leftPartSum,rightPartSum;
+        int center,i;
+    
+        // 说明数组中只有一个元素，因此直接返回它本身或者是0
+        if (left == right) {
+            return a[left];
+        }
+    
+        center = (left+right)/2;
+        leftSum = maxSubSum(a,left,center);
+        rightSum = maxSubSum(a,center+1,right);
+    
+        leftPartSum = 0;
+        maxLeftSum = INT_MIN;
+        for ( i = center; i &gt;= left; i--) {
+            leftPartSum += a[i];
+            if (leftPartSum &gt;= maxLeftSum) {
+                maxLeftSum = leftPartSum;
+            }
+        }
+    
+        rightPartSum = 0;
+        maxRightSum = INT_MIN;
+        for ( i = center+1;i &lt;= right;i++)  {
+            rightPartSum += a[i];
+            if (rightPartSum &gt;= maxRightSum) {
+                maxRightSum = rightPartSum;
+            }
+        }
+    
+        return max(leftSum,max(rightSum,maxLeftSum+maxRightSum));
+    }
+    
+    int maxSubsequenceSum(const int a[], int N) {
+        return maxSubSum(a,0,N-1);
+    }
+};
+</code></pre></div><p>该算法思路清晰，实现也比较简单，可以说是一种很不错的算法了。</p> <p>不过，如果使用动态规划算法的话，那么可以在 O(N) 的时间复杂度内解决此问题：</p> <div class="language- extra-class"><pre><code>class Solution {
+public:
+    int FindGreatestSumOfSubArray(vector&lt;int&gt; array) {
+        int size = array.size();
+        if (size == 0) {
+            return 0;
+        }
+        if (size == 1) {
+            return array[0];
+        }
+        vector&lt;int&gt; dp(size);
+        dp[0] = array[0];
+        for(int i = 1; i &lt; size; i++) {
+            if (dp[i-1] &lt;= 0) {
+                dp[i] = array[i];
+            } else {
+                dp[i] = dp[i-1] + array[i];
+            }
+        }
+        int result = INT_MIN;
+        for(int i = 0; i &lt; size; i++) {
+            result = max(result,dp[i]);
+        }
+        return result;
+    }
+};
+</code></pre></div><p>我们声明一个长度和输入数组相同的数组dp, dp[i] 表示以第 i 个数作为结尾的子数组的最大和。那么，如果当第 i-1 个数作为结尾的子数组的和小于0，即 dp[i-1] &lt;= 0，如果把这个负数和 array[i] 相加，那么结果会比 array[i] 还小，因此以第 i 个数作为结尾的子数组的最大和应该为 array[i]；如果 dp[i-1] &gt; 0，那么它与 array[i] 相加得到的就是以第 i 个数作为结尾的子数组的最大和。</p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/36.7ff07fed.js" defer></script>
+  </body>
+</html>

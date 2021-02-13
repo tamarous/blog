@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LeetCode-28-Implement strStr()</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/19.6a77119a.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="leetcode-28-implement-strstr"><a href="#leetcode-28-implement-strstr" class="header-anchor">#</a> LeetCode-28-Implement strStr()</h1> <p>实现类似C语言中strStr()函数的效果, 即给出两个字符串A和B:(1)如果B为NULL,则返回0;(2)如果B比A长,则返回-1;(3)如果B在A中,则返回B在A中第一次出现的起始位置;(4)如果B不在A中,则返回-1.</p> <p>这道题其实思路蛮清晰的,遍历A的每个字符,然后比较B的第一个字符和当前是否相同,如果相同则继续比较,如果把B遍历完了,那么就返回A的这个字符的索引.</p> <p>顺着这样的思路,我写出了这样的算法:</p> <div class="language- extra-class"><pre class="language-text"><code>int strStr(char* haystack, char* needle) {
+    if(!needle) {
+        return 0;
+    }
+    size_t lens = strlen(haystack);
+    size_t lent = strlen(needle);
+    if(lens &lt; lent) {
+        return -1;
+    }
+    for(int i = 0; i &lt; lens;i++) {
+        int j = 0;
+        for(j = 0; j &lt; lent;j++) {
+            if(needle[j] != haystack[i+j]) {
+                break;
+            }
+        }
+        if (j == lent) {
+            return i;
+        }
+    }
+    return -1;
+}
+</code></pre></div><p>但是提交后却一直报错,让我思考了好一会,后来看了题解才意识到, i的索引范围应该是从0到lens-lent+1, 否则按照我原来那种写法,在haystack[i+j]中就会越界,导致错误的结果. 因此只要把这里改了就可以AC了. 正确的代码如下:</p> <div class="language- extra-class"><pre class="language-text"><code>int strStr(char* haystack, char* needle) {
+    if(!needle) {
+        return 0;
+    }
+    size_t lens = strlen(haystack);
+    size_t lent = strlen(needle);
+    if(lens &lt; lent) {
+        return -1;
+    }
+    for(int i = 0; i &lt; lens-lent+1;i++) {
+        int j = 0;
+        for(j = 0; j &lt; lent;j++) {
+            if(needle[j] != haystack[i+j]) {
+                break;
+            }
+        }
+        if (j == lent) {
+            return i;
+        }
+    }
+    return -1;
+}
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/19.6a77119a.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SDWebImage 源代码剖析-多线程策略</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/49.e3e5f68b.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link router-link-active">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link router-link-active">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="sdwebimage-源代码剖析-多线程策略"><a href="#sdwebimage-源代码剖析-多线程策略" class="header-anchor">#</a> SDWebImage 源代码剖析-多线程策略</h1> <p>前一篇<a href="./SDWebImage%20%E6%BA%90%E4%BB%A3%E7%A0%81%E5%89%96%E6%9E%90-%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5">文章</a>从缓存策略的角度分析了<code>SDWebImage</code> 的部分代码，下面从多线程的角度对它的其他模块进行分析。</p> <p>苹果的多线程解决方案有三种：</p> <ul><li>NSThread</li> <li>GCD</li> <li>NSOperation</li></ul> <p>在实际开发中，我们往往只使用GCD 和NSOperation。
+关于应该如何在GCD 和NSOperation 中进行选择，stackoverflow 上已经有很多详细和深入的<a href="http://stackoverflow.com/a/10375616/6552680" target="_blank" rel="noopener noreferrer">讨论<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。本文中，我们只介绍NSOperation 。</p> <h2 id="nsoperation"><a href="#nsoperation" class="header-anchor">#</a> NSOperation</h2> <p>NSOperation 定义在Foundation 框架中，表示一个用来完成某项工作的操作。它是一个抽象类，因此在实际使用时，必须让一个类继承它，然后实现某些方法。Foundation 为我们事先定义好了两个子类，分别是<code>NSInvocationOperation</code> 和<code>NSBlockOperation</code>，这两个类可以直接使用，但是它们的适用场景是不同的：</p> <table><thead><tr><th>类</th> <th>描述</th></tr></thead> <tbody><tr><td>NSInvocationOperation</td> <td>A class you use as-is to create an operation object based on an object and selector from your application. You can use this class in cases where you have an existing method that already performs the needed task.</td></tr> <tr><td>NSBlockOperation</td> <td>A class you use as-is to execute one or more block objects concurrently. Because it can execute more than one block, a block operation object operates using a group semantic; only when all of the associated blocks have finished executing is the operation itself considered finished.</td></tr></tbody></table> <h3 id="实现自定义的nsoperation-子类"><a href="#实现自定义的nsoperation-子类" class="header-anchor">#</a> 实现自定义的NSOperation 子类</h3> <p>如果说上面提到的两个子类不能满足我们的需求，我们还可以自己去实现一个NSOperation 的子类。
+如果你的这个子类是非并行的，那很好办，只要实现下面两个方法，加上对取消操作的响应即可；如果子类是并行的，那稍微复杂一些，还需要重载NSOperation 中的某些方法。
+我们先看下并行和串行子类都必须实现的几个方法。</p> <h4 id="每个operation-对象都应该实现的方法"><a href="#每个operation-对象都应该实现的方法" class="header-anchor">#</a> 每个operation 对象都应该实现的方法</h4> <ul><li>一个自定义<code>initialization</code> 方法</li> <li><code>main</code> 方法</li></ul> <p><code>initialization</code> 用于对operation 对象进行初始化设置，<code>main</code>用于执行具体的任务。</p> <p>其他的方法则可以根据需要来实现，比如说：</p> <ul><li>用于在<code>main</code> 中调用的辅助方法</li> <li>用于设置和获取operation 对象的数据的<code>accessor</code>方法</li> <li>用于序列化和反序列化的NSCoding 协议中的某些方法</li></ul> <p>下面是一个NSOperation 子类可能的样子：</p> <div class="language- extra-class"><pre class="language-text"><code>@interface MyNonConcurrentOperation : NSOperation
+@property id (strong) myData;
+-(id)initWithData:(id)data;
+@end
+ 
+@implementation MyNonConcurrentOperation
+- (id)initWithData:(id)data {
+   if (self = [super init])
+      myData = data;
+   return self;
+}
+ 
+-(void)main {
+   @try {
+      // Do some work on myData and report the results.
+   }
+   @catch(...) {
+      // Do not rethrow exceptions.
+   }
+}
+@end
+</code></pre></div><h4 id="对取消操作做出响应"><a href="#对取消操作做出响应" class="header-anchor">#</a> 对取消操作做出响应</h4> <p>注意，上面的那个例子没有实现对取消操作的响应。而事实上，对取消事件作出响应是operation 对象的一个重要工作。当一个operation 对象被执行后，它会一直运行，直到任务完成或者是操作被取消，而取消操作甚至可能发生在任务开始执行之前。当操作被取消的时候，operation 对象需要回收已经被分配的资源，并且优雅地退出。</p> <p>为了能对取消操作作出反应，在代码中应该周期性地调用operation 对象的<code>isCancelled</code> 方法。更进一步地说，应该是在如下几个场景处调用此方法：</p> <ul><li>当进行任何实际性的工作时。</li> <li>在每次循环中至少调用一次，如果每次循环的时间很久，则可以在一次循环中多次调用。这个方法本身的开销很小，因此不必担心多次调用会带来性能上的下降。</li> <li>当取消操作很可能发生的时候。</li></ul> <div class="language- extra-class"><pre class="language-text"><code>- (void)main {
+   @try {
+      BOOL isDone = NO;
+ 
+      while (![self isCancelled] &amp;&amp; !isDone) {
+          // Do some work and set isDone to YES when finished
+      }
+   }
+   @catch(...) {
+      // Do not rethrow exceptions.
+   }
+}
+
+</code></pre></div><h4 id="并行operation-对象的配置"><a href="#并行operation-对象的配置" class="header-anchor">#</a> 并行operation 对象的配置</h4> <blockquote><p>Operation objects execute in a synchronous manner by default—that is, they perform their task in the thread that calls their start method.</p></blockquote> <p>下面这张表列出了并行operation 对象所需要重载的一些方法。</p> <table><thead><tr><th>方法</th> <th>类型</th> <th>描述</th></tr></thead> <tbody><tr><td>start</td> <td>必须实现</td> <td>通常在这个方法中来设置并行任务的执行环境，如具体的线程等。这个方法是operation 对象的起始点。在这个方法中不可以调用super 的方法。</td></tr> <tr><td>main</td> <td>可选的</td> <td>在这个方法中实现具体要完成的任务。虽然实现也可以放在start 方法中来做，但是放在main 方法中可以使得设置和执行分离，使得代码的逻辑更加清晰。</td></tr> <tr><td>isExecuting, isFinished</td> <td>必须实现</td> <td>这两个方法用来向外部对象报告operation 对象的运行状态。 这两个方法的实现必须是线程安全的。</td></tr> <tr><td>isConcurrent</td> <td>必须实现</td> <td>为了确认一个operation 对象是否是并行的，需要重载这个方法，让它返回YES。</td></tr></tbody></table> <p>有了以上知识作铺垫，我们来看下一个并行operation 对象应该怎么完整地实现：</p> <div class="language- extra-class"><pre class="language-text"><code>@interface MyOperation : NSOperation {
+    BOOL        executing;
+    BOOL        finished;
+}
+- (void)completeOperation;
+@end
+ 
+@implementation MyOperation
+- (id)init {
+    self = [super init];
+    if (self) {
+        executing = NO;
+        finished = NO;
+    }
+    return self;
+}
+ 
+- (void)start {
+   // Always check for cancellation before launching the task.
+   if ([self isCancelled])
+   {
+      // Must move the operation to the finished state if it is canceled.
+      [self willChangeValueForKey:@&quot;isFinished&quot;];
+      finished = YES;
+      [self didChangeValueForKey:@&quot;isFinished&quot;];
+      return;
+   }
+ 
+   // If the operation is not canceled, begin executing the task.
+   [self willChangeValueForKey:@&quot;isExecuting&quot;];
+   
+   // 在另一个线程上执行main 方法
+   [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
+   executing = YES;
+   [self didChangeValueForKey:@&quot;isExecuting&quot;];
+}
+
+- (void)main {
+   @try {
+ 
+       // Do the main work of the operation here.
+ 
+       [self completeOperation];
+   }
+   @catch(...) {
+      // Do not rethrow exceptions.
+   }
+}
+ 
+- (void)completeOperation {
+    [self willChangeValueForKey:@&quot;isFinished&quot;];
+    [self willChangeValueForKey:@&quot;isExecuting&quot;];
+ 
+    executing = NO;
+    finished = YES;
+ 
+    [self didChangeValueForKey:@&quot;isExecuting&quot;];
+    [self didChangeValueForKey:@&quot;isFinished&quot;];
+}
+ 
+ 
+- (BOOL)isConcurrent {
+    return YES;
+}
+
+
+- (BOOL)isExecuting {
+    return executing;
+}
+ 
+- (BOOL)isFinished {
+    return finished;
+}
+
+@end
+
+</code></pre></div><p>注意：即使operation 对象是被取消的，也需要通知这个对象的观察者它已经完成了。因为如果一个operation 对象依赖于其他对象，那么它会观察其他对象的<code>isFinished</code>属性，只有当它所依赖的对象都已经发出了完成的信号后，这个对象才会开始运行。所以如果忘记发出完成通知，那么可能就有一个operation 对象永远都无法执行。</p> <h3 id="自定义operation-对象的执行行为"><a href="#自定义operation-对象的执行行为" class="header-anchor">#</a> 自定义operation 对象的执行行为</h3> <h4 id="配置对象间的依赖关系"><a href="#配置对象间的依赖关系" class="header-anchor">#</a> 配置对象间的依赖关系</h4> <p>前面多次提到，一个operation 对象可能依赖于另外几个operation 对象。在它所依赖的一个operation 对象都运行完成后，这个operation 对象才可以开始运行。</p> <p>为一个operation 对象配置依赖的操作很简单，只需要调用下面这个函数：</p> <div class="language- extra-class"><pre><code>- (void) addDependency:(NSOperation *)op;
+</code></pre></div><h4 id="改变operation-对象的执行优先级"><a href="#改变operation-对象的执行优先级" class="header-anchor">#</a> 改变operation 对象的执行优先级</h4> <p>对于队列中的operation 对象，它们的执行顺序取决于它们各自的优先级。更准确的说，对于那些已经ready 的operation 对象来说，优先级高的先执行，优先级低的后执行。</p> <p>operation 对象的优先级用这个函数来设置：</p> <div class="language- extra-class"><pre><code>- (void) setQueuePriority:(NSOperationQueuePriority) priority;
+</code></pre></div><p>priority 的可能取值有这几个：</p> <ul><li>NSOperationQueuePriorityVeryLow</li> <li>NSOperationQueuePriorityLow</li> <li>NSOperationQueuePriorityNormal</li> <li>NSOperationQueuePriorityHigh</li> <li>NSOperationQueuePriorityVeryHigh</li></ul> <h4 id="设置完成时的block"><a href="#设置完成时的block" class="header-anchor">#</a> 设置完成时的block</h4> <p>当operation 对象执行完它的任务后，可以用<code>setCompletionBlock:</code> 这个函数来设置接下来的工作。</p> <div class="language- extra-class"><pre><code>- (void) setCompletionBlock:(void ^(void))block
+</code></pre></div><h3 id="执行operations"><a href="#执行operations" class="header-anchor">#</a> 执行operations</h3> <p>当完成了对operation 对象的配置后，就可以执行了。</p> <h4 id="使用operationqueue"><a href="#使用operationqueue" class="header-anchor">#</a> 使用OperationQueue</h4> <p>执行Operation 的最简单的方法是使用<code>NSOperationQueue</code> 。它也是我们分析<code>SDWebImage</code> 时所关注的一个核心类。</p> <div class="language- extra-class"><pre class="language-text"><code>NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];
+
+[aQueue addOperation:anOp]; // Add a single operation
+[aQueue addOperations:anArrayOfOps waitUntilFinished:NO]; // Add multiple operations
+[aQueue addOperationWithBlock:^{
+   /* Do something. */
+}];
+</code></pre></div><blockquote><p>Never modify an operation object after it has been added to a queue. While waiting in a queue, the operation could start executing at any time, so changing its dependencies or the data it contains could have adverse effects. If you want to know the status of an operation, you can use the methods of the NSOperation class to determine if the operation is running, waiting to run, or already finished.</p></blockquote> <p>如果使用<code>setMaxConcurrentOperationCount:</code> 将一个operationQueue 的最大可并行operation 数设置为1， 那么这个队列一次只能执行一个operation。</p> <h4 id="取消operations"><a href="#取消operations" class="header-anchor">#</a> 取消operations</h4> <p><code>cancelAllOperations</code> 可以用来取消一个operationQueue 内的所有operation。</p> <div class="language- extra-class"><pre><code>[operationQueue cancelAllOperations];
+</code></pre></div><h4 id="等待operations-完成"><a href="#等待operations-完成" class="header-anchor">#</a> 等待operations 完成</h4> <p>在一个operation 实例上调用<code>waitUntilFinished</code>可以短暂地阻塞这个operation，直到此opeartion 执行完。但是通常应该避免这样做。尤其是不要在主线程上调用这个方法，否则可能阻塞主线程，导致程序失去响应。</p> <h4 id="阻塞operation"><a href="#阻塞operation" class="header-anchor">#</a> 阻塞operation</h4> <p>在operationQueue 上调用<code>setSuspended</code> 可以阻塞那些还没有执行的operation，但是不会影响那些正在执行的和已经执行的operation。</p> <h2 id="sdwebimage-中的实现"><a href="#sdwebimage-中的实现" class="header-anchor">#</a> SDWebImage 中的实现</h2> <p><code>SDWebImage</code> 中，使用NSOperation 对象和GCD 的地方主要有两处，一处是在<code>SDWebImageDownloader</code> 中使用<code>SDWebImageDownloaderOperation</code> 来完成图片的<strong>下载</strong>任务；一处是在<code>SDWebImageManager</code> 使用<code>SDWebImageCombinedOperation</code>来完成下载后图片的<strong>缓存</strong>任务。我们只分析<code>SDWebImageDownloader</code> 中的多线程策略。</p> <h3 id="sdwebimagedownloader"><a href="#sdwebimagedownloader" class="header-anchor">#</a> SDWebImageDownloader</h3> <p>在这个类的类扩展中，有几个属性是与Operation 和OperationQueue 对象有联系的：</p> <div class="language- extra-class"><pre class="language-text"><code>@property (strong, nonatomic, nonnull) NSOperationQueue *downloadQueue;
+@property (weak, nonatomic, nullable) NSOperation *lastAddedOperation;
+
+// This queue is used to serialize the handling of the network responses of all the download operation in a single queue
+@property (SDDispatchQueueSetterSementics, nonatomic, nullable) dispatch_queue_t barrierQueue;
+</code></pre></div><p>从名字和注释中不难猜测到它们各自的作用：</p> <ul><li>downloadQueue：用来管理 download 操作的队列。</li> <li>lastAddedOperation：上一个被添加进队列的 operation。</li> <li>barrierQueue：这是一个dispatch_queue_t 类型的属性，作用是串行地处理所有 download 操作的网络响应。</li></ul> <h4 id="sdwebimagedownloaderoperation"><a href="#sdwebimagedownloaderoperation" class="header-anchor">#</a> SDWebImageDownloaderOperation</h4> <p><code>SDWebImageDownloaderOperation</code> 是<code>NSOperation</code> 的子类，是<code>SDWebImage</code> 中完成下载任务的operation 对象。这个operation 对象的设计，符合我们在『实现自定义的NSOperation 子类』一节中介绍的各种要求。对于它的start 和其他方法，由于是对网络请求部分的具体实现，与本文主题无关，因此暂时不做介绍（日后若有时间，我将专门写一篇博客来介绍<code>SDWebImage</code> 中的网络部分）。</p> <h4 id="downloadqueue"><a href="#downloadqueue" class="header-anchor">#</a> downloadQueue</h4> <p>在<code>downloadImageWithURL:options:progress:completed:</code>这个方法中，<code>SDWebImageDownloader</code> 为每一个下载图片的请求创建一个<code>SDWebImageDownloaderOperation</code> ，并将这个<code>SDWebImageDownloaderOperation</code> 加入downloadQueue 中。</p> <div class="language- extra-class"><pre class="language-text"><code>SDWebImageDownloaderOperation *operation = [[sself.operationClass alloc] initWithRequest: request inSession: sself.session options: options];
+
+
+// 根据传入的SDWebImageDownloaderOptions 来设置当前operation 的优先级
+if (options &amp; SDWebImageDownloaderHighPriority) {
+    operation.queuePriority = NSOperationQueuePriorityHigh;
+} else if (options &amp; SDWebImageDownloaderLowPriority) {
+    operation.queuePriority = NSOperationQueuePriorityLow;
+}
+
+[sself.downloadQueue addOperation:operation];
+</code></pre></div><p>在将operation 添加进downloadQueue 后，还可以设置operation 对象在这个队列中的执行顺序：</p> <div class="language- extra-class"><pre class="language-text"><code>if (sself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
+    [sself.lastAddedOperation addDependency:operation];
+    sself.lastAddedOperation = operation;
+}
+</code></pre></div><p>downloadQueue 的默认执行顺序是</p> <ul><li><code>SDWebImageDownloaderFIFOExecutionOrder</code>，也就是先入先出，其行为类似于一个队列；</li></ul> <p>当执行顺序改为</p> <ul><li><code>SDWebImageDownloaderLIFOExecutionOrder</code> 时，则是后入先出，其行为类似于一个栈。<code>lastAddedOperation</code> 就是用来记录当前栈顶的那个operation 的，当有新的operation 要进栈时，就把这个新的operation 设置为<code>lastAddedOperation</code> 的依赖，这样的话，只有新的operation 执行完毕，<code>lastAddedOperation</code> 才能开始执行，因此就实现了后入先出的效果。</li></ul> <h4 id="barrierqueue"><a href="#barrierqueue" class="header-anchor">#</a> barrierQueue</h4> <p>前面提到，<code>barrierQueue</code> 是用来串行地处理所有的download 操作的网络响应的。关于<code>dispatch_queue_t</code> 和<code>NSOperation</code> 的对比，可以参见<a href="http://stackoverflow.com/questions/10373331/nsoperation-vs-grand-central-dispatch" target="_blank" rel="noopener noreferrer">这儿<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。
+我们来看下具体的操作过程是什么样子的。</p> <div class="language- extra-class"><pre class="language-text"><code>- (nullable SDWebImageDownloadToken *)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock
+                                           completedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock
+                                                   forURL:(nullable NSURL *)url
+                                           createCallback:(SDWebImageDownloaderOperation *(^)())createCallback {
+    // The URL will be used as the key to the callbacks dictionary so it cannot be nil. If it is nil immediately call the completed block with no image or data.
+    if (url == nil) {
+        if (completedBlock != nil) {
+            completedBlock(nil, nil, nil, NO);
+        }
+        return nil;
+    }
+
+    __block SDWebImageDownloadToken *token = nil;
+
+    dispatch_barrier_sync(self.barrierQueue, ^{
+        SDWebImageDownloaderOperation *operation = self.URLOperations[url];
+        if (!operation) {
+            operation = createCallback();
+            self.URLOperations[url] = operation;
+
+            __weak SDWebImageDownloaderOperation *woperation = operation;
+            operation.completionBlock = ^{
+              SDWebImageDownloaderOperation *soperation = woperation;
+              if (!soperation) return;
+              if (self.URLOperations[url] == soperation) {
+                  [self.URLOperations removeObjectForKey:url];
+              };
+            };
+        }
+        id downloadOperationCancelToken = [operation addHandlersForProgress:progressBlock completed:completedBlock];
+
+        token = [SDWebImageDownloadToken new];
+        token.url = url;
+        token.downloadOperationCancelToken = downloadOperationCancelToken;
+    });
+
+    return token;
+}
+
+
+- (void)cancel:(nullable SDWebImageDownloadToken *)token {
+    dispatch_barrier_async(self.barrierQueue, ^{
+        SDWebImageDownloaderOperation *operation = self.URLOperations[token.url];
+        BOOL canceled = [operation cancel:token.downloadOperationCancelToken];
+        if (canceled) {
+            [self.URLOperations removeObjectForKey:token.url];
+        }
+    });
+}
+</code></pre></div><p>这段代码中，<code>SDWebImageDownloader</code> 维护了一个NSDictionary 用以将url 和url 对应的operation 联系起来。值得注意的是，在前一个方法中，使用了<code>dispatch_barrier_async</code>，在后一个方法中，则使用了<code>dispatch_barrier_sync</code>，那么这两个函数究竟有什么区别呢？</p> <p>我们知道<code>dispatch_barrier_async</code> 和<code>dispatch_barrier_sync</code>都是为了解决竞争问题而提出来的。举例来说，现在我们在项目中使用一个数据库，那么对数据库的操作就有读和写两种操作。假设我们需要先读两次数据库，然后再写入一个数据，然后再读出两个数据，那么显然读和写的操作是不能同时发生的，如果同时发生，就有可能造成数据错误。</p> <p>使用<code>dispatch_barrier_(a)sync</code>，上述任务可以这样实现：</p> <div class="language- extra-class"><pre><code>dispatch_async(queue, blk1_read);
+dispatch_async(queue, blk2_read);
+dispatch_async(queue, blk3_read);
+dispatch_barrier_async(queue, blk_write);
+dispatch_async(queue, blk4_read);
+dispatch_async(queue, blk5_read);
+</code></pre></div><p><code>dispatch_barrier_(a)sync</code> 就像是一个屏障一样，它确保blk_write 一定会等到blk1，blk2，blk3 全部执行完毕才开始执行，在blk_write 执行完毕后，blk4 和blk5 又正常地并行运行。</p> <p><code>sync</code> 和<code>async</code> 的区别体现在：将block 追加到指定的queue 中是否是同步的。如果是<code>async</code> 的，那么<code>dispatch_barrier_async</code> 不会等待追加操作结束，当前进程会继续进行；如果是<code>sync</code> 的，那么<code>dispatch_barrier_async</code> 会等待一直追加操作结束，当前进程会因此阻塞。</p> <p>用例子来解释：</p> <div class="language- extra-class"><pre><code>// A
+// step1
+dispatch_barrier_async(queue, ^{
+    step2
+});
+// step3
+
+// B
+// step4
+dispatch_barrier_sync(queue, ^{
+    // step5
+});
+// step6
+</code></pre></div><p>在A 中，step1 先执行，但是step3 可能会在step2 之前执行完，因此执行顺序可能是<code>step1-&gt;step2-&gt;step3</code>，也可能是<code>step1-&gt;step3-&gt;step2</code>；在B 中，执行的顺序则一定是<code>step4-&gt;step5-&gt;step6</code>。</p> <p>在<code>addProgressCallback:</code>方法中，因为需要返回一个token，而这个token 是在block 中计算的，所以我们一定要等到block 的追加操作完成才可以返回，否则就会得到nil，因此需要使用<code>dispatch_barrier_sync</code>；而在<code>cancel:</code> 方法中，不需要等待，因此使用<code>dispatch_barrier_async</code> 就可以了。</p> <h2 id="总结"><a href="#总结" class="header-anchor">#</a> 总结</h2> <p>多线程策略无疑是iOS 应用开发中一个十分重要的考虑因素。随着项目的进行，需求不断增多，应用的逻辑越加复杂，对性能的要求也随之提要，因此我们不得不借助于多线程来适应这些要求。本文介绍了<code>SDWebImage</code> 这个库中多线程策略的选择和实现，在分析过程中，我发觉自己之前写的代码都太小儿科了，也感受到：能够正确地进行多线程编程，应该是一个iOS 开发者必要的能力。</p> <p>另外，为了写出这篇文章，我又重新研读了几遍<code>SDWebImage</code> 的代码，感受和在写前一篇文章时果然有很多不同。看来还是要多读优秀的源代码，而且要多加思考和总结。</p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/49.e3e5f68b.js" defer></script>
+  </body>
+</html>

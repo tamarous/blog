@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LeetCode-437-Path Sum Ⅲ</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/21.2bfe940a.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="leetcode-437-path-sum-iii"><a href="#leetcode-437-path-sum-iii" class="header-anchor">#</a> LeetCode-437-Path Sum Ⅲ</h1> <p>在 <a href="http://www.tamarous.com/2017/11/26/path-sum/" target="_blank" rel="noopener noreferrer">Path Sum<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 和 <a href="http://www.tamarous.com/2017/11/26/path-sum-%e2%85%a1/" target="_blank" rel="noopener noreferrer">Path Sum Ⅱ<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>之后，Path Sum 大家庭又迎来了第三位成员。那么这个<a href="https://leetcode.com/problems/path-sum-iii/description/" target="_blank" rel="noopener noreferrer">新成员<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>又提出了什么样的要求呢？</p> <p>题意是这样的：给出一棵二叉树和一个数值 sum，计算这棵树上的节点之和等于sum 的所有路径的条数。和之前不同的是，这道题中路径可以从树中的任何一个节点开始。</p> <p>思路：二叉树的题目，大部分都可以用递归的思想来解决，这道题也不例外。基本思路和之前类似，可以参照前面的两篇博文。但是要注意的是，由于路径可以从任何地方开始，在任何地方结束，因此：root 处存在和为 sum 的路径，root-&gt;left 处存在和为 sum 的路径以及 root-&gt;right 存在和为 sum 的路径这三种情况是需要累加到一起的。我们可以写一个辅助函数<code>int rootSum(TreeNode *root, int sum)</code> 来计算从某个节点 node 处开始和为 sum 的路径条数，那么最后的总条数为 <code>rootSum(root,sum) + pathSum(root-&gt;left, sum) + pathSum(root-&gt;right, sum)</code>。</p> <p>代码如下：</p> <div class="language- extra-class"><pre class="language-text"><code>class Solution {
+public:
+    int rootSum(TreeNode *root, int sum) {
+        if (root == NULL) {
+            return 0;
+        }
+        if (sum == root-&gt;val) {
+            return 1 + rootSum(root-&gt;left, 0) + rootSum(root-&gt;right,0);
+        } else {
+            return rootSum(root-&gt;left, sum - root-&gt;val) + rootSum(root-&gt;right, sum - root-&gt;val);
+        }
+    }
+    int pathSum(TreeNode* root, int sum) {
+        if (root == NULL) {
+            return 0;
+        }
+        return rootSum(root, sum) + pathSum(root-&gt;left, sum) + pathSum(root-&gt;right, sum);
+    }
+};
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/21.2bfe940a.js" defer></script>
+  </body>
+</html>

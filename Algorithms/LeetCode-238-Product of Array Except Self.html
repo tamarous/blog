@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LeetCode-238-Product of Array Except Self</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/18.1ae3bf5c.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="leetcode-238-product-of-array-except-self"><a href="#leetcode-238-product-of-array-except-self" class="header-anchor">#</a> LeetCode-238-Product of Array Except Self</h1> <p>这个<a href="https://leetcode.com/problems/product-of-array-except-self/description/" target="_blank" rel="noopener noreferrer">题目<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>的题意非常简单：传入一个数组，然后返回一个新数组，这个新数组中的每个元素是由原来数组的除了对应位置上的以外元素相乘得到的。比如传入[1,2,3,4]，返回[24, 12, 8, 6]。但是有个额外要求，那就是算法的时间复杂度必须是O(n)，空间复杂度是O(n)或O(1)。</p> <p>思路：如果对时间复杂度没有要求，那么这个题非常简单，就是用两重循环来解决。由于时间复杂度必须是O(n)，也就是说只能使用一重循环来遍历数组，因此我们必须对输入的数组进行一些额外的处理，否则不可能满足要求。我们可以提前计算好每个位置对应的结果，然后在遍历时直接输出即可。</p> <p>来观察一下示例：假设输入的数组是[a, b, c, d]，那么得到的输出应该是[bcd, acd, abd, abc]。现在的问题是如何得到这个输出？我们可以将这个数组拆成两个数组对应位置上元素的乘积，假设可以拆成A和B的对应元素的乘积。若A[0] = 1，那么B[0] = bcd, 若A[1] = a，则B[1] = cd，若A[2] = ab，则B[2] = d, 若A[3] = abc，则B[3] = 1。如果A和B的元素满足上述假设的话，那么各位上的元素将有非常强的规律性：
+即</p> <div class="language- extra-class"><pre class="language-text"><code>A[0] = 1; 
+A[i] = A[i-1] * nums[i-1];
+
+B[nums.size()-1] = 1;
+B[j-1] = B[j] * nums[j]；
+</code></pre></div><p>至此整个实现的逻辑就分析清楚了，代码如下：</p> <div class="language- extra-class"><pre class="language-text"><code>class Solution {
+public:
+    vector&lt;int&gt; productExceptSelf(vector&lt;int&gt;&amp; nums) {
+        vector&lt;int&gt; p(nums.size());
+        vector&lt;int&gt; q(nums.size());
+        
+        p[0] = 1;
+        for(int i = 1; i &lt; nums.size(); i++) {
+            p[i] = p[i-1] * nums[i-1];
+        }
+        
+        q[nums.size()-1] = 1;
+        for(int i = nums.size()-1;i &gt;= 1; i--) {
+            q[i-1] = q[i] * nums[i];
+        }
+        
+        for(int i = 0; i &lt; nums.size(); i++) {
+            q[i] = q[i] * p[i];
+        }
+        return q;
+    }
+};
+</code></pre></div><p>这个算法便是时间复杂度和空间复杂度都是O(n)的算法。
+如果仔细观察，我们会发现上述算法中的数组p其实是不必要的，每步计算结果可以用一个int型变量保存，因此上述代码可以优化为：</p> <div class="language- extra-class"><pre class="language-text"><code>class Solution {
+public:
+    vector&lt;int&gt; productExceptSelf(vector&lt;int&gt;&amp; nums) {
+        vector&lt;int&gt; q(nums.size());
+        
+        q[nums.size()-1] = 1;
+        for(int i = nums.size()-1;i &gt;= 1; i--) {
+            q[i-1] = q[i] * nums[i];
+        }
+        
+        int p = 1;
+        for(int i = 0; i &lt; nums.size(); i++) {
+            q[i] = q[i] * p;
+            p = p * nums[i];
+        }
+        return q;
+    }
+};
+</code></pre></div><p>这便是时间复杂度为O(n)而空间复杂度为O(1)的算法。</p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/18.1ae3bf5c.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>揭开Runtime 的神秘面纱</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/52.f125db44.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/15.d0396fe4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link router-link-active">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link router-link-active">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="揭开runtime-的神秘面纱"><a href="#揭开runtime-的神秘面纱" class="header-anchor">#</a> 揭开Runtime 的神秘面纱</h1> <h2 id="概述"><a href="#概述" class="header-anchor">#</a> 概述</h2> <h3 id="动态-vs-静态语言"><a href="#动态-vs-静态语言" class="header-anchor">#</a> 动态 vs 静态语言</h3> <p>Objective-C 是一门动态语言，刚接触Objective-C 的时候，你一定会为它使用方括号这种怪异的“函数调用”方式而感到惊讶。准确的说，Objective-C 中的如下语句</p> <div class="language- extra-class"><pre><code>[receiver message]
+</code></pre></div><p>并不等同于C语言中的函数调用，而是向receiver 对象发送message 消息。C语言中的函数调用是在编译期间确定的，而Objective-C 是一门面向 Runtime 的语言，也就是说，它把消息发送的时机从编译&amp;链接时延后到了运行时。这正是Objective-C 众多的黑魔法的源头所在。</p> <h3 id="什么是objectie-c-runtime"><a href="#什么是objectie-c-runtime" class="header-anchor">#</a> 什么是Objectie-C Runtime？</h3> <p>Objective-C Runtime 是一个主要用C和汇编语言写成的库，它为C语言添加了面向对象的一些特性。运行时要负责诸如加载类信息、进行方法分发、方法传递等一系列工作。</p> <h2 id="objective-c-中的对象模型"><a href="#objective-c-中的对象模型" class="header-anchor">#</a> Objective-C 中的对象模型</h2> <p>在介绍 Runtime 之前，我们还得先介绍一下 Objective-C 的对象模型，只有掌握了它，才能对 Objective-C 的 Runtime 有更好的理解。我们知道，C语言是不支持面向对象特性的，而 Objective-C 作为一门面向对象语言，却架构在C语言的基础上，这其中 Apple 的工程师一定做了相当多的努力。下面就让我们从Objective-C 的<a href="https://opensource.apple.com/source/objc4/objc4-706/" target="_blank" rel="noopener noreferrer">源代码<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>出发，去看一看Objective-C 是怎么实现这一切的。
+在Objective-C 中，类的类型为<code>Class</code>。它实质上是一个指向结构体<code>objc_class</code>的指针。</p> <div class="language- extra-class"><pre><code>typedef struct objc_class *Class;
+
+struct objc_class {
+    Class isa;
+#if !__OBJC2__
+    Class super_class;
+    const char *name;
+    long version;
+    long info;
+    long instance_size;
+    struct objc_ivar_list *ivars;
+    struct objc_method_list **methodLists;
+    struct objc_cache *cache;
+    struct objc_protocol_list *protocols;
+#endif
+}
+</code></pre></div><p>其中有几个字段是比较重要的：</p> <ul><li>isa：指向类本身的指针。</li> <li>super_class：指向该类的父类。如果该类已经是最顶层的根类，则super_class的值为NULL。</li> <li>cache：用来缓存最近使用过的方法。</li> <li>methodLists：用来存储类中的方法。</li> <li>protocols：用来存储类所遵循的协议。</li></ul> <p>isa 指针指明了当前对象所属的类。实例对象的isa 指向了该实例对象所属的类，称为<strong>类对象</strong>。一个实例对象本身并不存储它能响应的消息，当我们给它发送一个消息时，Runtime 会从它的类对象的 methodslist 中进行寻找。</p> <p>举例来说：</p> <div class="language- extra-class"><pre><code>NSString *str = [NSString stringWithFormat:@&quot;%d&quot;,1];
+</code></pre></div><p>在这里，str 是 NSString 类的一个实例，因此 str 的 isa 指针指向的就是NSString，NSString 就是一个类对象。</p> <p>类对象呢，它本身也为一个 Objective-C 对象，因此也有一个 isa 指针。那么类对象的 isa 指针指向谁呢？
+在Objective-C 中，有一个元类（<code>metaclass</code>）的概念，可以解释这个问题。</p> <blockquote><p>The meta-class is the class for a Class object.</p></blockquote> <p>类对象的isa 指针指向这个类对象的元类。元类本身也是一个类。当我们向一个实例对象发送消息时，Runtime 会在这个对象的类对象的 methodlists 中寻找方法；当我们向一个类对象发送消息时，Runtime 会在这个类对象的元类的 methodlists 中寻找方法实现。</p> <p>既然元类本身也是一个类，所以元类也有一个isa 指针。
+元类的isa 指向基类（NSObject）的isa。而基类的isa 指针指向它们自身。</p> <h3 id="objc-method-与objc-method-list"><a href="#objc-method-与objc-method-list" class="header-anchor">#</a> objc_method 与objc_method_list</h3> <div class="language- extra-class"><pre><code>struct objc_method {
+    SEL method_name; // 方法的签名
+    char *method_types; // 方法参数的类型
+    IMP method_imp; // 方法的指针
+}
+</code></pre></div><p>关于SEL 和IMP 的关系，可以参考下<a href="/iOS/www.cocoawithlove.com/2008/02/imp-of-current-method.html">这篇文章</a>。简而言之，SEL 和 IMP 是一一对应的关系，SEL 是方法的名称，而 IMP 则是实际的方法实现的指针。类的消息分发表会把 SEL 和 IMP 进行一一映射，使得 Runtime 在进行消息分发时，可以依据 SEL 找到对应的 IMP，也就是找到真正的方法实现。</p> <div class="language- extra-class"><pre><code>struct objc_method_list {
+    struct objc_method_list *obsolete;
+    int method_count;
+#ifdef __LP64__
+    int space;
+#endif
+    struct objc_method method_list[1];
+}
+</code></pre></div><p>从成员上看，<code>objc_method_list</code>其实就是一个存储<code>objc_method</code>对象的可变长度的数组。</p> <h2 id="消息传递机制"><a href="#消息传递机制" class="header-anchor">#</a> 消息传递机制</h2> <h3 id="正常的消息分发过程"><a href="#正常的消息分发过程" class="header-anchor">#</a> 正常的消息分发过程</h3> <p>在Objective-C 中，消息直到运行时才会被绑定到对应的方法上。编译器会将[receiver selector]这种消息表达式转换为一个<code>objc_msgSend</code>调用，而receiver 和selector 被当作参数传入该函数中：</p> <div class="language- extra-class"><pre><code>objc_msgSend(receiver, selector)
+</code></pre></div><p>objc_msgSend的函数原型如下：</p> <div class="language- extra-class"><pre><code>objc_msgSend(id self, SEL op, ...);
+</code></pre></div><p>如果消息表达式中有更多参数，那么这些参数也都会被传入<code>objc_msgSend</code>函数中：</p> <div class="language- extra-class"><pre><code>objc_msgSend(receiver, selector, arg1, arg2,...)
+</code></pre></div><p>消息分发的关键就在于编译器为每个类和对象建立的结构体。每个结构体都包含了两个关键元素：</p> <ul><li>上文提到过的isa 指针。</li> <li>一个class dispatch table。这个表中的每个条目将某个方法的 SEL 和该方法实现的地址 IMP 相联系，然后记录在表中。</li></ul> <p>当一个新的对象被创建时，先分配给这个对象一块内存，然后对它进行初始化。<code>isa</code>指针给予了对象访问它自身的类及其父类的能力。</p> <p><img src="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjcRuntimeGuide/Art/messaging1.gif" alt="Messaging Framework"></p> <p>当发送一条消息<code>[receiver selector]</code>时，如果receiver 是一个实例对象：</p> <ol><li>通过receiver 的isa 指针找到receiver 的类对象；</li> <li>在receiver 的类的methodLists 中寻找对应的selector；</li> <li>如果receiver 的类中没有selector，那么就继续在receiver 的superclass 中进行寻找；</li> <li>一旦找到这个selector，就去执行此方法对应的IMP。</li></ol> <p>如果receiver 是一个类对象，那么所有的查找都是在类对象的元类中进行的。
+用流程图来表示如下：</p> <div class="language-flow extra-class"><pre class="language-flow"><code>st<span class="token operator">=&gt;</span>start<span class="token operator">:</span> 开始
+e<span class="token operator">=&gt;</span>end<span class="token operator">:</span> 结束
+op1<span class="token operator">=&gt;</span>operation<span class="token operator">:</span> 通过isa 寻找到<span class="token keyword">class</span>
+<span class="token class-name">op2</span><span class="token operator">=&gt;</span>operation<span class="token operator">:</span> 寻找selector
+op3<span class="token operator">=&gt;</span>operation<span class="token operator">:</span> 执行selector 的<span class="token constant">IMP</span>
+con<span class="token operator">=&gt;</span>condition<span class="token operator">:</span> 是否找到？
+
+st<span class="token operator">-</span><span class="token operator">&gt;</span>op1<span class="token operator">-</span><span class="token operator">&gt;</span>op2<span class="token operator">-</span><span class="token operator">&gt;</span>con
+<span class="token function">con</span><span class="token punctuation">(</span>yes<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>op3<span class="token operator">-</span><span class="token operator">&gt;</span>e
+<span class="token function">con</span><span class="token punctuation">(</span>no<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>op1
+</code></pre></div><p>为了加速消息分发的过程，Runtime 使用了一个叫做cache的指针来缓存selector 和IMP 。当下一次调用的时候，Runtime 就会首先在cache 中进行查找，如果cache 里面没有，才会到methodLists 中查找方法。</p> <h3 id="使用隐藏参数"><a href="#使用隐藏参数" class="header-anchor">#</a> 使用隐藏参数</h3> <p>在上节中，我们提到编译器会将receiver 和selector 以及其他附加参数当作参数传入<code>objc_msgSend</code>中，其中receiver 和 selector 是以一种隐藏的方式来进行传递的。虽然没有明确地在方法实现中进行定义，但是它们会在编译时被添加进方法实现中。在方法实现中，也可以引用它们。self 被用来引用receiver，而_cmd 则用来引用selector。</p> <div class="language- extra-class"><pre><code>- strange {
+    id target = getTheReceiver();
+    SEL method = getTheMethod();
+    if (target == self || method == _cmd) {
+        return nil;
+    } 
+    return [target performSelector: method];
+}
+</code></pre></div><h3 id="获得一个方法的地址"><a href="#获得一个方法的地址" class="header-anchor">#</a> 获得一个方法的地址</h3> <p>当某一方法在一个过程中被大量多次重复调用时，我们可以先去获得这个方法的地址然后把它当作一个函数来进行直接调用，这样可以避免每次消息分发时的开销。</p> <p>通过使用一个NSObject 中定义的方法<code>methodForSelector:</code>，我们可以获得一个指向方法实现的指针，然后使用这个指针来调用该过程。<code>methodForSelector:</code>返回的指针必须被转化为合适的函数类型。</p> <div class="language- extra-class"><pre><code>void (*setter)(id, SEL, BOOL);
+int i;
+
+setter = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];
+for(i = 0;i &lt; 1000;i++) {
+    setter(targetList[i], @selector(setFilled:), YES);
+}
+</code></pre></div><h2 id="消息转发机制"><a href="#消息转发机制" class="header-anchor">#</a> 消息转发机制</h2> <p>如果一个对象不能处理某个消息，那么通常会引发一个<code>unrecognized selector sent to...</code>的异常。但是在抛出这个异常之前，Runtime 会给你三次处理该错误的机会。</p> <ul><li>Method resolution</li> <li>Fast forwarding</li> <li>Normal forwarding</li></ul> <h3 id="dynamic-method-resolution"><a href="#dynamic-method-resolution" class="header-anchor">#</a> Dynamic Method Resolution</h3> <p>假设我们给一个类 MyClass的实例发送<code>resolveThisMethodDynamically</code>，而 MyClass 并没有实现这个方法，那么可以像这样使用<code>resolveInstanceMethod:</code>或是<code>resolveClassMethod:</code>来提供一个函数实现：</p> <div class="language- extra-class"><pre><code>@implementation MyClass
++ (BOOL) resolveInstanceMethod:(SEL) aSEL {
+    if (aSEL == @selector(resolveThisMethodDynamically)) {
+        class_addMethod([self class], aSEL, (IMP)dynamicMethodIMP, &quot;v@:&quot;);
+        return YES;
+    }
+    return [super resolveInstanceMethod: aSEL];
+}
+@end
+</code></pre></div><p>Runtime 会将<code>dynamicMethodIMP</code>这个函数添加到MyClass 的方法中。</p> <div class="language- extra-class"><pre><code>void dynamicMethodIMP(id self, SEL _cmd) {
+    // implementation
+}
+</code></pre></div><p>在iOS 4.3以后，可以使用block 来快速创建一个IMP：</p> <div class="language- extra-class"><pre><code>IMP dynamicIMP = imp_implementationWithBlock:(^(id _self) {
+    // implementation
+});
+</code></pre></div><p>因此上面的程序可以简化为：</p> <div class="language- extra-class"><pre><code>class_addMethod([self class], aSEL, dynamicIMP, &quot;v@:&quot;);
+</code></pre></div><p>如果没有提供一个方法，那么resolveXX 方法就会返回NO，Runtime 就会转向下一步：Fast Forwarding。</p> <h3 id="fast-forwarding"><a href="#fast-forwarding" class="header-anchor">#</a> Fast Forwarding</h3> <p>在这个时候，Runtime 试图将这个selector 转发给另外一个对象来进行处理：</p> <div class="language- extra-class"><pre><code>-(id) forwardingTargetForSelector:(SEL) aSEL {
+    if ([SecondObject respondToSelector: aSEL]) {
+        return SecondObject;
+    }
+    return [super forwardingTargetForSelector: aSEL];
+}
+</code></pre></div><p>只要这个方法返回的不是nil或者self，整个消息发送的过程就会在 SecondObject 上重新启动。否则就会继续进行Normal Forwarding。</p> <h3 id="normal-forwarding"><a href="#normal-forwarding" class="header-anchor">#</a> Normal Forwarding</h3> <p>当事情真的进行到这一步的时候，就要启用完整的消息转发机制了。
+首先Runtime 会发送<code>methodSignatureForSelector:</code>消息获得函数的参数和返回值类型，如果返回值为nil，运行时就会发出一个<code>doesNotRecognizeSelector:</code>消息，然后程序就挂掉了。如果这返回的是一个函数签名，Runtime 就会创建一个NSInvocation 对象，这个对象实际上就是对aSEL的描述，包括aSEL的selector以及各种参数等信息，之后发送<code>forwardInvocation</code>消息给receiver，即目标对象。</p> <div class="language- extra-class"><pre><code>- （void) forwardInvocation:(NSInvocation *)anInvocation {
+    if ([someOtherObject respondsToSelector:[anInvocation selector]]) {
+        [anInvocation invokeWithTarget: someOtherObject];
+    } else {
+        [super forwardInvocation: anInvocation];
+    }
+}
+</code></pre></div><p>然后在<code>someObject</code>中会从头进行消息查找与分发工作。</p> <h2 id="操纵类的实现"><a href="#操纵类的实现" class="header-anchor">#</a> 操纵类的实现</h2> <h3 id="与类有关的函数"><a href="#与类有关的函数" class="header-anchor">#</a> 与类有关的函数</h3> <p>Runtime 中以class 开头的函数都是用来直接对类进行操作的。我将这些方法按照目的分为了以下几类：用来查询的，用来判断的，用来拷贝的，用来添加的，用于控制类的生命周期的等等。</p> <h4 id="查询函数"><a href="#查询函数" class="header-anchor">#</a> 查询函数</h4> <blockquote><p>const char *class_getName(Class cls);</p></blockquote> <ul><li>获得类的名字。如果传入的cls 为nil，则返回“nil”，否则返回cls-&gt;name。</li></ul> <blockquote><p>Class class_getSuperclass(Class cls);</p></blockquote> <ul><li><p>获得传入的cls 的超类。</p></li> <li><blockquote><p>size_t class_getInstanceSize(Class cls);</p></blockquote></li> <li><p>获得类中实例对象的大小。</p></li></ul> <blockquote><p>Ivar class_getInstanceVariable(Class cls, const char *name);</p></blockquote> <ul><li>获得类中的某个以name 指定的实例成员。</li></ul> <blockquote><p>Ivar class_getClassVariable(Class cls, const char *name);</p></blockquote> <ul><li>获得类中的某个以name 指定的类成员。</li></ul> <blockquote><p>Method class_getInstanceMethod(Class cls, SEL name);</p></blockquote> <ul><li>获得类中的某个名为name的实例方法。</li></ul> <blockquote><p>Method class_getClassMethod(Class cls, SEL name);</p></blockquote> <ul><li>获得类中某个名为name 的类方法。</li></ul> <blockquote><p>IMP class_getMethodImplementation(Class cls, SEL name);</p></blockquote> <ul><li>获得类中的某个名为name 的方法的具体实现。</li></ul> <blockquote><p>objc_property_t class_getProperty(Class cls, const char *name);</p></blockquote> <ul><li>获得类中的某个名为name 的属性。</li></ul> <h4 id="判断函数"><a href="#判断函数" class="header-anchor">#</a> 判断函数</h4> <blockquote><p>BOOL class_isMetaClass(Class cls);</p></blockquote> <ul><li>判断传入的cls 是否是一个元类。</li></ul> <blockquote><p>BOOl class_respondsToSelector(Class cls, SEL sel);</p></blockquote> <ul><li>判断某个类的实例能否响应某个特定的选择子。</li></ul> <blockquote><p>BOOL class_conformsToProtocol(Class cls, Protocol *protocol);</p></blockquote> <ul><li>判断某个类是否遵循了特定协议。</li></ul> <h4 id="拷贝函数"><a href="#拷贝函数" class="header-anchor">#</a> 拷贝函数</h4> <blockquote><p>Ivar *class_copyIvarList(Class cls, unsigned int *outCount);</p></blockquote> <ul><li>返回一个数组，这个数组中的元素是指向类中实例成员变量的指针。一个元素对应一个成员变量。</li></ul> <blockquote><p>Method *class_copyMethodList(Class cls, unsigned int *outCount);</p></blockquote> <ul><li>返回一个数组，这个数组中的元素是指向类中的实例方法的指针。一个元素对应一个实例方法。</li></ul> <blockquote><p>objc_property_t *class_copyPropertyList(Class cls, unsigned int *outCount);</p></blockquote> <ul><li>返回一个数组，这个数组中的元素是指向类中的属性的指针。一个元素对应一个属性。</li></ul> <blockquote><p>Protocol * __unsafe_unretained *class_copyProtocolList(Class cls, unsigned int *outCount);</p></blockquote> <ul><li>返回一个数组，这个数组中的元素是指向类所遵循的协议的指针。一个元素对应一个协议。</li></ul> <p>以上函数中的outCount 的值，是所返回的数组的大小。在使用完这些数组后，必须使用free()来释放掉数组的内存空间。</p> <h4 id="添加函数"><a href="#添加函数" class="header-anchor">#</a> 添加函数</h4> <blockquote><p>BOOL class_addMethod(Class cls, SEL name, IMP imp,
+const char *types);</p></blockquote> <ul><li>向一个类中添加方法。如果添加成功了就返回YES，否则返回NO。</li></ul> <blockquote><p>IMP class_replaceMethod(Class cls, SEL name, IMP imp,
+const char *types);</p></blockquote> <ul><li>更换一个类中的已有方法的实现。name 是要更换的方法的选择子，imp 是新的方法的实现。types 是方法的参数。返回的是被替换的方法的实现。</li></ul> <blockquote><p>BOOL class_addIvar(Class cls, const char *name, size_t size,
+uint8_t alignment, const char *types);</p></blockquote> <ul><li>向一个类中添加某个实例变量。要注意的是，这个方法只能用在<code>objc_allocateClassPair</code>和    <code>objc_registerClassPair</code>两个函数调用之间。不能用这个方法向一个已经存在的类添加实例变量，因为已经存在的类的内存布局已经固定了。这也是我们<strong>不能在分类中向一个类添加属性</strong>的原因。</li></ul> <blockquote><p>BOOL class_addProtocol(Class cls, Protocol *protocol);</p></blockquote> <ul><li>向一个类添加某个协议。</li></ul> <blockquote><p>BOOL class_addProperty(Class cls, const char *name, const objc_property_attribute_t *attributes, unsigned int attributeCount);</p></blockquote> <ul><li>向一个类中添加某个属性。attributes是这个属性应该有的特性，详见<a href="http://www.tamarous.com/2016/05/22/objectivec-zhong-de-shu-xing/" target="_blank" rel="noopener noreferrer">这里<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。attributesCount 是特性的数量。</li></ul> <blockquote><p>void class_replaceProperty(Class cls, const char *name, const objc_property_attribute_t *attributes, unsigned int attributeCount);</p></blockquote> <ul><li>更换某个类中的现有属性。使用方法与上一个方法类似。</li></ul> <h4 id="类的生命周期函数"><a href="#类的生命周期函数" class="header-anchor">#</a> 类的生命周期函数</h4> <blockquote><p>id class_createInstance(Class cls, size_t extraBytes);</p></blockquote> <ul><li>用于创建类的实例。返回成功创建的这个实例。extraBytes是想在这个类中添加的额外实例变量的大小。</li></ul> <blockquote><p>void *objc_destructInstance(id obj);</p></blockquote> <ul><li>用于销毁类的实例。CF和其他一些底层类会在垃圾回收环境下调用这个类（此处存疑）。</li></ul> <blockquote><p>Class objc_allocateClassPair(Class superclass, const char *name,
+size_t extraBytes);</p></blockquote> <ul><li>用来创建一个新的类及其元类。superclass 制定了要创建的这个类的父类。name 是要创建的类的名字。extraBytes 通常设置为0。返回的是新创建的类，或者是nil。</li> <li>在创建了新的类之后，可以通过调用<code>class_addMethod</code> 和 <code>class_addIvar</code>来为这个新类添加方法及实例变量。在添加完之后，调用<code>objc_registerClassPair</code>。这样这个新类就可以使用了。</li> <li>实例方法应该被添加到类中，类方法应该被添加到类的元类中。</li></ul> <blockquote><p>void objc_registerClassPair(Class cls);</p></blockquote> <ul><li>注册一个刚刚创建的类。只有在这之后，这个类才可以被使用。</li></ul> <h3 id="与method-有关的函数"><a href="#与method-有关的函数" class="header-anchor">#</a> 与Method 有关的函数</h3> <p>与Method 有关的函数很多，但是我们在这只关心一个函数：</p> <blockquote><p>void method_exchangeImplementations(Method m1, Method m2);</p></blockquote> <p>可以用这个函数来交换两个方法的实现。Effective Objective-C 在条款13中举了一个例子：用自定义的方法来交换NSString 中的<code>lowercaseString</code>实现。假设这个自定义的方法名为<code>eoc_myLowercaseString</code>，位于NSString 的一个分类中：</p> <div class="language- extra-class"><pre><code>- (NSString *) eoc_myLowercaseString {
+    NSString *lowercase =   [self eoc_myLowercaseString];
+    NSLog(@&quot;%@ =&gt; %@&quot;,self, lowercase);
+    return lowercase;
+}
+</code></pre></div><p>实现交换的代码如下：</p> <div class="language- extra-class"><pre><code>Method original = class_getInstanceMethod([NSString class], @selector(lowercaseString));
+Method swapped = class_getInstanceMethod([NSString class], @selector(eoc_myLowercaseString));
+
+method_exchangeImplementations(original, swapped);
+</code></pre></div><h2 id="小结"><a href="#小结" class="header-anchor">#</a> 小结</h2> <p>Objective-C 中的Runtime 的知识点很多，而且不管是在面试还是在实际工作中都有着超高的出场率。因此掌握Runtime 的原理和用途非常有必要。</p> <h3 id="reference"><a href="#reference" class="header-anchor">#</a> Reference:</h3> <ul><li><a href="/iOS/southpeak.github.io/2014/10/25/objective-c-Runtime-1/">Objective-C Runtime运行时之一：类与对象</a></li> <li><a href="/iOS/tech.glowing.com/cn/objective-c-Runtime/">Objective-C Runtime</a></li> <li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048-CH1-SW1" target="_blank" rel="noopener noreferrer">Objective-C Runtime Programming Guide<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li>Effective Objective-C，#12 理解消息转发机制</li> <li><a href="https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html" target="_blank" rel="noopener noreferrer">What is a meta-class in Objective-C?<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/52.f125db44.js" defer></script>
+  </body>
+</html>

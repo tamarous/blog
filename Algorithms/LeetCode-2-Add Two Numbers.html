@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LeetCode-2-Add Two Numbers</title>
+    <meta name="generator" content="VuePress 1.8.1">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.86d1a5cd.js" as="script"><link rel="preload" href="/assets/js/2.cd603132.js" as="script"><link rel="preload" href="/assets/js/15.d0396fe4.js" as="script"><link rel="prefetch" href="/assets/js/10.26a5b427.js"><link rel="prefetch" href="/assets/js/11.ca60f1ab.js"><link rel="prefetch" href="/assets/js/12.14a6f17f.js"><link rel="prefetch" href="/assets/js/13.db4d1de1.js"><link rel="prefetch" href="/assets/js/14.899c5ca4.js"><link rel="prefetch" href="/assets/js/16.b7711d40.js"><link rel="prefetch" href="/assets/js/17.1525986f.js"><link rel="prefetch" href="/assets/js/18.1ae3bf5c.js"><link rel="prefetch" href="/assets/js/19.6a77119a.js"><link rel="prefetch" href="/assets/js/20.236c8b53.js"><link rel="prefetch" href="/assets/js/21.2bfe940a.js"><link rel="prefetch" href="/assets/js/22.d9efe3b1.js"><link rel="prefetch" href="/assets/js/23.ebce0411.js"><link rel="prefetch" href="/assets/js/24.fabb82cb.js"><link rel="prefetch" href="/assets/js/25.c657f98a.js"><link rel="prefetch" href="/assets/js/26.32c42d96.js"><link rel="prefetch" href="/assets/js/27.1678b12c.js"><link rel="prefetch" href="/assets/js/28.8544b050.js"><link rel="prefetch" href="/assets/js/29.1084cfe5.js"><link rel="prefetch" href="/assets/js/3.a98e93fb.js"><link rel="prefetch" href="/assets/js/30.a6d1035b.js"><link rel="prefetch" href="/assets/js/31.be5835b4.js"><link rel="prefetch" href="/assets/js/32.d4366367.js"><link rel="prefetch" href="/assets/js/33.2b200c99.js"><link rel="prefetch" href="/assets/js/34.f163deeb.js"><link rel="prefetch" href="/assets/js/35.0b851840.js"><link rel="prefetch" href="/assets/js/36.7ff07fed.js"><link rel="prefetch" href="/assets/js/37.2693764e.js"><link rel="prefetch" href="/assets/js/38.6d5e99f9.js"><link rel="prefetch" href="/assets/js/39.d396e830.js"><link rel="prefetch" href="/assets/js/4.c1d52a96.js"><link rel="prefetch" href="/assets/js/40.569e795b.js"><link rel="prefetch" href="/assets/js/41.23c7880d.js"><link rel="prefetch" href="/assets/js/42.099df540.js"><link rel="prefetch" href="/assets/js/43.c74e858f.js"><link rel="prefetch" href="/assets/js/44.0fc3638c.js"><link rel="prefetch" href="/assets/js/45.a3c0d604.js"><link rel="prefetch" href="/assets/js/46.2a672594.js"><link rel="prefetch" href="/assets/js/47.7e8f0cf5.js"><link rel="prefetch" href="/assets/js/48.1f54ffbe.js"><link rel="prefetch" href="/assets/js/49.e3e5f68b.js"><link rel="prefetch" href="/assets/js/5.6e3c4c72.js"><link rel="prefetch" href="/assets/js/50.4b3f35ab.js"><link rel="prefetch" href="/assets/js/51.3f804d6f.js"><link rel="prefetch" href="/assets/js/52.f125db44.js"><link rel="prefetch" href="/assets/js/6.75cdaa21.js"><link rel="prefetch" href="/assets/js/7.39046d4b.js"><link rel="prefetch" href="/assets/js/8.12f5371b.js"><link rel="prefetch" href="/assets/js/9.682ca412.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/iOS/" class="nav-link">
+  iOS
+</a></div><div class="nav-item"><a href="/Algorithms/" class="nav-link router-link-active">
+  Algorithms
+</a></div> <a href="https://github.com/tamarous/tamarous_blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="leetcode-2-add-two-numbers"><a href="#leetcode-2-add-two-numbers" class="header-anchor">#</a> LeetCode-2-Add Two Numbers</h1> <p>一个非常典型的错误代码如下：</p> <div class="language- extra-class"><pre class="language-text"><code>class Solution {
+public:
+    ListNode * addTwoNumbers(ListNode *l1, ListNode *l2) {
+        long a = listToNumber(l1);
+        long b = listToNumber(l2);
+        long c = a + b;
+        ListNode *result = numberToList(c);
+        return result;
+    }
+    
+    long listToNumber(ListNode *list) {
+        if (list == NULL) {
+            return 0;
+        }
+        long sum = 0;
+        ListNode *ptr = list;
+        int i = 0;
+        while(ptr != NULL) {
+            sum += ptr-&gt;val * (long)pow(10,i++);
+            ptr = ptr-&gt;next;
+        }
+        return sum;
+    }
+
+    ListNode * numberToList(long number) {
+        if (number == 0) {
+            ListNode *head = new ListNode(number);
+            head-&gt;next = NULL;
+            return head;
+        }
+        ListNode *head = NULL;
+        ListNode *last = NULL;
+        bool firstTime = true;
+        while(number) {
+            long digit = number % 10;
+            ListNode *ptr = new ListNode(digit);
+            if (firstTime) {
+                head = ptr;
+                last = ptr;
+                firstTime = false;
+            } else {
+                last-&gt;next = ptr;
+            }
+            last = ptr;
+            number /= 10;
+        }
+        last-&gt;next = NULL;
+        return head;
+    }
+};
+</code></pre></div><p>上面这段代码的思路是：将这两个链表先转换成数字，然后对数字进行相加，最后再把这个数字用链表表示出来。看起来呢这种算法比较直观简单，如果用一些比较短的链表来测试的话结果也是对的，但是它的问题在于：如果链表很长很长，比如说有100个元素，那么就不能用基本类型来表示，否则就会产生溢出，造成不正确的计算结果。所以呢这个题其实是一个非常经典的大数问题。面对大数问题，我们只能一位一位地进行处理。</p> <p>解决大数问题的最核心的过程就是对于进位的处理了。为了叙述的方便，假设两个输入的链表分别是A和B，输出的链表是C，那么C的第n位的数字应该是A的第n位数字加上B的第n位数字再加上前一位产生的进位。因此我们需要用一个变量标记当前位相加是否产生了进位，并且在每次相加后更新这个变量的值。剩下的内容就是一些边界情况的处理，这部分很繁琐，因此必须要非常小心，不过尝试几次后应该就可以通过了。</p> <div class="language- extra-class"><pre class="language-text"><code>class Solution {
+public:
+    ListNode * addTwoNumbers(ListNode *l1, ListNode *l2) {
+        if (! l1 || !l2) {
+            return NULL;
+        }
+        ListNode *head = NULL;
+        bool firstTime = true;
+        ListNode *ptr1 = l1;
+        ListNode *ptr2 = l2;
+        bool needAddOne = false;
+        ListNode *last = NULL;
+        while(ptr1 &amp;&amp; ptr2) {
+            int sum = 0;
+            if (needAddOne) {
+                sum = ptr1-&gt;val + ptr2-&gt;val + 1;
+            } else {
+                sum = ptr1-&gt;val + ptr2-&gt;val;
+            }
+            if (sum &gt;= 10) {
+                needAddOne = true;
+                sum = sum - 10;
+            } else {
+                needAddOne = false;
+            }
+            ListNode *ptr = new ListNode(sum);
+            if (firstTime) {
+                head = ptr;
+                last = ptr;
+                firstTime = false;
+            }
+            last-&gt;next = ptr;
+            last = ptr;
+            ptr1 = ptr1-&gt;next;
+            ptr2 = ptr2-&gt;next;
+        }
+        if (!ptr1 &amp;&amp; !ptr2) {
+            if (needAddOne) {
+                ListNode *ptr = new ListNode(1);
+                last-&gt;next = ptr;
+                last = ptr;
+                ptr-&gt;next = NULL;
+            } else {
+                last-&gt;next = NULL;
+            }
+        } else {
+            if (ptr1) {
+                while (ptr1) {
+                    int sum = 0;
+                    if (needAddOne) {
+                        sum = ptr1-&gt;val + 1;
+                    } else {
+                        sum = ptr1-&gt;val;
+                    }
+                    if (sum &gt;= 10) {
+                        sum -= 10;
+                        needAddOne = true;
+                    } else {
+                        needAddOne = false;
+                    }
+                    ListNode *ptr = new ListNode(sum);
+                    last-&gt;next = ptr;
+                    last = ptr;
+                    ptr1 = ptr1-&gt;next;
+                }
+                if (needAddOne) {
+                    ListNode *ptr = new ListNode(1);
+                    last-&gt;next = ptr;
+                    last = ptr;
+                    ptr-&gt;next = NULL;
+                } else {
+                    last-&gt;next = NULL;
+                }
+            } else if (ptr2) {
+                while(ptr2) {
+                    int sum = 0;
+                    if (needAddOne) {
+                        sum = ptr2-&gt;val+1;
+                    } else {
+                        sum = ptr2-&gt;val;
+                    }
+                    if (sum &gt;= 10) {
+                        sum -= 10;
+                        needAddOne = true;
+                    } else {
+                        needAddOne = false;
+                    }
+                    ListNode *ptr = new ListNode(sum);
+                    last-&gt;next = ptr;
+                    last = ptr;
+                    ptr2 = ptr2-&gt;next;
+                }
+                if (needAddOne) {
+                    ListNode *ptr = new ListNode(1);
+                    last-&gt;next = ptr;
+                    last = ptr;
+                    ptr-&gt;next = NULL;
+                } else {
+                    last-&gt;next = NULL;
+                }
+            }
+        }
+        return head;
+    }
+};
+</code></pre></div><p><strong>UPDATE</strong> 好吧又被别人的算法虐了：别人的方法只要19行，而我的却要103行。。。
+好吧，差距还是很大的，虽然我的方法也能通过，但是在面试时如果有时间要求的话那么我的那种方法就很难写正确了。仔细看了一下，实现的差异在于对两条链表是否为空这种情况的判断：我是按照：两者均不为空、l1为空、l2为空、两者均为空这四种情况来处理的，而别人将这几个条件浓缩在了(p != NULL || q != NULL)这一个条件判断中，因此简化了很多。另外可以看到别人设置进位标记的那行代码：<code>carry = sum / 10</code>，比我采用的判断方法要简洁很多。</p> <div class="language- extra-class"><pre class="language-text"><code>public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    ListNode dummyHead = new ListNode(0);
+    ListNode p = l1, q = l2, curr = dummyHead;
+    int carry = 0;
+    while (p != null || q != null) {
+        int x = (p != null) ? p.val : 0;
+        int y = (q != null) ? q.val : 0;
+        int sum = carry + x + y;
+        carry = sum / 10;
+        curr.next = new ListNode(sum % 10);
+        curr = curr.next;
+        if (p != null) p = p.next;
+        if (q != null) q = q.next;
+    }
+    if (carry &gt; 0) {
+        curr.next = new ListNode(carry);
+    }
+    return dummyHead.next;
+}
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.86d1a5cd.js" defer></script><script src="/assets/js/2.cd603132.js" defer></script><script src="/assets/js/15.d0396fe4.js" defer></script>
+  </body>
+</html>
