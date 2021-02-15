@@ -1,4 +1,5 @@
 module.exports = {
+    base: "/tamarous_blog/",
     themeConfig: {
         nav: [
             { text: 'Home', link: '/'},
