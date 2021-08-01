@@ -1,19 +1,18 @@
 # SDWebImage 源代码剖析-缓存策略
-在上一篇文章中，我们对`Masonry` 的源代码进行了分析。今天我们将对另外一个在iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的`SDWebImage`。事实上`SDWebImage` 是如此常用和好用，以至于没有听说过没有用过没有分析过这个库的人应该是少数了。下面是我个人对这个库的缓存策略部分的代码分析和理解。由于本人才疏学浅，若有错误，请大家及时指出，不吝赐教。
-
+今天我们将对另外一个在iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的`SDWebImage`。
 ## 使用方法
 `SDWebImage` 的使用非常简洁，往往可以用一行代码来完成图片设置工作。下面列出一些常用设置方法。
+```
+- (void) sd_setImageWithURL:(nullable NSURL *) url;
 
-    - (void) sd_setImageWithURL:(nullable NSURL *) url;
-    - (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder
-    - (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder options:(SDWebImageOptions) options;
+- (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder;
 
+- (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder options:(SDWebImageOptions) options;
     
-    - (void）sd_setImageWithURL:(nullable NSURL *) url completed:(nullable SDExternalCompletionBlock) completedBlock;
-    - (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder options:(SDWebImageOptions) options completed:(nullable SDExternalCompletionBlock) completedBlock;
+- (void）sd_setImageWithURL:(nullable NSURL *) url completed:(nullable SDExternalCompletionBlock) completedBlock;
 
-    
-    
+- (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder options:(SDWebImageOptions) options completed:(nullable SDExternalCompletionBlock) completedBlock;
+```
 url 是远程图片的url 地址，placeholderImage 是远程图片尚未下载完成时显示的占位图片，completedBlock 是远程图片下载完成后将要执行的block，options 是一组NS_OPTIONS枚举值：
     
 ```
@@ -473,8 +472,6 @@ NSURLCache 缓存，什么事也不做。
 
 ## 总结
 本文对`SDWebImage` 的源代码进行了分析，其中着重介绍了它的缓存策略。因为篇幅有限，所以对于它的其他方面，如GCD 和NSOperationQueue 的使用，网络请求等知识都没有进行深入研究。在日后的系列文章中，我将回过头来针对这些知识进行再次探索，期待有新的收获。
-
-这一段时间接连分析了`Masonry` 和`SDWebImage` 两个著名开源库的源代码。在我的心目中，`SDWebImage` 才是好代码的典范：架构漂亮，逻辑清晰，注释明确。
 
 
 

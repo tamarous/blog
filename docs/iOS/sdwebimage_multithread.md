@@ -1,5 +1,5 @@
 # SDWebImage 源代码剖析-多线程策略
-前一篇[文章](./SDWebImage%20源代码剖析-缓存策略)从缓存策略的角度分析了`SDWebImage` 的部分代码，下面从多线程的角度对它的其他模块进行分析。
+前一篇[文章](./sdwebimage_cache)从缓存策略的角度分析了`SDWebImage` 的部分代码，下面从多线程的角度对它的其他模块进行分析。
 
 苹果的多线程解决方案有三种：
 * NSThread
@@ -7,7 +7,7 @@
 * NSOperation
 
 在实际开发中，我们往往只使用GCD 和NSOperation。
-关于应该如何在GCD 和NSOperation 中进行选择，stackoverflow 上已经有很多详细和深入的[讨论](http://stackoverflow.com/a/10375616/6552680)。本文中，我们只介绍NSOperation 。
+关于应该如何在GCD 和NSOperation 中进行选择，StackOverflow 上已经有很多详细和深入的[讨论](http://stackoverflow.com/a/10375616/6552680)。本文中，我们只介绍 NSOperation 。
 
 
 ## NSOperation

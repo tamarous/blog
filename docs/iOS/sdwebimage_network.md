@@ -1,6 +1,6 @@
 # SDWebImage 源代码剖析-网络部分
 
-前面两篇博文中，简要对SDWebImage的[缓存部分](http://www.tamarous.com/2017/03/12/sdwebimage-cache-policy/)和[多线程部分](http://www.tamarous.com/2017/03/14/sdwebimage-multithread-policy/)进行了分析。建议在阅读本篇内容前先看下缓存策略那篇，以对SDWebImage的基本内容有所了解。在本篇中，我们将对它的网络策略进行分析。我们知道SDWebImage的主要功能就是从远程主机上下载图片，所以前面的几个策略都是为这一目的提供支持的，而网络策略的好坏将直接决定库的性能。不过SDWebImage以GitHub上接近20000的star数向我们证明了它不俗的实力，下面就让我们一起看看吧。
+前面两篇博文中，简要对SDWebImage的[缓存部分](./sdwebimage_cache)和[多线程部分](./sdwebimage_multithread)进行了分析。建议在阅读本篇内容前先看下缓存策略那篇，以对SDWebImage的基本内容有所了解。在本篇中，我们将对它的网络策略进行分析。我们知道SDWebImage的主要功能就是从远程主机上下载图片，所以前面的几个策略都是为这一目的提供支持的，而网络策略的好坏将直接决定库的性能。不过SDWebImage以GitHub上接近20000的star数向我们证明了它不俗的实力，下面就让我们一起看看吧。
 
 本文共分为两部分，第一部分是对NSURLSession的介绍，第二部分是对SDWebImage中网络部分的介绍。
 
@@ -615,7 +615,7 @@ didReceiveResponse:(NSURLResponse *)response
 ```
 
 ## 总结
-本文简单介绍了`NSURLSession`的使用，并分析了它在`SDWebImage`中的应用。至此，对`SDWebImage`这一框架的分析将告一段落。在分析`SDWebImage`源码的过程中，我曾数次被这一框架的优点打动：接口简洁易用，结构优美逻辑强，代码清晰易懂，注释详细丰富，值得再三学习品味。
+本文简单介绍了`NSURLSession`的使用，并分析了它在`SDWebImage`中的应用。至此，对`SDWebImage`这一框架的分析将告一段落。
 
 
 
