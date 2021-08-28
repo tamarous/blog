@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Aspects 源码分析</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="manifest" href="/tamarous_blog/manifest.webmanifest" crossorigin="use-credentials">
+    <meta name="description" content="">
+    <meta property="og:url" content="/tamarous_blog/iOS/aspects_source_probe.html">
+    <meta property="og:title" content="Aspects 源码分析">
+    <meta property="og:description" content="Aspects 源码分析 Aspects是一个用于实现面向切片编程（AOP, Aspect-oriented programming ）思想的第三方库。面向切片编程，指的是在运行时，动态地将代码切入到类的指定方法、指定位置上，从而得到改变方法的实现的目的。由于 Objective-C 本身是一门非常动态的语言，因此 AOP 在 Objective-C 这门语">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="en-US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#46bd87">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <link rel="preload" href="/tamarous_blog/assets/css/0.styles.6e4dbbbc.css" as="style"><link rel="preload" href="/tamarous_blog/assets/js/app.302ef2b2.js" as="script"><link rel="preload" href="/tamarous_blog/assets/js/vendors~layout-Layout.209c0354.js" as="script"><link rel="preload" href="/tamarous_blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.7eb8d02d.js" as="script"><link rel="preload" href="/tamarous_blog/assets/js/page-Aspects源码分析.46df36dc.js" as="script"><link rel="preload" href="/tamarous_blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.fd9b9e80.js" as="script"><link rel="prefetch" href="/tamarous_blog/assets/js/57.6a3c2500.js"><link rel="prefetch" href="/tamarous_blog/assets/js/layout-Blog.a4cf1303.js"><link rel="prefetch" href="/tamarous_blog/assets/js/layout-Layout.f3e9cb51.js"><link rel="prefetch" href="/tamarous_blog/assets/js/layout-NotFound.4f30cc8f.js"><link rel="prefetch" href="/tamarous_blog/assets/js/layout-Slide.a59c0f9f.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-EasyTuple源代码分析.5a028ed7.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-Hello!.8bd6f2a7.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-Home.26b84a0b.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-100-SameTree及572-SubtreeofAnotherTree.377de91c.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-101-SymmetricTree.e101aff4.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-112-PathSum.55140f11.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-113-PathSumⅡ.834cba95.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-120-Triangle.d7f211b4.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-191-Numberof1Bits.85832ca1.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-198-HouseRobber.45404347.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-2-AddTwoNumbers.7112b7fd.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-21-MergeTwoSortedLists.ed4d9942.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-234-PalindromeLinkedList.99393483.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-238-ProductofArrayExceptSelf.77498a7f.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-28-ImplementstrStr().fbca4d4e.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-347-TopKFrequentElements.705e2583.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-437-PathSumⅢ.f0ad4f8f.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-48-RotateImage.c05e2370.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-494-TargetSum.cf82631c.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-62-UniquePaths.edae8b29.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode-63-UniquePathsⅡ.c5329281.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode.453ec4f4.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-LeetCode上几道经典的排列组合题.a083c017.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-Masonry源代码剖析.a0bf9e9e.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-SDWebImage源代码剖析-多线程策略.86c13d58.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-SDWebImage源代码剖析-缓存策略.7637973d.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-SDWebImage源代码剖析-网络部分.775be273.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-不重复打印排序数组中相加和为给定值的所有二元组三元组.09ba4aaa.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-二叉树的Morris遍历.bf43d66a.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-前中后序遍历的非递归实现.0c5859ed.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-单链表问题总结.42806b40.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-在其他数字都出现K次的数组中找到只出现M次的数字.6c67aefc.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-在数组中找到出现次数大于NK的数.cae79074.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-按层打印二叉树.ee22442e.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-揭开Runtime的神秘面纱.9c5a4f3b.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-数根.f5076b55.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-最大公约数和最小公倍数.c5cd72f3.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-最大子序列和问题.791a78cd.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-源码分析.3bb05b64.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-独木舟上的旅行.54d7d5a1.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-由前序和中序遍历恢复二叉树结构.7e767e4a.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-背包问题.02f5df41.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-调整数组中元素的顺序.2ffe5b1f.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-转圈打印矩阵.00a61bbc.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-递归在二叉树相关题目中的应用.bda4daae.js"><link rel="prefetch" href="/tamarous_blog/assets/js/page-需要排序的最短子数组的长度.6fa88377.js"><link rel="prefetch" href="/tamarous_blog/assets/js/vendors~photo-swipe.54f2f5bc.js">
+    <link rel="stylesheet" href="/tamarous_blog/assets/css/0.styles.6e4dbbbc.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container has-navbar has-sidebar has-anchor"><header class="navbar"><!----> <div class="content__navbar-start"></div> <button title="Sidebar Button" class="sidebar-button"><span class="icon"></span></button> <a href="/tamarous_blog/" class="home-link router-link-active"></a> <!----> <div class="content__navbar-center"></div> <div class="links"><button tabindex="-1" aria-hidden="true" class="color-button"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="skin-icon"><path d="M224 800c0 9.6 3.2 44.8 6.4 54.4 6.4 48-48 76.8-48 76.8s80 41.6 147.2 0 134.4-134.4
+        38.4-195.2c-22.4-12.8-41.6-19.2-57.6-19.2C259.2 716.8 227.2 761.6 224 800zM560 675.2l-32
+        51.2c-51.2 51.2-83.2 32-83.2 32 25.6 67.2 0 112-12.8 128 25.6 6.4 51.2 9.6 80 9.6 54.4 0
+        102.4-9.6 150.4-32l0 0c3.2 0 3.2-3.2 3.2-3.2 22.4-16 12.8-35.2
+        6.4-44.8-9.6-12.8-12.8-25.6-12.8-41.6 0-54.4 60.8-99.2 137.6-99.2 6.4 0 12.8 0 22.4
+        0 12.8 0 38.4 9.6 48-25.6 0-3.2 0-3.2 3.2-6.4 0-3.2 3.2-6.4 3.2-6.4 6.4-16 6.4-16 6.4-19.2
+        9.6-35.2 16-73.6 16-115.2 0-105.6-41.6-198.4-108.8-268.8C704 396.8 560 675.2 560 675.2zM224
+        419.2c0-28.8 22.4-51.2 51.2-51.2 28.8 0 51.2 22.4 51.2 51.2 0 28.8-22.4 51.2-51.2 51.2C246.4
+        470.4 224 448 224 419.2zM320 284.8c0-22.4 19.2-41.6 41.6-41.6 22.4 0 41.6 19.2 41.6 41.6 0
+        22.4-19.2 41.6-41.6 41.6C339.2 326.4 320 307.2 320 284.8zM457.6 208c0-12.8 12.8-25.6 25.6-25.6
+        12.8 0 25.6 12.8 25.6 25.6 0 12.8-12.8 25.6-25.6 25.6C470.4 233.6 457.6 220.8 457.6 208zM128
+        505.6C128 592 153.6 672 201.6 736c28.8-60.8 112-60.8 124.8-60.8-16-51.2 16-99.2
+        16-99.2l316.8-422.4c-48-19.2-99.2-32-150.4-32C297.6 118.4 128 291.2 128 505.6zM764.8
+        86.4c-22.4 19.2-390.4 518.4-390.4 518.4-22.4 28.8-12.8 76.8 22.4 99.2l9.6 6.4c35.2 22.4
+        80 12.8 99.2-25.6 0 0 6.4-12.8 9.6-19.2 54.4-105.6 275.2-524.8 288-553.6
+        6.4-19.2-3.2-32-19.2-32C777.6 76.8 771.2 80 764.8 86.4z"></path></svg> <div class="color-picker-menu" style="display:none;"><div class="theme-options"><ul class="themecolor-select"><label for="themecolor-select">Theme Color:</label> <li><span class="default-theme"></span></li> </ul> <div class="darkmode-toggle"><label for="darkmode-toggle" class="desc">Theme Mode:</label> <div class="darkmode-switch"><div class="item day"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon light-icon"><path d="M512 256a42.667 42.667 0 0 0 42.667-42.667V128a42.667 42.667 0 0 0-85.334 0v85.333A42.667 42.667 0 0 0 512 256zm384 213.333h-85.333a42.667 42.667 0 0 0 0 85.334H896a42.667 42.667 0 0 0 0-85.334zM256 512a42.667 42.667 0 0 0-42.667-42.667H128a42.667 42.667 0 0 0 0 85.334h85.333A42.667 42.667 0 0 0 256 512zm9.387-298.667a42.667 42.667 0 0 0-59.307 62.72l61.44 59.307a42.667 42.667 0 0 0 31.147 11.947 42.667 42.667 0 0 0 30.72-13.227 42.667 42.667 0 0 0 0-60.16zm459.946 133.974a42.667 42.667 0 0 0 29.44-11.947l61.44-59.307a42.667 42.667 0 0 0-57.6-62.72l-61.44 60.587a42.667 42.667 0 0 0 0 60.16 42.667 42.667 0 0 0 28.16 13.227zM512 768a42.667 42.667 0 0 0-42.667 42.667V896a42.667 42.667 0 0 0 85.334 0v-85.333A42.667 42.667 0 0 0 512 768zm244.48-79.36a42.667 42.667 0 0 0-59.307 61.44l61.44 60.587a42.667 42.667 0 0 0 29.44 11.946 42.667 42.667 0 0 0 30.72-12.8 42.667 42.667 0 0 0 0-60.586zm-488.96 0-61.44 59.307a42.667 42.667 0 0 0 0 60.586 42.667 42.667 0 0 0 30.72 12.8 42.667 42.667 0 0 0 28.587-10.666l61.44-59.307a42.667 42.667 0 0 0-59.307-61.44zM512 341.333A170.667 170.667 0 1 0 682.667 512 170.667 170.667 0 0 0 512 341.333z" fill="currentColor"></path></svg></div> <div class="item auto active"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon auto-icon"><path d="M460.864 539.072H564.8L510.592 376l-49.728 163.072zM872 362.368V149.504H659.648L510.528 0l-149.12 149.504H149.12v212.928L0 511.872l149.12 149.504v212.928h212.352l149.12 149.504 149.12-149.504h212.352V661.376l149.12-149.504L872 362.368zM614.464 693.12l-31.616-90.624H438.272l-31.616 90.624h-85.888l144.576-407.68h90.368l144.576 407.68h-85.824zm0 0" fill="currentColor"></path></svg></div> <div class="item night"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon dark-icon"><path d="M935.539 630.402c-11.43-11.432-28.674-14.739-43.531-8.354-46.734 20.103-96.363 30.297-147.508 30.297-99.59 0-193.221-38.784-263.64-109.203-108.637-108.637-139.61-270.022-78.908-411.148a39.497 39.497 0 0 0-51.886-51.887c-52.637 22.64-100.017 54.81-140.826 95.616-85.346 85.346-132.346 198.821-132.346 319.52 0 120.7 47.001 234.172 132.347 319.519S408.063 947.11 528.76 947.11c120.7 0 234.172-47.003 319.52-132.351 40.809-40.81 72.978-88.19 95.616-140.826a39.497 39.497 0 0 0-8.356-43.532z" fill="currentColor"></path></svg></div></div> <!----></div></div></div></button> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/tamarous_blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/tamarous_blog/iOS/" class="nav-link router-link-active active"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/tamarous_blog/Algorithms/" class="nav-link"><!---->
+  Algorithms
+</a></div></nav> <!----> <a rel="noopener noreferrer" href="https://github.com/tamarous/tamarous_blog" target="_blank" class="repo-link can-hide">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> <!----> <div class="content__navbar-end"></div></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!----> <!----> <div class="content__sidebar-top"></div> <nav class="sidebar-nav-links"><div class="nav-item"><a href="/tamarous_blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/tamarous_blog/iOS/" class="nav-link router-link-active active"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/tamarous_blog/Algorithms/" class="nav-link"><!---->
+  Algorithms
+</a></div> <a rel="noopener noreferrer" href="https://github.com/tamarous/tamarous_blog" target="_blank" class="repo-link">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <!----> <div class="content__sidebar-center"></div> <ul class="sidebar-links"><li><a href="/tamarous_blog/" aria-current="page" class="sidebar-link">Home</a></li><li><a href="/tamarous_blog/iOS/" aria-current="page" class="sidebar-link">源码分析</a></li><li><a href="/tamarous_blog/Algorithms/" class="sidebar-link">LeetCode</a></li></ul> <!----> <div class="content__sidebar-bottom"></div> <!----></aside> <main class="page"><nav class="breadcrumb"><ol vocab="https://schema.org/" typeof="BreadcrumbList"><li property="itemListElement" typeof="ListItem"><a href="/tamarous_blog/iOS/" property="item" typeof="WebPage" class="router-link-active"><!----> <span property="name">源码分析</span></a> <meta property="position" content="1"></li><li property="itemListElement" typeof="ListItem" class="is-active"><a href="/tamarous_blog/iOS/aspects_source_probe/" aria-current="page" property="item" typeof="WebPage" class="router-link-exact-active router-link-active"><!----> <span property="name">Aspects 源码分析</span></a> <meta property="position" content="2"></li></ol></nav> <!----> <div class="content__page-top"></div> <div vocab="https://schema.org/" typeof="Article" class="page-title"><h1><!----> <span property="headline">Aspects 源码分析</span></h1> <div class="page-info"><!----> <!----><!----><span aria-label="Writing Date📅" data-balloon-pos="down" class="time-info"><svg viewBox="0 0 1030 1024" xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H180.6A134.314 134.314 0 0 0 46.66 277.595v535.756A134.314 134.314 0 0 0 180.6 947.289h669.74a134.36 134.36 0 0 0 133.94-133.938V277.595a134.314 134.314 0 0 0-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 0 1-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 0 1-33.472 33.473z" fill="currentColor"></path></svg> <span property="datePublished">2021-8-28</span></span><!----><!----><span aria-label="Reading Time⌛" data-balloon-pos="down" class="reading-time-info"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon timer-icon"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z" fill="currentColor"></path></svg> <span>About 12 min</span> <meta property="timeRequired" content="PT12M"></span></div> <!----> <hr></div> <div class="anchor-place-holder"><aside id="anchor"><div class="anchor-wrapper"></div></aside></div> <!----> <div class="content__content-top"></div> <div class="theme-default-content content__default"><h1 id="aspects-源码分析"><a href="#aspects-源码分析" class="header-anchor">#</a> Aspects 源码分析</h1> <p><a href="https://github.com/steipete/Aspects" target="_blank" rel="noopener noreferrer">Aspects<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>是一个用于实现面向切片编程（AOP, Aspect-oriented programming ）思想的第三方库。面向切片编程，指的是在运行时，动态地将代码切入到类的指定方法、指定位置上，从而得到改变方法的实现的目的。由于 Objective-C 本身是一门非常动态的语言，因此 AOP 在 Objective-C 这门语言中很容易利用 Runtime 进行实现。
+这个库里的代码不多，只有<code>Aspects.h</code>和<code>Aspects.m</code>两个文件。头文件里定义了一个 NSObject 的分类，给所有 NSObject 的子类添加了如下两个方法：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>+ (id&lt;AspectToken&gt;)aspect_hookSelector:(SEL)selector
+                           withOptions:(AspectOptions)options
+                            usingBlock:(id)block
+                                 error:(NSError **)error;
+
+/// Adds a block of code before/instead/after the current `selector` for a specific instance.
+- (id&lt;AspectToken&gt;)aspect_hookSelector:(SEL)selector
+                           withOptions:(AspectOptions)options
+                            usingBlock:(id)block
+                                 error:(NSError **)error;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>第一个是类方法，而另一个是实例方法，其实内部都调用了同样的方法，只不过传给那个方法的参数稍微有些区别。
+下面我们就结合着<code>Aspects</code>给出的一个 Demo 来分析它的内部做了什么事情。Demo 的核心代码是下面这么一段，也就是当我们点击 button 后，会出现照片选取的 <code>UIImagePickerController</code>，而在<code>UIImagePickerController</code>的<code>viewWillDisappear</code>方法被调用时，程序此时就会调用我们设置的钩子函数，显示一个 UIAlertView。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>- (IBAction)buttonPressed:(id)sender {
+    UIViewController *testController = [[UIImagePickerController alloc] init];
+
+    testController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:testController animated:YES completion:NULL];
+
+    // We are interested in being notified when the controller is being dismissed.
+    [testController aspect_hookSelector:@selector(viewWillDisappear:) withOptions:0 usingBlock:^(id&lt;AspectInfo&gt; info, BOOL animated) {
+        UIViewController *controller = [info instance];
+        if (controller.isBeingDismissed || controller.isMovingFromParentViewController) {
+            [[[UIAlertView alloc] initWithTitle:@&quot;Popped&quot; message:@&quot;Hello from Aspects&quot; delegate:nil cancelButtonTitle:nil otherButtonTitles:@&quot;Ok&quot;, nil] show];
+        }
+    } error:NULL];
+
+    // Hooking dealloc is delicate, only AspectPositionBefore will work here.
+    [testController aspect_hookSelector:NSSelectorFromString(@&quot;dealloc&quot;) withOptions:AspectPositionBefore usingBlock:^(id&lt;AspectInfo&gt; info) {
+        NSLog(@&quot;Controller is about to be deallocated: %@&quot;, [info instance]);
+    } error:NULL];
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br></div></div><p><code>testController</code> Hook 了两个<code>viewWillDisappear:</code>和<code>dealloc</code>这两个方法。options 指定了 Hook 的时机，可以在指定的时机执行 block 内的方法：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>typedef NS_OPTIONS(NSUInteger, AspectOptions) {
+    AspectPositionAfter   = 0,            /// 在原始方法执行后生效（默认）        
+    AspectPositionInstead = 1,            /// 替换原始方法
+    AspectPositionBefore  = 2,            /// 在原始方法执行前生效
+    AspectOptionAutomaticRemoval = 1 &lt;&lt; 3 /// 只执行一次
+};
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>所以 <code>testController</code>会在<code>viewWillDisappear</code>调用后以及<code>dealloc</code>调用前执行block 中的方法。
+下面我们看下 hook 这个方法究竟做了什么。进入</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>- (id&lt;AspectToken&gt;)aspect_hookSelector:(SEL)selector
+                      withOptions:(AspectOptions)options
+                       usingBlock:(id)block
+                            error:(NSError **)error {
+    return aspect_add(self, selector, options, block, error);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>其实它调用了 <code>aspect_add</code> 这个静态函数：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSError **error) {
+    NSCParameterAssert(self);
+    NSCParameterAssert(selector);
+    NSCParameterAssert(block);
+
+    __block AspectIdentifier *identifier = nil;
+    
+    // 1. 在执行 block 前加锁，在执行完 block 后解锁
+    aspect_performLocked(^{
+    
+        // 2. 
+        if (aspect_isSelectorAllowedAndTrack(self, selector, options, error)) {
+            // 3
+            AspectsContainer *aspectContainer = aspect_getContainerForObject(self, selector);
+            // 4. 
+            identifier = [AspectIdentifier identifierWithSelector:selector object:self options:options block:block error:error];
+            if (identifier) {
+                // 5. 
+                [aspectContainer addAspect:identifier withOptions:options];
+
+                // 6.  
+                // Modify the class to allow message interception.
+                aspect_prepareClassAndHookSelector(self, selector, error);
+            }
+        }
+    });
+    return identifier;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br></div></div><p>第1步，<code>aspect_performLocked</code>这个方法在执行作为参数的 block 前会进行加锁操作，而在 block 执行完后进行解锁：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static void aspect_performLocked(dispatch_block_t block) {
+    static OSSpinLock aspect_lock = OS_SPINLOCK_INIT;
+    OSSpinLockLock(&amp;aspect_lock);
+    block();
+    OSSpinLockUnlock(&amp;aspect_lock);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>第2步中调用了<code>aspect_isSelectorAllowedAndTrack(self, selector, options, error)</code>这个方法：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static BOOL aspect_isSelectorAllowedAndTrack(NSObject *self, SEL selector, AspectOptions options, NSError **error) {
+
+    // `retain`，`release`，`autorelease`和`forwardInvocation`都是不允许被 hook ，它们会被加入黑名单中
+    static NSSet *disallowedSelectorList;
+    static dispatch_once_t pred;
+    dispatch_once(&amp;pred, ^{
+        disallowedSelectorList = [NSSet setWithObjects:@&quot;retain&quot;, @&quot;release&quot;, @&quot;autorelease&quot;, @&quot;forwardInvocation:&quot;, nil];
+    });
+
+    // 如果要 Hook 的方法是以上黑名单中的四个方法中的一个，会打印出错误信息并且返回 NO
+    NSString *selectorName = NSStringFromSelector(selector);
+    if ([disallowedSelectorList containsObject:selectorName]) {
+        NSString *errorDescription = [NSString stringWithFormat:@&quot;Selector %@ is blacklisted.&quot;, selectorName];
+        AspectError(AspectErrorSelectorBlacklisted, errorDescription);
+        return NO;
+    }
+
+    // 如果 Hook 的是 dealloc 方法，并且 Hook 时机不是在 dealloc 方法执行之前，也会打印出错误信息，并且返回 NO
+    AspectOptions position = options&amp;AspectPositionFilter;
+    if ([selectorName isEqualToString:@&quot;dealloc&quot;] &amp;&amp; position != AspectPositionBefore) {
+        NSString *errorDesc = @&quot;AspectPositionBefore is the only valid position when hooking dealloc.&quot;;
+        AspectError(AspectErrorSelectorDeallocPosition, errorDesc);
+        return NO;
+    }
+ 
+ // 如果被 Hook 的类本身不能响应被 Hook 的方法，那么这里也会报错并且返回 NO
+    if (![self respondsToSelector:selector] &amp;&amp; ![self.class instancesRespondToSelector:selector]) {
+        NSString *errorDesc = [NSString stringWithFormat:@&quot;Unable to find selector -[%@ %@].&quot;, NSStringFromClass(self.class), selectorName];
+        AspectError(AspectErrorDoesNotRespondToSelector, errorDesc);
+        return NO;
+    }
+
+    // Search for the current class and the class hierarchy IF we are modifying a class object
+    
+    if (class_isMetaClass(object_getClass(self))) {
+        // 如果 self 所属的类是一个元类
+    
+        Class klass = [self class];
+        
+        // aspect_getSwizzledClassesDict会返回一个全局唯一的`swizzledClassesDict`，以 Class 为键，以`AspectTracker`实例为值，下文中会介绍这个 dictionary 内的键值对是怎么添加的
+        NSMutableDictionary *swizzledClassesDict = aspect_getSwizzledClassesDict();
+        Class currentClass = [self class];
+
+        AspectTracker *tracker = swizzledClassesDict[currentClass];
+        if ([tracker subclassHasHookedSelectorName:selectorName]) {
+            // 如果self 所属类的子类已经 Hook 了 selectorName 代表的 SEL，那么在这里就会打印出错误信息并且返回 NO
+            NSSet *subclassTracker = [tracker subclassTrackersHookingSelectorName:selectorName];
+            NSSet *subclassNames = [subclassTracker valueForKey:@&quot;trackedClassName&quot;];
+            NSString *errorDescription = [NSString stringWithFormat:@&quot;Error: %@ already hooked subclasses: %@. A method can only be hooked once per class hierarchy.&quot;, selectorName, subclassNames];
+            AspectError(AspectErrorSelectorAlreadyHookedInClassHierarchy, errorDescription);
+            return NO;
+        }
+
+        // 从 self 所属类的继承链上进行查找
+        do {
+            tracker = swizzledClassesDict[currentClass];
+            // 如果继承链上的某个类的被交换的方法列表中有当前这个 SEL
+            if ([tracker.selectorNames containsObject:selectorName]) {
+            
+                // 继承链上的这个类就是被 Hook 的那个类，说明之前已经 Hook 过它了，因此这里直接返回 YES
+                if (klass == currentClass) {
+                    // Already modified and topmost!
+                    return YES;
+                }
+                
+                // 继承链上的这个类不是被 Hook 的那个类，而是它的父类，那么这个方法已经被 Hook 过了，我们就不能再次进行 Hook 了，所以这里需要打印出一条错误信息，并且返回 NO
+                NSString *errorDescription = [NSString stringWithFormat:@&quot;Error: %@ already hooked in %@. A method can only be hooked once per class hierarchy.&quot;, selectorName, NSStringFromClass(currentClass)];
+                AspectError(AspectErrorSelectorAlreadyHookedInClassHierarchy, errorDescription);
+                return NO;
+            }
+        } while ((currentClass = class_getSuperclass(currentClass)));
+
+        // Add the selector as being modified.
+        currentClass = klass;
+        AspectTracker *subclassTracker = nil;
+        do {
+            tracker = swizzledClassesDict[currentClass];
+            if (!tracker) {
+                // 为 self 所属的这个类创建对应的 AspectTracker
+                tracker = [[AspectTracker alloc] initWithTrackedClass:currentClass];
+                
+                // 以 self 所属的类为键，以tracker 为值，添加到swizzledClassesDict中
+                swizzledClassesDict[(id&lt;NSCopying&gt;)currentClass] = tracker;
+            }
+            if (subclassTracker) {
+                [tracker addSubclassTracker:subclassTracker hookingSelectorName:selectorName];
+            } else {
+                [tracker.selectorNames addObject:selectorName];
+            }
+
+            // All superclasses get marked as having a subclass that is modified.
+            subclassTracker = tracker;
+        }while ((currentClass = class_getSuperclass(currentClass)));
+	} else {
+	
+	   // 如果 self 所属的类不是元类，那么直接返回 YES
+		return YES;
+	}
+
+    return YES;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br></div></div><p>第3步，我们以self 和 selector 为参数，调用<code>aspect_getContainerForObject</code>函数，返回一个<code>AspectsContainer</code>：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>AspectsContainer *aspectContainer = aspect_getContainerForObject(self, selector);
+
+static AspectsContainer *aspect_getContainerForObject(NSObject *self, SEL selector) {
+    NSCParameterAssert(self);
+    SEL aliasSelector = aspect_aliasForSelector(selector);
+    AspectsContainer *aspectContainer = objc_getAssociatedObject(self, aliasSelector);
+    if (!aspectContainer) {
+        aspectContainer = [AspectsContainer new];
+        objc_setAssociatedObject(self, aliasSelector, aspectContainer, OBJC_ASSOCIATION_RETAIN);
+    }
+    return aspectContainer;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><p>AspectsContainer 和 SEL 是通过关联对象技术关联在一起的，因此这个方法里就是通过 SEL 取出对应的 AspectsContainer 实例。
+第4步是创建出一个<code>AspectsIdentifier</code>实例：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>+ (instancetype)identifierWithSelector:(SEL)selector object:(id)object options:(AspectOptions)options block:(id)block error:(NSError **)error {
+    NSCParameterAssert(block);
+    NSCParameterAssert(selector);
+    NSMethodSignature *blockSignature = aspect_blockMethodSignature(block, error); // TODO: check signature compatibility, etc.
+    if (!aspect_isCompatibleBlockSignature(blockSignature, object, selector, error)) {
+        return nil;
+    }
+
+    AspectIdentifier *identifier = nil;
+    if (blockSignature) {
+        identifier = [AspectIdentifier new];
+        identifier.selector = selector;
+        identifier.block = block;
+        identifier.blockSignature = blockSignature;
+        identifier.options = options;
+        identifier.object = object; // weak
+    }
+    return identifier;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br></div></div><p>第5步是将上一步中创建的<code>AspectIdentifier</code>实例添加到第3步创建的<code>AspectsContainer</code>中：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>- (void)addAspect:(AspectIdentifier *)aspect withOptions:(AspectOptions)options {
+    NSParameterAssert(aspect);
+    NSUInteger position = options&amp;AspectPositionFilter;
+    
+    // 根据options的设置，AspectIdentifier实例会被添加到AspectsContainer对应的数组里
+    switch (position) {
+        case AspectPositionBefore:  self.beforeAspects  = [(self.beforeAspects ?:@[]) arrayByAddingObject:aspect]; break;
+        case AspectPositionInstead: self.insteadAspects = [(self.insteadAspects?:@[]) arrayByAddingObject:aspect]; break;
+        case AspectPositionAfter:   self.afterAspects   = [(self.afterAspects  ?:@[]) arrayByAddingObject:aspect]; break;
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>第6步是整个方法 Hook 的核心：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>aspect_prepareClassAndHookSelector(self, selector, error);
+
+static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSError **error) {
+    NSCParameterAssert(selector);
+    
+    // (1)
+    Class klass = aspect_hookClass(self, error);
+    Method targetMethod = class_getInstanceMethod(klass, selector);
+    IMP targetMethodIMP = method_getImplementation(targetMethod);
+    
+    // (2)
+    if (!aspect_isMsgForwardIMP(targetMethodIMP)) {
+        // Make a method alias for the existing method implementation, it not already copied.
+        const char *typeEncoding = method_getTypeEncoding(targetMethod);
+        
+        // (3)
+        SEL aliasSelector = aspect_aliasForSelector(selector);
+        if (![klass instancesRespondToSelector:aliasSelector]) {
+            // 如果第(1)步中创建出来的类不能响应第(3)步中新创建的 SEL，那么就通过class_addMethod 来给新创建出来的类添加一个方法，这个方法的 SEL 就是新创建的 SEL，IMP 和类型编码则是要被替换的方法的 IMP 和类型编码
+            __unused BOOL addedAlias = class_addMethod(klass, aliasSelector, method_getImplementation(targetMethod), typeEncoding);
+            NSCAssert(addedAlias, @&quot;Original implementation for %@ is already copied to %@ on %@&quot;, NSStringFromSelector(selector), NSStringFromSelector(aliasSelector), klass);
+        }
+
+        // We use forwardInvocation to hook in.
+        // (4)
+        class_replaceMethod(klass, selector, aspect_getMsgForwardIMP(self, selector), typeEncoding);
+        AspectLog(@&quot;Aspects: Installed hook for -[%@ %@].&quot;, klass, NSStringFromSelector(selector));
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br></div></div><p>这个方法也比较复杂，因此我们将它分成四个小步骤来分析。
+第(1)步，调用<code>aspect_hookClass</code>：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static Class aspect_hookClass(NSObject *self, NSError **error) {
+    NSCParameterAssert(self);
+    
+   // 这里是比较容易混淆的地方
+   // .class 方法，当 self 是一个 instance 的时候，返回 self 的类对象;
+   // 当 self 是一个类对象的时候，返回它自身
+   // object_getClass 方法则是获取 self 的 isa 指针指向的对象，如果self 是一个
+   // instance，那么返回一个类对象;如果 self 是一个类对象，则返回一个元类
+
+    
+	Class statedClass = self.class;
+	Class baseClass = object_getClass(self);
+	NSString *className = NSStringFromClass(baseClass);
+
+    // Already subclassed
+    
+	if ([className hasSuffix:AspectsSubclassSuffix]) {
+	   // AspectsSubclassSuffix是个 static 字符串常量，也就是_Aspects_
+		return baseClass;
+
+        // We swizzle a class object, not a single object.
+	}else if (class_isMetaClass(baseClass)) {
+        return aspect_swizzleClassInPlace((Class)self);
+        // Probably a KVO'ed class. Swizzle in place. Also swizzle meta classes in place.
+    }else if (statedClass != baseClass) {
+        return aspect_swizzleClassInPlace(baseClass);
+    }
+
+    // Default case. Create dynamic subclass.
+    // 在原来的类名后加上_Aspects_后缀
+	const char *subclassName = [className stringByAppendingString:AspectsSubclassSuffix].UTF8String;
+	Class subclass = objc_getClass(subclassName);
+
+	if (subclass == nil) {
+	   // 创建出一个新的 Class 出来，基本步骤有下面几个：
+	   // 1. 通过objc_allocateClassPair来创建一个新的子类
+	   // 2. 通过class_addMethod, class_addIvar来向新的子类添加方法和实例变量
+	   // 3. 通过objc_registerClassPair来向运行时系统注册这个新类
+	   // 完成以上3步后就可以使用这个新建的类了
+	   
+	   // subclass是 baseClass 的子类，类名是subclassName
+		subclass = objc_allocateClassPair(baseClass, subclassName, 0);
+		if (subclass == nil) {
+            NSString *errrorDesc = [NSString stringWithFormat:@&quot;objc_allocateClassPair failed to allocate class %s.&quot;, subclassName];
+            AspectError(AspectErrorFailedToAllocateClassPair, errrorDesc);
+            return nil;
+        }
+    
+      // 将新创建出来的类的forwardInvocation:方法替换成__ASPECTS_ARE_BEING_CALLED__方法，详见下面的注释
+		aspect_swizzleForwardInvocation(subclass);
+		// 替换subclass 的class 方法
+		aspect_hookedGetClass(subclass, statedClass);
+		// 替换subclass 的元类的class 方法
+		aspect_hookedGetClass(object_getClass(subclass), statedClass);
+		// 注册新创建出来的子类，现在可以使用了
+		objc_registerClassPair(subclass);
+	}
+
+    // 将 self 所属类的类型改为我们刚刚创建出来的带有_Aspects_后缀的类
+    // 这里可以通过在 Xcode 中打断点来进行验证
+	object_setClass(self, subclass);
+	// 返回这个子类
+	return subclass;
+}
+
+static void aspect_swizzleForwardInvocation(Class klass) {
+    NSCParameterAssert(klass);
+    
+    // class_replaceMethod的第一个参数是要进行方法替换的 Class，第二个参数是被替换方法的 SEL，第三个参数是进行替换的方法的 IMP，第四个参数是类型编码，返回值是被替换的方法原来的 IMP。
+    // 如果 Class 中没有要被替换的SEL，那么这个方法和class_addMethod 就是一样的
+    IMP originalImplementation = class_replaceMethod(klass, @selector(forwardInvocation:), (IMP)__ASPECTS_ARE_BEING_CALLED__, &quot;v@:@&quot;);
+    if (originalImplementation) {
+        // 向 Class 中添加一个新的方法AspectsForwardInvocationSelectorName，也就是__aspects_forwardInvocation:，而它的IMP就是原来的forwardInvocation:的 IMP
+        class_addMethod(klass, NSSelectorFromString(AspectsForwardInvocationSelectorName), originalImplementation, &quot;v@:@&quot;);
+    }
+    AspectLog(@&quot;Aspects: %@ is now aspect aware.&quot;, NSStringFromClass(klass));
+}
+
+static void aspect_hookedGetClass(Class class, Class statedClass) {
+    NSCParameterAssert(class);
+    NSCParameterAssert(statedClass);
+    
+   // 获得class 原来的 class 方法
+	Method method = class_getInstanceMethod(class, @selector(class));
+	// 创建一个新的 IMP
+	IMP newIMP = imp_implementationWithBlock(^(id self) {
+		return statedClass;
+	});
+	// 将class 的实现用我们新创建的 IMP 来替换
+	class_replaceMethod(class, @selector(class), newIMP, method_getTypeEncoding(method));
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br></div></div><p>第(2)步，调用了<code>aspect_isMsgForwardIMP</code>来判断我们要替换的 SEL 的 IMP 是不是<code>_objc_msgForward</code>，如果不是才会进行第(3)、(4)步的操作</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static BOOL aspect_isMsgForwardIMP(IMP impl) {
+    return impl == _objc_msgForward
+#if !defined(__arm64__)
+    || impl == (IMP)_objc_msgForward_stret
+#endif
+    ;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>第(3)步，创建出一个新的 SEL，这个新的 SEL 是由被替换的 SEL 的字符串加上一个特定前缀字符串生成的，然后将它添加到上面新创建的类中：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static SEL aspect_aliasForSelector(SEL selector) {
+    NSCParameterAssert(selector);
+	return NSSelectorFromString([AspectsMessagePrefix stringByAppendingFormat:@&quot;_%@&quot;, NSStringFromSelector(selector)]);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>第(4)步，将selector 对应的实现 IMP 替换为<code>_objc_msgForward</code>：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>class_replaceMethod(klass, selector, aspect_getMsgForwardIMP(self, selector), typeEncoding);
+
+static IMP aspect_getMsgForwardIMP(NSObject *self, SEL selector) {
+    IMP msgForwardIMP = _objc_msgForward;
+#if !defined(__arm64__)
+    // As an ugly internal runtime implementation detail in the 32bit runtime, we need to determine of the method we hook returns a struct or anything larger than id.
+    // https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html
+    // https://github.com/ReactiveCocoa/ReactiveCocoa/issues/783
+    // http://infocenter.arm.com/help/topic/com.arm.doc.ihi0042e/IHI0042E_aapcs.pdf (Section 5.4)
+    Method method = class_getInstanceMethod(self.class, selector);
+    const char *encoding = method_getTypeEncoding(method);
+    BOOL methodReturnsStructValue = encoding[0] == _C_STRUCT_B;
+    if (methodReturnsStructValue) {
+        @try {
+            NSUInteger valueSize = 0;
+            NSGetSizeAndAlignment(encoding, &amp;valueSize, NULL);
+
+            if (valueSize == 1 || valueSize == 2 || valueSize == 4 || valueSize == 8) {
+                methodReturnsStructValue = NO;
+            }
+        } @catch (__unused NSException *e) {}
+    }
+    if (methodReturnsStructValue) {
+        msgForwardIMP = (IMP)_objc_msgForward_stret;
+    }
+#endif
+    return msgForwardIMP;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br></div></div><p>所以我们可以总结下第6步这个方法做了什么事情：
+(1) 创建了一个新的类，然后将这个新类的<code>forwardInvocation:</code> 实现替换为了<code>__ASPECTS_ARE_BEING_CALLED__</code>，并且将这个新类的类对象和元类的 class 修改为原来的类，最后将 self 所属的类修改为新类。
+(2) 将 selector 对应的 IMP 实现替换为<code>forwardInvocation:</code>。
+以上介绍的1~6步，完成了 Hook 的动作。那么在被 Hook 的对象执行被替换的方法时，运行时就会转而执行<code>__ASPECTS_ARE_BEING_CALLED__</code>这个方法。接下来我们看下这个方法里有什么奥秘。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL selector, NSInvocation *invocation) {
+    NSCParameterAssert(self);
+    NSCParameterAssert(invocation);
+    SEL originalSelector = invocation.selector;
+    // 给invocation.selector 的 name 添加了aspects_前缀
+	SEL aliasSelector = aspect_aliasForSelector(invocation.selector);
+	
+    invocation.selector = aliasSelector;
+    
+    // AspectsContainer 和 SEL 是在第3步中通过关联对象技术关联到一起的
+    AspectsContainer *objectContainer = objc_getAssociatedObject(self, aliasSelector);
+    AspectsContainer *classContainer = aspect_getContainerForClass(object_getClass(self), aliasSelector);
+    AspectInfo *info = [[AspectInfo alloc] initWithInstance:self invocation:invocation];
+    NSArray *aspectsToRemove = nil;
+
+    // 在第5步中，根据options的设置，AspectIdentifier 会被加入到container 的beforeAspects、insteadAspects或afterAspects中
+    
+    
+    // Before hooks.
+    // 先执行 Hook 时机为调用原方法之前的方法
+    aspect_invoke(classContainer.beforeAspects, info);
+    aspect_invoke(objectContainer.beforeAspects, info);
+
+    // Instead hooks.
+    BOOL respondsToAlias = YES;
+    if (objectContainer.insteadAspects.count || classContainer.insteadAspects.count) {
+    
+        //如果 option 为替代原方法，那么这里执行替代方法，原方法不执行
+        aspect_invoke(classContainer.insteadAspects, info);
+        aspect_invoke(objectContainer.insteadAspects, info);
+    }else {
+    
+        // 如果 option 不是替代原方法，那么在这里去执行原来的方法
+        Class klass = object_getClass(invocation.target);
+        do {
+            // 我们在第6步的第(3)步中向新创建出的类通过class_addMethod添加了aliasSelector
+            if ((respondsToAlias = [klass instancesRespondToSelector:aliasSelector])) {
+                [invocation invoke];
+                break;
+            }
+        }while (!respondsToAlias &amp;&amp; (klass = class_getSuperclass(klass)));
+    }
+
+    // After hooks.
+    // 原方法已经执行完了，在这里执行 Hook 时机为调用原方法之后的方法
+    aspect_invoke(classContainer.afterAspects, info);
+    aspect_invoke(objectContainer.afterAspects, info);
+
+    // If no hooks are installed, call original implementation (usually to throw an exception)
+    // 如果没有安装任何钩子函数（也就是没有进行方法 Hook），那么就调用原来的方法
+    if (!respondsToAlias) {
+        invocation.selector = originalSelector;
+        SEL originalForwardInvocationSEL = NSSelectorFromString(AspectsForwardInvocationSelectorName);
+        if ([self respondsToSelector:originalForwardInvocationSEL]) {
+            ((void( *)(id, SEL, NSInvocation *))objc_msgSend)(self, originalForwardInvocationSEL, invocation);
+        }else {
+            [self doesNotRecognizeSelector:invocation.selector];
+        }
+    }
+
+    // Remove any hooks that are queued for deregistration.
+    [aspectsToRemove makeObjectsPerformSelector:@selector(remove)];
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br></div></div><p>所以这个方法的作用就是根据 option 的设置，在合适的时机调用原来的方法实现以及我们的钩子函数。
+以上就是 Aspects这个库进行方法 Hook 的基本原理了。</p></div> <!----> <div class="content__content-bottom"></div> <footer class="page-meta"><div class="edit-link"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon edit-icon"><path d="M117.953 696.992 64.306 959.696l265.931-49.336 450.204-452.505-212.284-213.376-450.204 452.513zm496.384-296.326L219.039 797.993l-46.108-46.34L568.233 354.33l46.104 46.335zm345.357-122.99-114.45 115.04-212.288-213.377 114.45-115.035 212.288 213.371zm0 0" fill="currentColor"></path></svg> <a href="https://github.com/tamarous/tamarous_blog/edit/master/docs/iOS/aspects_source_probe.md" target="_blank" rel="noopener noreferrer">Edit this page</a></div> <div class="meta-item update-time"><span class="label">Last update:</span> <span class="info">August 28, 2021 17:00</span></div> <!----></footer> <!----> <!----> <!----> <div class="content__page-bottom"></div></main> <!----></div><div class="global-ui"><!----><!----><div id="pwa-install"><!----> <div id="install-modal-wrapper" style="display:none;"><div class="background"></div> <div class="install-modal"><div class="header"><button aria-label="Close" class="close-button"><svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" class="icon close-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.12.358a1.224 1.224 0 011.729 0l8.92 8.914L20.686.358a1.224 1.224 0 011.73 1.728L13.497 11l8.92 8.913a1.222 1.222 0 11-1.73 1.729l-8.919-8.913-8.92 8.913a1.224 1.224 0 01-1.729-1.729L10.04 11l-8.92-8.914a1.222 1.222 0 010-1.728z" fill="currentColor"></path></svg></button> <div class="logo"><!----> <div class="title"><h1></h1> <p class="desc">This app can be installed on your PC or mobile device.  This will allow this web app to look and behave like any other installed app.  You will find it in your app lists and be able to pin it to your home screen, start menus or task bars.  This installed web app will also be able to safely interact with other apps and your operating system. </p></div></div></div> <div class="content"><div class="highlight"><!----> <!----></div> <div class="description"><h3>Description</h3> <p></p></div></div> <div class="button-wrapper"><button class="install-button">
+        Install <span></span></button> <button class="cancel-button">
+        Cancel
+      </button></div></div></div></div><div tabindex="-1" role="dialog" aria-hidden="true" class="pswp"><div class="pswp__bg"></div> <div class="pswp__scroll-wrap"><div class="pswp__container"><div class="pswp__item"></div> <div class="pswp__item"></div> <div class="pswp__item"></div></div> <div class="pswp__ui pswp__ui--hidden"><div class="pswp__top-bar"><div class="pswp__counter"></div> <button class="pswp__button pswp__button--close"></button> <button class="pswp__button pswp__button--share"></button> <button class="pswp__button pswp__button--fs"></button> <button class="pswp__button pswp__button--zoom"></button> <div class="pswp__preloader"><div class="pswp__preloader__icn"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div></div></div> <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class="pswp__share-tooltip"></div></div> <button class="pswp__button pswp__button--arrow--left"></button> <button class="pswp__button pswp__button--arrow--right"></button> <div class="pswp__caption"><div class="pswp__caption__center"></div></div></div></div></div></div></div>
+    <script src="/tamarous_blog/assets/js/app.302ef2b2.js" defer></script><script src="/tamarous_blog/assets/js/vendors~layout-Layout.209c0354.js" defer></script><script src="/tamarous_blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.7eb8d02d.js" defer></script><script src="/tamarous_blog/assets/js/page-Aspects源码分析.46df36dc.js" defer></script><script src="/tamarous_blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.fd9b9e80.js" defer></script>
+  </body>
+</html>
