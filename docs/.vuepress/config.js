@@ -1,4 +1,6 @@
-module.exports = {
+const { config } = require("vuepress-theme-hope");
+
+module.exports = config({
   base: "/tamarous_blog/",
   themeConfig: {
     nav: [
@@ -12,4 +14,4 @@ module.exports = {
     docsBranch: "master",
     sidebar: ["/", "/iOS/", "/Algorithms/"],
   },
-};
+});

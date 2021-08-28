@@ -12,6 +12,9 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "docs:deploy": "npm run docs:build &&gh-pages -d docs/.vuepress/dist" 
+    "docs:deploy": "npm run docs:build &&gh-pages -d docs/.vuepress/dist"
+  },
+  "dependencies": {
+    "vuepress-theme-hope": "^1.20.2"
   }
 }
