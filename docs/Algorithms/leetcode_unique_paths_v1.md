@@ -1,5 +1,8 @@
 # LeetCode-62-Unique Paths
-[这道题](https://leetcode.com/problems/unique-paths/description/)是一道典型的动态规划问题。如图：
+[这道题](https://leetcode.com/problems/unique-paths/description/)是一道典型的动态规划问题。
+
+如图：
+
 ![Robot](https://leetcode.com/static/images/problemset/robot_maze.png)
 
 一个机器人的起始位置是左上方的网格，每次只能往下或者往右走。网格的长和高分别是 m 和 n，求机器人要走到图中的五角星处共有多少种走法？
