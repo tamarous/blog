@@ -1,14 +1,14 @@
 const { config } = require("vuepress-theme-hope");
 
 module.exports = config({
-  base: "/tamarous_blog/",
+  base: "/blog/",
   themeConfig: {
     nav: [
       { text: "Home", link: "/" },
       { text: "iOS", link: "/iOS/" },
       { text: "Algorithms", link: "/Algorithms/" },
     ],
-    repo: "tamarous/tamarous_blog",
+    repo: "tamarous/blog",
     repoLabel: "GitHub",
     docsDir: "docs",
     docsBranch: "master",
