@@ -49,7 +49,7 @@
 
 [按层打印二叉树](./print_binarytree_by_level.md)
 
-[递归在二叉树题目中的应用](./leetcode_binarytree_ recursion_questions.md)
+[递归在二叉树题目中的应用](./leetcode_binarytree_recursion_questions.md)
 
 [二叉树的 Morris 遍历](./binary_tree_morris_travel.md)
 
