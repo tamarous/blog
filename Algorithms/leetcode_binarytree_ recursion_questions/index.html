@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>递归在二叉树相关题目中的应用</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="manifest" href="/blog/manifest.webmanifest" crossorigin="use-credentials">
+    <meta name="description" content="">
+    <meta property="og:url" content="/blog/Algorithms/leetcode_binarytree_%20recursion_questions.html">
+    <meta property="og:title" content="递归在二叉树相关题目中的应用">
+    <meta property="og:description" content="递归在二叉树相关题目中的应用 最近集中刷了几道和二叉树有关的题目。由于二叉树本身就是递归定义的，因此使用递归算法解决二叉树的相关问题，不仅思路清晰，算法简单，而且代码量也比非递归的解法要小很多。在此将这些题目一并总结和记录一下。在介绍一般性的做法之前，先说一下自己总结出的经验。 经验一：使用一个辅助函数，在这个辅助函数中进行递归的操作，可以使代码变得更加简单">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="en-US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#46bd87">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.8b5d14a7.css" as="style"><link rel="preload" href="/blog/assets/js/app.a184c26e.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Layout.d33903e9.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.d025ca65.js" as="script"><link rel="preload" href="/blog/assets/js/page-递归在二叉树相关题目中的应用.7f3f5d03.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" as="script"><link rel="prefetch" href="/blog/assets/js/52.b3a05f52.js"><link rel="prefetch" href="/blog/assets/js/layout-Blog.cd958aaa.js"><link rel="prefetch" href="/blog/assets/js/layout-Layout.54347a9b.js"><link rel="prefetch" href="/blog/assets/js/layout-NotFound.5814876d.js"><link rel="prefetch" href="/blog/assets/js/layout-Slide.7b34a4ba.js"><link rel="prefetch" href="/blog/assets/js/page-Aspects源码分析.f472509c.js"><link rel="prefetch" href="/blog/assets/js/page-EasyTuple源代码分析.dbf9e78d.js"><link rel="prefetch" href="/blog/assets/js/page-Hello!.21062866.js"><link rel="prefetch" href="/blog/assets/js/page-Home.b36aff0d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-100-SameTree及572-SubtreeofAnotherTree.845a9f5d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-101-SymmetricTree.fe2cc86c.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-112-PathSum.c16180fa.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-113-PathSumⅡ.f64bbc10.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-120-Triangle.712ef98c.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-191-Numberof1Bits.33046e6d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-198-HouseRobber.07ab4a7e.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-2-AddTwoNumbers.4f90ef95.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-21-MergeTwoSortedLists.0da4fd95.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-234-PalindromeLinkedList.d1b72571.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-238-ProductofArrayExceptSelf.945dd596.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-28-ImplementstrStr().1f60c28a.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-347-TopKFrequentElements.7c94685f.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-437-PathSumⅢ.f6ff9842.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-48-RotateImage.4eb31875.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-494-TargetSum.54ed4fde.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-62-UniquePaths.3965e239.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-63-UniquePathsⅡ.3397f865.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode.e5489909.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode上几道经典的排列组合题.0df3c81a.js"><link rel="prefetch" href="/blog/assets/js/page-Masonry源代码剖析.4dd591af.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-多线程策略.2afc04b4.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-缓存策略.66c0b61c.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-网络部分.29b49828.js"><link rel="prefetch" href="/blog/assets/js/page-不重复打印排序数组中相加和为给定值的所有二元组三元组.d34496f6.js"><link rel="prefetch" href="/blog/assets/js/page-二叉树的Morris遍历.492bcfd7.js"><link rel="prefetch" href="/blog/assets/js/page-前中后序遍历的非递归实现.54cce868.js"><link rel="prefetch" href="/blog/assets/js/page-单链表问题总结.f8e20819.js"><link rel="prefetch" href="/blog/assets/js/page-在其他数字都出现K次的数组中找到只出现M次的数字.a7e218e0.js"><link rel="prefetch" href="/blog/assets/js/page-在数组中找到出现次数大于NK的数.a45a1fa0.js"><link rel="prefetch" href="/blog/assets/js/page-按层打印二叉树.b6147bf9.js"><link rel="prefetch" href="/blog/assets/js/page-揭开Runtime的神秘面纱.fc2f7ce9.js"><link rel="prefetch" href="/blog/assets/js/page-最大公约数和最小公倍数.43bb0121.js"><link rel="prefetch" href="/blog/assets/js/page-最大子序列和问题.e334cc90.js"><link rel="prefetch" href="/blog/assets/js/page-源码分析.3e7b7e99.js"><link rel="prefetch" href="/blog/assets/js/page-由前序和中序遍历恢复二叉树结构.76d27828.js"><link rel="prefetch" href="/blog/assets/js/page-调整数组中元素的顺序.9ba9fdb6.js"><link rel="prefetch" href="/blog/assets/js/vendors~photo-swipe.b7933859.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.8b5d14a7.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container has-navbar has-sidebar has-anchor"><header class="navbar"><!----> <div class="content__navbar-start"></div> <button title="Sidebar Button" class="sidebar-button"><span class="icon"></span></button> <a href="/blog/" class="home-link router-link-active"></a> <!----> <div class="content__navbar-center"></div> <div class="links"><button tabindex="-1" aria-hidden="true" class="color-button"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="skin-icon"><path d="M224 800c0 9.6 3.2 44.8 6.4 54.4 6.4 48-48 76.8-48 76.8s80 41.6 147.2 0 134.4-134.4
+        38.4-195.2c-22.4-12.8-41.6-19.2-57.6-19.2C259.2 716.8 227.2 761.6 224 800zM560 675.2l-32
+        51.2c-51.2 51.2-83.2 32-83.2 32 25.6 67.2 0 112-12.8 128 25.6 6.4 51.2 9.6 80 9.6 54.4 0
+        102.4-9.6 150.4-32l0 0c3.2 0 3.2-3.2 3.2-3.2 22.4-16 12.8-35.2
+        6.4-44.8-9.6-12.8-12.8-25.6-12.8-41.6 0-54.4 60.8-99.2 137.6-99.2 6.4 0 12.8 0 22.4
+        0 12.8 0 38.4 9.6 48-25.6 0-3.2 0-3.2 3.2-6.4 0-3.2 3.2-6.4 3.2-6.4 6.4-16 6.4-16 6.4-19.2
+        9.6-35.2 16-73.6 16-115.2 0-105.6-41.6-198.4-108.8-268.8C704 396.8 560 675.2 560 675.2zM224
+        419.2c0-28.8 22.4-51.2 51.2-51.2 28.8 0 51.2 22.4 51.2 51.2 0 28.8-22.4 51.2-51.2 51.2C246.4
+        470.4 224 448 224 419.2zM320 284.8c0-22.4 19.2-41.6 41.6-41.6 22.4 0 41.6 19.2 41.6 41.6 0
+        22.4-19.2 41.6-41.6 41.6C339.2 326.4 320 307.2 320 284.8zM457.6 208c0-12.8 12.8-25.6 25.6-25.6
+        12.8 0 25.6 12.8 25.6 25.6 0 12.8-12.8 25.6-25.6 25.6C470.4 233.6 457.6 220.8 457.6 208zM128
+        505.6C128 592 153.6 672 201.6 736c28.8-60.8 112-60.8 124.8-60.8-16-51.2 16-99.2
+        16-99.2l316.8-422.4c-48-19.2-99.2-32-150.4-32C297.6 118.4 128 291.2 128 505.6zM764.8
+        86.4c-22.4 19.2-390.4 518.4-390.4 518.4-22.4 28.8-12.8 76.8 22.4 99.2l9.6 6.4c35.2 22.4
+        80 12.8 99.2-25.6 0 0 6.4-12.8 9.6-19.2 54.4-105.6 275.2-524.8 288-553.6
+        6.4-19.2-3.2-32-19.2-32C777.6 76.8 771.2 80 764.8 86.4z"></path></svg> <div class="color-picker-menu" style="display:none;"><div class="theme-options"><ul class="themecolor-select"><label for="themecolor-select">Theme Color:</label> <li><span class="default-theme"></span></li> </ul> <div class="darkmode-toggle"><label for="darkmode-toggle" class="desc">Theme Mode:</label> <div class="darkmode-switch"><div class="item day"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon light-icon"><path d="M512 256a42.667 42.667 0 0 0 42.667-42.667V128a42.667 42.667 0 0 0-85.334 0v85.333A42.667 42.667 0 0 0 512 256zm384 213.333h-85.333a42.667 42.667 0 0 0 0 85.334H896a42.667 42.667 0 0 0 0-85.334zM256 512a42.667 42.667 0 0 0-42.667-42.667H128a42.667 42.667 0 0 0 0 85.334h85.333A42.667 42.667 0 0 0 256 512zm9.387-298.667a42.667 42.667 0 0 0-59.307 62.72l61.44 59.307a42.667 42.667 0 0 0 31.147 11.947 42.667 42.667 0 0 0 30.72-13.227 42.667 42.667 0 0 0 0-60.16zm459.946 133.974a42.667 42.667 0 0 0 29.44-11.947l61.44-59.307a42.667 42.667 0 0 0-57.6-62.72l-61.44 60.587a42.667 42.667 0 0 0 0 60.16 42.667 42.667 0 0 0 28.16 13.227zM512 768a42.667 42.667 0 0 0-42.667 42.667V896a42.667 42.667 0 0 0 85.334 0v-85.333A42.667 42.667 0 0 0 512 768zm244.48-79.36a42.667 42.667 0 0 0-59.307 61.44l61.44 60.587a42.667 42.667 0 0 0 29.44 11.946 42.667 42.667 0 0 0 30.72-12.8 42.667 42.667 0 0 0 0-60.586zm-488.96 0-61.44 59.307a42.667 42.667 0 0 0 0 60.586 42.667 42.667 0 0 0 30.72 12.8 42.667 42.667 0 0 0 28.587-10.666l61.44-59.307a42.667 42.667 0 0 0-59.307-61.44zM512 341.333A170.667 170.667 0 1 0 682.667 512 170.667 170.667 0 0 0 512 341.333z" fill="currentColor"></path></svg></div> <div class="item auto active"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon auto-icon"><path d="M460.864 539.072H564.8L510.592 376l-49.728 163.072zM872 362.368V149.504H659.648L510.528 0l-149.12 149.504H149.12v212.928L0 511.872l149.12 149.504v212.928h212.352l149.12 149.504 149.12-149.504h212.352V661.376l149.12-149.504L872 362.368zM614.464 693.12l-31.616-90.624H438.272l-31.616 90.624h-85.888l144.576-407.68h90.368l144.576 407.68h-85.824zm0 0" fill="currentColor"></path></svg></div> <div class="item night"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon dark-icon"><path d="M935.539 630.402c-11.43-11.432-28.674-14.739-43.531-8.354-46.734 20.103-96.363 30.297-147.508 30.297-99.59 0-193.221-38.784-263.64-109.203-108.637-108.637-139.61-270.022-78.908-411.148a39.497 39.497 0 0 0-51.886-51.887c-52.637 22.64-100.017 54.81-140.826 95.616-85.346 85.346-132.346 198.821-132.346 319.52 0 120.7 47.001 234.172 132.347 319.519S408.063 947.11 528.76 947.11c120.7 0 234.172-47.003 319.52-132.351 40.809-40.81 72.978-88.19 95.616-140.826a39.497 39.497 0 0 0-8.356-43.532z" fill="currentColor"></path></svg></div></div> <!----></div></div></div></button> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Algorithms/" class="nav-link router-link-active active"><!---->
+  Algorithms
+</a></div></nav> <!----> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link can-hide">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> <!----> <div class="content__navbar-end"></div></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!----> <!----> <div class="content__sidebar-top"></div> <nav class="sidebar-nav-links"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Algorithms/" class="nav-link router-link-active active"><!---->
+  Algorithms
+</a></div> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <!----> <div class="content__sidebar-center"></div> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><!----> <span class="title">递归在二叉树相关题目中的应用</span> <!----></p> <!----></section></li></ul> <!----> <div class="content__sidebar-bottom"></div> <!----></aside> <main class="page"><nav class="breadcrumb"><ol vocab="https://schema.org/" typeof="BreadcrumbList"><li property="itemListElement" typeof="ListItem"><a href="/blog/Algorithms/" property="item" typeof="WebPage" class="router-link-active"><!----> <span property="name">LeetCode</span></a> <meta property="position" content="1"></li><li property="itemListElement" typeof="ListItem" class="is-active"><a href="/blog/Algorithms/leetcode_binarytree_%20recursion_questions/" aria-current="page" property="item" typeof="WebPage" class="router-link-exact-active router-link-active"><!----> <span property="name">递归在二叉树相关题目中的应用</span></a> <meta property="position" content="2"></li></ol></nav> <!----> <div class="content__page-top"></div> <div vocab="https://schema.org/" typeof="Article" class="page-title"><h1><!----> <span property="headline">递归在二叉树相关题目中的应用</span></h1> <div class="page-info"><!----> <!----><!----><span aria-label="Writing Date📅" data-balloon-pos="down" class="time-info"><svg viewBox="0 0 1030 1024" xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H180.6A134.314 134.314 0 0 0 46.66 277.595v535.756A134.314 134.314 0 0 0 180.6 947.289h669.74a134.36 134.36 0 0 0 133.94-133.938V277.595a134.314 134.314 0 0 0-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 0 1-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 0 1-33.472 33.473z" fill="currentColor"></path></svg> <span property="datePublished">2021-8-29</span></span><!----><!----><span aria-label="Reading Time⌛" data-balloon-pos="down" class="reading-time-info"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon timer-icon"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z" fill="currentColor"></path></svg> <span>About 7 min</span> <meta property="timeRequired" content="PT7M"></span></div> <!----> <hr></div> <div class="anchor-place-holder"><aside id="anchor"><div class="anchor-wrapper"></div></aside></div> <!----> <div class="content__content-top"></div> <div class="theme-default-content content__default"><h1 id="递归在二叉树相关题目中的应用"><a href="#递归在二叉树相关题目中的应用" class="header-anchor">#</a> 递归在二叉树相关题目中的应用</h1> <p>最近集中刷了几道和二叉树有关的题目。由于二叉树本身就是递归定义的，因此使用递归算法解决二叉树的相关问题，不仅思路清晰，算法简单，而且代码量也比非递归的解法要小很多。在此将这些题目一并总结和记录一下。在介绍一般性的做法之前，先说一下自己总结出的经验。
+<strong>经验一</strong>：使用一个辅助函数，在这个辅助函数中进行递归的操作，可以使代码变得更加简单。
+<strong>经验二</strong>：在递归函数的开始处先处理特殊情况，也就是所谓的递归返回点。</p> <p>下面是本文中二叉树的数据结构定义:</p> <div class="language- extra-class"><pre><code>struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x):val(x)，left(NULL)，right(NULL){}
+};
+</code></pre></div><ul><li><p>合并两个二叉树，<a href="https://leetcode.com/problems/merge-two-binary-trees/" target="_blank" rel="noopener noreferrer">LeetCode-617-Merge Two Binary Trees<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。给出两个二叉树，将这个二叉树合并成一个新的二叉树。合并规则是对应位置上的值相加。最后返回新的二叉树的根节点。
+思路: 使用递归算法，在合并当前节点之前，先合并当前节点的左孩子和右孩子。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      TreeNode *mergeTrees(TreeNode *t1, TreeNode *t2) {
+          if( !t1 &amp;&amp; !t2) {
+              return NULL;
+          }
+          struct TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
+          if (!t1 &amp;&amp; t2) {
+              node-&gt;val = t2-&gt;val;
+              node-&gt;left = mergeTrees(NULL, t2-&gt;left);
+              node-&gt;right = mergeTrees(NULL, t2-&gt;right);
+          } 
+          if (t1 &amp;&amp; !t2) {
+              node-&gt;val = t1-&gt;val;
+              node-&gt;left = mergeTrees(t1-&gt;left, NULL);
+              node-&gt;right = mergeTrees(t1-&gt;right, NULL);
+          }
+          if (t1 &amp;&amp; t2) {
+              node-&gt;val = t1-&gt;val + t2-&gt;val;
+              node-&gt;left = mergeTrees(t1-&gt;left, t2-&gt;left);
+              node-&gt;right = mergeTrees(t1-&gt;right, t2-&gt;right);
+          }
+          return node;
+      }
+  };
+</code></pre></div></li> <li><p>前中后各种遍历。使用递归算法时这三种遍历的思路都是一样的，区别只是访问root节点的顺序。另外这几种遍历方法也可以使用非递归的方式实现，不过需要借助栈、队列等额外的数据结构，详见我的另一篇<a href="http://www.tamarous.com/2017/10/09/several-ways-of-travel-tree/" target="_blank" rel="noopener noreferrer">博客<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p></li></ul> <ol><li><p>前序遍历</p> <div class="language- extra-class"><pre><code> class Solution {
+ public:
+     void preOrder(TreeNode *root) {
+         if(root == NULL) {
+             return;
+         }
+         cout &lt;&lt; root-&gt;val &lt;&lt; endl;
+         preOrder(root-&gt;left);
+         preOrder(root-&gt;right);
+     }
+ }
+</code></pre></div></li> <li><p>中序遍历</p> <div class="language- extra-class"><pre><code> class Solution {
+ public:
+     void inOrder(TreeNode *root) {
+         if(root == NULL) {
+             return;
+         }
+         inOrder(root-&gt;left);
+         cout &lt;&lt; root-&gt;val &lt;&lt; endl;
+         inOrder(root-&gt;right);
+     }
+ }
+</code></pre></div></li> <li><p>后序遍历</p> <div class="language- extra-class"><pre><code> class Solution {
+ public:
+     void postOrder(TreeNode *root) {
+         if(root == NULL) {
+             return;
+         }
+         postOrder(root-&gt;left);
+         postOrder(root-&gt;right);
+         cout &lt;&lt; root-&gt;val &lt;&lt; endl;
+     }
+ }
+</code></pre></div></li></ol> <ul><li><p>判断两个二叉树是否是相同的，<a href="https://leetcode.com/problems/same-tree/" target="_blank" rel="noopener noreferrer">LeetCode-100-Same Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。 两个二叉树相同的定义是这两个二叉树的结构相同，并且对应位置上的节点的数值也相同。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      bool isSameTree(TreeNode* p, TreeNode* q) {
+          if (!p &amp;&amp; !q) {
+              return true;
+          }
+          if (p == NULL || q == NULL) {
+              return false;
+          }
+          if (p-&gt;val != q-&gt;val) {
+              return false;
+          }
+          return isSameTree(p-&gt;left,q-&gt;left) &amp;&amp; isSameTree(p-&gt;right,q-&gt;right);
+      }
+  }; 
+</code></pre></div></li> <li><p>判断一棵二叉树是否是对称的，<a href="https://leetcode.com/problems/symmetric-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-101-Symmetric Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      bool isSymmetric(TreeNode *root) {
+          if (root == NULL) {
+              return true;
+          }
+          return isSymmetricHelper(root-&gt;left, root-&gt;right);
+      }
+  private:
+      bool isSymmetricHelper(TreeNode *p,  TreeNode *q) {
+          if (!p &amp;&amp; !q) {
+              return true;
+          }
+          if (p == NULL || q == NULL) {
+              return false;
+          }
+          return (p-&gt;val == q-&gt;val) &amp;&amp; isSymmetricHelper(p-&gt;left, q-&gt;right) &amp;&amp; isSymmetricHelper(p-&gt;right, q-&gt;left);
+      }
+  };
+</code></pre></div></li> <li><p>将一棵二叉树展平成一个单链表，<a href="https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/" target="_blank" rel="noopener noreferrer">Flatten Binary Tree to Linked List<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      void flatten(TreeNode* root) {
+          if(root == NULL) {
+              return;
+          }
+          flatten(root-&gt;right);
+          flatten(root-&gt;left);
+          root-&gt;right = prev;
+          root-&gt;left = NULL;
+          prev = root;
+      }   
+  private:
+      TreeNode *prev;
+  };
+</code></pre></div></li> <li><p>判断一棵树上是否存在一条路径，使得该路径上的所有节点的值的和等于给定的数字，<a href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener noreferrer">LeetCode-112-Path Sum<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+      public:
+          bool hasPathSum(TreeNode* root, int sum) {
+              bool hasSum = false;
+              helper(root, sum, hasSum);
+              return hasSum;
+          }
+      private:
+          void helper(TreeNode *root, int sum, bool &amp;flag) {
+              if (root == NULL) {
+                  return;
+              }
+              sum -= root-&gt;val;
+              if (root-&gt;left == NULL &amp;&amp; root-&gt;right == NULL) {
+                  if (sum == 0) {
+                      flag = true;
+                  }
+              } else {
+                  if (root-&gt;left != NULL) {
+                      helper(root-&gt;left, sum, flag);
+                  } 
+                  if (root-&gt;right != NULL) {
+                      helper(root-&gt;right, sum, flag);
+                  }
+              }
+              
+              sum += root-&gt;val;
+          }
+  };
+</code></pre></div></li> <li><p>和上道题非常类似，但是要求求出所有的符合条件的路径，<a href="https://leetcode.com/problems/path-sum-ii/description/" target="_blank" rel="noopener noreferrer">LeetCode-437-Path Sum II<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>   class Solution {
+   public:
+       vector&lt;vector&lt;int&gt; &gt; pathSum(TreeNode *root, int sum) {
+           vector&lt; vector&lt;int&gt; &gt; results;
+           vector&lt;int&gt; result;
+           helper(root, sum, results,result);
+           return results;
+       }
+  
+   private:
+       void helper(TreeNode *root, int sum, vector&lt;vector&lt;int&gt; &gt; &amp;paths,vector&lt;int&gt;&amp; path) {
+           if (root == NULL) {
+               return;
+           }
+           sum -= root-&gt;val;
+           path.push_back(root-&gt;val);
+           if (root-&gt;left == NULL &amp;&amp; root-&gt;right == NULL) {
+               if (sum == 0) {
+                   paths.push_back(path);
+               }
+           }
+           else {
+               if (root-&gt;left != NULL) {
+                   helper(root-&gt;left, sum, paths,path);
+               }
+               if (root-&gt;right != NULL) {
+                   helper(root-&gt;right, sum, paths,path);
+               }
+           }
+           sum += root-&gt;val;
+           path.pop_back();
+       }
+   };
+</code></pre></div></li> <li><p>修剪一棵二叉搜索树，<a href="https://leetcode.com/problems/trim-a-binary-search-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-669-Trim a Binary Search Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。题干明确说明了该树是一棵二叉搜索树，所以具有如下的性质：某个节点的左子树上的每个节点的值都比该节点值小，而右子树上的每个节点的值都比该节点值大。因此，如果判断出当前节点的值在[L,R]之间，那么该节点就是一个子树的根节点；如果当前节点的值大于 R，那么根节点需要从它的左子树中寻找；如果当前节点的值小于 L，那么根节点需要从它的右子树中寻找。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+     TreeNode *trimBST(TreeNode *root ,int L, int R) {
+         if (root == NULL) {
+             return NULL;
+         }
+         if (root-&gt;val &lt;= R &amp;&amp; root-&gt;val &gt;= L) {
+             root-&gt;left = trimBST(root-&gt;left, L, R);
+             root-&gt;right = trimBST(root-&gt;right, L, R);
+             return root;
+         } else {
+             if(root-&gt;val &gt; R) {
+                 return trimBST(root-&gt;left,L,R);
+             } else if (root-&gt;val &lt; L) {
+                 return trimBST(root-&gt;right, L, R);
+             }
+         }
+     }
+  };
+</code></pre></div></li> <li><p>求一棵二叉树的最大深度，<a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-104-Maximum Depth of Binary Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      int maxDepth(TreeNode* root) {
+          if (root == NULL) {
+              return 0;
+          }
+          return 1 + max(maxDepth(root-&gt;left),maxDepth(root-&gt;right));
+      }
+  };
+</code></pre></div></li> <li><p>求一棵二叉树的最小深度，<a href="https://leetcode.com/problems/minimum-depth-of-binary-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-111-Minimum Depth of Binary Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。
+思路与上一题类似，不过要注意的是如果一个节点的左孩子或者右孩子为空的话，那么以这个节点为根节点的子树的 minDepth 为它的左孩子或右孩子的 minDepth。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      int minDepth(TreeNode* root) {
+          if (root == NULL) {
+              return 0;
+          }
+          int left = minDepth(root-&gt;left);
+          int right = minDepth(root-&gt;right);
+          return (left == 0 || right == 0) ? (left+right+1):min(left,right)+1;
+      }
+  };
+</code></pre></div></li> <li><p>翻转一棵二叉树，<a href="https://leetcode.com/problems/invert-binary-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-226-Invert Binary Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      TreeNode *invertTree(TreeNode *root) {
+          if (root == NULL) {
+              return NULL;
+          }
+          // 先递归翻转该节点的左右子树
+          root-&gt;right = invertTree(root-&gt;right);
+          root-&gt;left = invertTree(root-&gt;left);
+          // 再交换该节点的左右孩子
+          TreeNode *node = root-&gt;left;
+          root-&gt;left = root-&gt;right;
+          root-&gt;right = node;
+          
+          
+          return root;
+      }
+  };
+</code></pre></div></li> <li><p>将一棵二叉搜索树变为一棵大树，<a href="https://leetcode.com/problems/convert-bst-to-greater-tree/description/" target="_blank" rel="noopener noreferrer">LeetCode-538-Convert BST to Greater Tree<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。也就是将一个节点的值更新为所有值大于该节点的节点的值之和。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      TreeNode * convertBST(TreeNode *root) {
+          vector&lt;int&gt; nodes;
+          record(root, nodes);
+          helper(root, nodes);
+          return root;
+      }
+  
+  private:
+      void record(TreeNode *root, vector&lt;int&gt; &amp;result) {
+          if (root == NULL) {
+              return;
+          }
+          result.push_back(root-&gt;val);
+          record(root-&gt;left, result);
+          record(root-&gt;right, result);
+      }
+      void helper(TreeNode *root, vector&lt;int&gt; &amp;result) {
+          if (root == NULL) {
+              return;
+          }
+          int value = root-&gt;val;
+          vector&lt;int&gt;::iterator iter = result.begin();
+          for(iter; iter != result.end();iter++) {
+              if(*iter &gt; value) {
+                  root-&gt;val += *iter;
+              }
+          }
+          helper(root-&gt;left,result);
+          helper(root-&gt;right,result);
+      }
+  };
+</code></pre></div></li> <li><p>求一棵二叉树所有左叶子节点的数值之和，<a href="https://leetcode.com/problems/sum-of-left-leaves/description/" target="_blank" rel="noopener noreferrer">LeetCode-404-Sum of Left Leaves<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>   class Solution {
+   public:
+       int sumOfLeftLeaves(TreeNode *root) {
+           if(root == NULL) {
+               return 0;
+           }
+           
+           // 当前节点的左孩子为叶子节点
+           if (root-&gt;left &amp;&amp; !root-&gt;left-&gt;left &amp;&amp; !root-&gt;left-&gt;right) {
+               return root-&gt;left-&gt;val + sumOfLeftLeaves(root-&gt;right);
+           }
+           
+           return sumOfLeftLeaves(root-&gt;left)+sumOfLeftLeaves(root-&gt;right);
+       }
+   };
+</code></pre></div></li> <li><p>对一棵二叉树进行层序遍历，<a href="https://leetcode.com/problems/binary-tree-level-order-traversal/description/" target="_blank" rel="noopener noreferrer">LeetCode-102-Binary Tree Level Order Traversal<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language- extra-class"><pre><code>  class Solution {
+  public:
+      vector&lt;vector&lt;int&gt;  &gt; levelOrder(TreeNode *root) {
+          vector&lt;vector&lt;int&gt; &gt; result;
+          levelTravel(root, 1, result);
+          return result;
+      }
+  private:
+      void levelTravel(TreeNode *root, int level, vector&lt;vector&lt;int&gt; &gt; &amp;result) {
+          if (root == NULL) {
+              return;
+          }
+          if (level &gt; result.size()) {
+              result.push_back(vector&lt;int&gt;());
+          }
+          result[level-1].push_back(root-&gt;val);
+          levelTravel(root-&gt;left, level+1, result);
+          levelTravel(root-&gt;right, level+1, result);
+      }
+  }
+</code></pre></div></li> <li><p>求一棵二叉树的根节点到各个叶子节点的路径表示的值的和，<a href="https://leetcode.com/problems/sum-root-to-leaf-numbers/description/" target="_blank" rel="noopener noreferrer">LeetCode-129-Sum Root to Leaf Numbers<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        return dfs(root, 0);
+        
+    }
+    int dfs(TreeNode *root, int sum) {
+        if (root == NULL) {
+            return 0;
+        }
+        if (! root-&gt;left &amp;&amp; ! root-&gt;right) {
+            return sum * 10 + root-&gt;val;
+        }
+        return dfs(root-&gt;left, sum * 10 + root-&gt;val) + dfs(root-&gt;right, sum * 10 + root-&gt;val);
+    }
+};
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br></div></div></div> <!----> <div class="content__content-bottom"></div> <footer class="page-meta"><div class="edit-link"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon edit-icon"><path d="M117.953 696.992 64.306 959.696l265.931-49.336 450.204-452.505-212.284-213.376-450.204 452.513zm496.384-296.326L219.039 797.993l-46.108-46.34L568.233 354.33l46.104 46.335zm345.357-122.99-114.45 115.04-212.288-213.377 114.45-115.035 212.288 213.371zm0 0" fill="currentColor"></path></svg> <a href="https://github.com/tamarous/blog/edit/master/docs/Algorithms/leetcode_binarytree_ recursion_questions.md" target="_blank" rel="noopener noreferrer">Edit this page</a></div> <div class="meta-item update-time"><span class="label">Last update:</span> <span class="info">August 29, 2021 09:05</span></div> <!----></footer> <!----> <!----> <!----> <div class="content__page-bottom"></div></main> <!----></div><div class="global-ui"><!----><!----><div id="pwa-install"><!----> <div id="install-modal-wrapper" style="display:none;"><div class="background"></div> <div class="install-modal"><div class="header"><button aria-label="Close" class="close-button"><svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" class="icon close-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.12.358a1.224 1.224 0 011.729 0l8.92 8.914L20.686.358a1.224 1.224 0 011.73 1.728L13.497 11l8.92 8.913a1.222 1.222 0 11-1.73 1.729l-8.919-8.913-8.92 8.913a1.224 1.224 0 01-1.729-1.729L10.04 11l-8.92-8.914a1.222 1.222 0 010-1.728z" fill="currentColor"></path></svg></button> <div class="logo"><!----> <div class="title"><h1></h1> <p class="desc">This app can be installed on your PC or mobile device.  This will allow this web app to look and behave like any other installed app.  You will find it in your app lists and be able to pin it to your home screen, start menus or task bars.  This installed web app will also be able to safely interact with other apps and your operating system. </p></div></div></div> <div class="content"><div class="highlight"><!----> <!----></div> <div class="description"><h3>Description</h3> <p></p></div></div> <div class="button-wrapper"><button class="install-button">
+        Install <span></span></button> <button class="cancel-button">
+        Cancel
+      </button></div></div></div></div><div tabindex="-1" role="dialog" aria-hidden="true" class="pswp"><div class="pswp__bg"></div> <div class="pswp__scroll-wrap"><div class="pswp__container"><div class="pswp__item"></div> <div class="pswp__item"></div> <div class="pswp__item"></div></div> <div class="pswp__ui pswp__ui--hidden"><div class="pswp__top-bar"><div class="pswp__counter"></div> <button class="pswp__button pswp__button--close"></button> <button class="pswp__button pswp__button--share"></button> <button class="pswp__button pswp__button--fs"></button> <button class="pswp__button pswp__button--zoom"></button> <div class="pswp__preloader"><div class="pswp__preloader__icn"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div></div></div> <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class="pswp__share-tooltip"></div></div> <button class="pswp__button pswp__button--arrow--left"></button> <button class="pswp__button pswp__button--arrow--right"></button> <div class="pswp__caption"><div class="pswp__caption__center"></div></div></div></div></div></div></div>
+    <script src="/blog/assets/js/app.a184c26e.js" defer></script><script src="/blog/assets/js/vendors~layout-Layout.d33903e9.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.d025ca65.js" defer></script><script src="/blog/assets/js/page-递归在二叉树相关题目中的应用.7f3f5d03.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>单链表问题总结</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="manifest" href="/blog/manifest.webmanifest" crossorigin="use-credentials">
+    <meta name="description" content="">
+    <meta property="og:url" content="/blog/Algorithms/single_linkedlist_questions.html">
+    <meta property="og:title" content="单链表问题总结">
+    <meta property="og:description" content="单链表问题总结 这两天比较闲，因此刷了几道HackerRank上的题目，下面就将单链表的一些题目总结一下。首先给出这些题目中通用的单链表节点定义： struct Node { int data; struct Node *next; } 第一题：顺序打印单链表中的元素。 思路：从头节点处开始遍历输出，直至NULL。 代码： void Print(Node *">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="en-US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#46bd87">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.8b5d14a7.css" as="style"><link rel="preload" href="/blog/assets/js/app.a184c26e.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Layout.d33903e9.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.d025ca65.js" as="script"><link rel="preload" href="/blog/assets/js/page-单链表问题总结.f8e20819.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" as="script"><link rel="prefetch" href="/blog/assets/js/52.b3a05f52.js"><link rel="prefetch" href="/blog/assets/js/layout-Blog.cd958aaa.js"><link rel="prefetch" href="/blog/assets/js/layout-Layout.54347a9b.js"><link rel="prefetch" href="/blog/assets/js/layout-NotFound.5814876d.js"><link rel="prefetch" href="/blog/assets/js/layout-Slide.7b34a4ba.js"><link rel="prefetch" href="/blog/assets/js/page-Aspects源码分析.f472509c.js"><link rel="prefetch" href="/blog/assets/js/page-EasyTuple源代码分析.dbf9e78d.js"><link rel="prefetch" href="/blog/assets/js/page-Hello!.21062866.js"><link rel="prefetch" href="/blog/assets/js/page-Home.b36aff0d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-100-SameTree及572-SubtreeofAnotherTree.845a9f5d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-101-SymmetricTree.fe2cc86c.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-112-PathSum.c16180fa.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-113-PathSumⅡ.f64bbc10.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-120-Triangle.712ef98c.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-191-Numberof1Bits.33046e6d.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-198-HouseRobber.07ab4a7e.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-2-AddTwoNumbers.4f90ef95.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-21-MergeTwoSortedLists.0da4fd95.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-234-PalindromeLinkedList.d1b72571.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-238-ProductofArrayExceptSelf.945dd596.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-28-ImplementstrStr().1f60c28a.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-347-TopKFrequentElements.7c94685f.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-437-PathSumⅢ.f6ff9842.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-48-RotateImage.4eb31875.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-494-TargetSum.54ed4fde.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-62-UniquePaths.3965e239.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode-63-UniquePathsⅡ.3397f865.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode.e5489909.js"><link rel="prefetch" href="/blog/assets/js/page-LeetCode上几道经典的排列组合题.0df3c81a.js"><link rel="prefetch" href="/blog/assets/js/page-Masonry源代码剖析.4dd591af.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-多线程策略.2afc04b4.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-缓存策略.66c0b61c.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-网络部分.29b49828.js"><link rel="prefetch" href="/blog/assets/js/page-不重复打印排序数组中相加和为给定值的所有二元组三元组.d34496f6.js"><link rel="prefetch" href="/blog/assets/js/page-二叉树的Morris遍历.492bcfd7.js"><link rel="prefetch" href="/blog/assets/js/page-前中后序遍历的非递归实现.54cce868.js"><link rel="prefetch" href="/blog/assets/js/page-在其他数字都出现K次的数组中找到只出现M次的数字.a7e218e0.js"><link rel="prefetch" href="/blog/assets/js/page-在数组中找到出现次数大于NK的数.a45a1fa0.js"><link rel="prefetch" href="/blog/assets/js/page-按层打印二叉树.b6147bf9.js"><link rel="prefetch" href="/blog/assets/js/page-揭开Runtime的神秘面纱.fc2f7ce9.js"><link rel="prefetch" href="/blog/assets/js/page-最大公约数和最小公倍数.43bb0121.js"><link rel="prefetch" href="/blog/assets/js/page-最大子序列和问题.e334cc90.js"><link rel="prefetch" href="/blog/assets/js/page-源码分析.3e7b7e99.js"><link rel="prefetch" href="/blog/assets/js/page-由前序和中序遍历恢复二叉树结构.76d27828.js"><link rel="prefetch" href="/blog/assets/js/page-调整数组中元素的顺序.9ba9fdb6.js"><link rel="prefetch" href="/blog/assets/js/page-递归在二叉树相关题目中的应用.7f3f5d03.js"><link rel="prefetch" href="/blog/assets/js/vendors~photo-swipe.b7933859.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.8b5d14a7.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container has-navbar has-sidebar has-anchor"><header class="navbar"><!----> <div class="content__navbar-start"></div> <button title="Sidebar Button" class="sidebar-button"><span class="icon"></span></button> <a href="/blog/" class="home-link router-link-active"></a> <!----> <div class="content__navbar-center"></div> <div class="links"><button tabindex="-1" aria-hidden="true" class="color-button"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="skin-icon"><path d="M224 800c0 9.6 3.2 44.8 6.4 54.4 6.4 48-48 76.8-48 76.8s80 41.6 147.2 0 134.4-134.4
+        38.4-195.2c-22.4-12.8-41.6-19.2-57.6-19.2C259.2 716.8 227.2 761.6 224 800zM560 675.2l-32
+        51.2c-51.2 51.2-83.2 32-83.2 32 25.6 67.2 0 112-12.8 128 25.6 6.4 51.2 9.6 80 9.6 54.4 0
+        102.4-9.6 150.4-32l0 0c3.2 0 3.2-3.2 3.2-3.2 22.4-16 12.8-35.2
+        6.4-44.8-9.6-12.8-12.8-25.6-12.8-41.6 0-54.4 60.8-99.2 137.6-99.2 6.4 0 12.8 0 22.4
+        0 12.8 0 38.4 9.6 48-25.6 0-3.2 0-3.2 3.2-6.4 0-3.2 3.2-6.4 3.2-6.4 6.4-16 6.4-16 6.4-19.2
+        9.6-35.2 16-73.6 16-115.2 0-105.6-41.6-198.4-108.8-268.8C704 396.8 560 675.2 560 675.2zM224
+        419.2c0-28.8 22.4-51.2 51.2-51.2 28.8 0 51.2 22.4 51.2 51.2 0 28.8-22.4 51.2-51.2 51.2C246.4
+        470.4 224 448 224 419.2zM320 284.8c0-22.4 19.2-41.6 41.6-41.6 22.4 0 41.6 19.2 41.6 41.6 0
+        22.4-19.2 41.6-41.6 41.6C339.2 326.4 320 307.2 320 284.8zM457.6 208c0-12.8 12.8-25.6 25.6-25.6
+        12.8 0 25.6 12.8 25.6 25.6 0 12.8-12.8 25.6-25.6 25.6C470.4 233.6 457.6 220.8 457.6 208zM128
+        505.6C128 592 153.6 672 201.6 736c28.8-60.8 112-60.8 124.8-60.8-16-51.2 16-99.2
+        16-99.2l316.8-422.4c-48-19.2-99.2-32-150.4-32C297.6 118.4 128 291.2 128 505.6zM764.8
+        86.4c-22.4 19.2-390.4 518.4-390.4 518.4-22.4 28.8-12.8 76.8 22.4 99.2l9.6 6.4c35.2 22.4
+        80 12.8 99.2-25.6 0 0 6.4-12.8 9.6-19.2 54.4-105.6 275.2-524.8 288-553.6
+        6.4-19.2-3.2-32-19.2-32C777.6 76.8 771.2 80 764.8 86.4z"></path></svg> <div class="color-picker-menu" style="display:none;"><div class="theme-options"><ul class="themecolor-select"><label for="themecolor-select">Theme Color:</label> <li><span class="default-theme"></span></li> </ul> <div class="darkmode-toggle"><label for="darkmode-toggle" class="desc">Theme Mode:</label> <div class="darkmode-switch"><div class="item day"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon light-icon"><path d="M512 256a42.667 42.667 0 0 0 42.667-42.667V128a42.667 42.667 0 0 0-85.334 0v85.333A42.667 42.667 0 0 0 512 256zm384 213.333h-85.333a42.667 42.667 0 0 0 0 85.334H896a42.667 42.667 0 0 0 0-85.334zM256 512a42.667 42.667 0 0 0-42.667-42.667H128a42.667 42.667 0 0 0 0 85.334h85.333A42.667 42.667 0 0 0 256 512zm9.387-298.667a42.667 42.667 0 0 0-59.307 62.72l61.44 59.307a42.667 42.667 0 0 0 31.147 11.947 42.667 42.667 0 0 0 30.72-13.227 42.667 42.667 0 0 0 0-60.16zm459.946 133.974a42.667 42.667 0 0 0 29.44-11.947l61.44-59.307a42.667 42.667 0 0 0-57.6-62.72l-61.44 60.587a42.667 42.667 0 0 0 0 60.16 42.667 42.667 0 0 0 28.16 13.227zM512 768a42.667 42.667 0 0 0-42.667 42.667V896a42.667 42.667 0 0 0 85.334 0v-85.333A42.667 42.667 0 0 0 512 768zm244.48-79.36a42.667 42.667 0 0 0-59.307 61.44l61.44 60.587a42.667 42.667 0 0 0 29.44 11.946 42.667 42.667 0 0 0 30.72-12.8 42.667 42.667 0 0 0 0-60.586zm-488.96 0-61.44 59.307a42.667 42.667 0 0 0 0 60.586 42.667 42.667 0 0 0 30.72 12.8 42.667 42.667 0 0 0 28.587-10.666l61.44-59.307a42.667 42.667 0 0 0-59.307-61.44zM512 341.333A170.667 170.667 0 1 0 682.667 512 170.667 170.667 0 0 0 512 341.333z" fill="currentColor"></path></svg></div> <div class="item auto active"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon auto-icon"><path d="M460.864 539.072H564.8L510.592 376l-49.728 163.072zM872 362.368V149.504H659.648L510.528 0l-149.12 149.504H149.12v212.928L0 511.872l149.12 149.504v212.928h212.352l149.12 149.504 149.12-149.504h212.352V661.376l149.12-149.504L872 362.368zM614.464 693.12l-31.616-90.624H438.272l-31.616 90.624h-85.888l144.576-407.68h90.368l144.576 407.68h-85.824zm0 0" fill="currentColor"></path></svg></div> <div class="item night"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon dark-icon"><path d="M935.539 630.402c-11.43-11.432-28.674-14.739-43.531-8.354-46.734 20.103-96.363 30.297-147.508 30.297-99.59 0-193.221-38.784-263.64-109.203-108.637-108.637-139.61-270.022-78.908-411.148a39.497 39.497 0 0 0-51.886-51.887c-52.637 22.64-100.017 54.81-140.826 95.616-85.346 85.346-132.346 198.821-132.346 319.52 0 120.7 47.001 234.172 132.347 319.519S408.063 947.11 528.76 947.11c120.7 0 234.172-47.003 319.52-132.351 40.809-40.81 72.978-88.19 95.616-140.826a39.497 39.497 0 0 0-8.356-43.532z" fill="currentColor"></path></svg></div></div> <!----></div></div></div></button> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Algorithms/" class="nav-link router-link-active active"><!---->
+  Algorithms
+</a></div></nav> <!----> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link can-hide">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> <!----> <div class="content__navbar-end"></div></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!----> <!----> <div class="content__sidebar-top"></div> <nav class="sidebar-nav-links"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Algorithms/" class="nav-link router-link-active active"><!---->
+  Algorithms
+</a></div> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <!----> <div class="content__sidebar-center"></div> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><!----> <span class="title">单链表问题总结</span> <!----></p> <!----></section></li></ul> <!----> <div class="content__sidebar-bottom"></div> <!----></aside> <main class="page"><nav class="breadcrumb"><ol vocab="https://schema.org/" typeof="BreadcrumbList"><li property="itemListElement" typeof="ListItem"><a href="/blog/Algorithms/" property="item" typeof="WebPage" class="router-link-active"><!----> <span property="name">LeetCode</span></a> <meta property="position" content="1"></li><li property="itemListElement" typeof="ListItem" class="is-active"><a href="/blog/Algorithms/single_linkedlist_questions/" aria-current="page" property="item" typeof="WebPage" class="router-link-exact-active router-link-active"><!----> <span property="name">单链表问题总结</span></a> <meta property="position" content="2"></li></ol></nav> <!----> <div class="content__page-top"></div> <div vocab="https://schema.org/" typeof="Article" class="page-title"><h1><!----> <span property="headline">单链表问题总结</span></h1> <div class="page-info"><!----> <!----><!----><span aria-label="Writing Date📅" data-balloon-pos="down" class="time-info"><svg viewBox="0 0 1030 1024" xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H180.6A134.314 134.314 0 0 0 46.66 277.595v535.756A134.314 134.314 0 0 0 180.6 947.289h669.74a134.36 134.36 0 0 0 133.94-133.938V277.595a134.314 134.314 0 0 0-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 0 1-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 0 1-33.472 33.473z" fill="currentColor"></path></svg> <span property="datePublished">2021-8-29</span></span><!----><!----><span aria-label="Reading Time⌛" data-balloon-pos="down" class="reading-time-info"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon timer-icon"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z" fill="currentColor"></path></svg> <span>About 7 min</span> <meta property="timeRequired" content="PT7M"></span></div> <!----> <hr></div> <div class="anchor-place-holder"><aside id="anchor"><div class="anchor-wrapper"></div></aside></div> <!----> <div class="content__content-top"></div> <div class="theme-default-content content__default"><h1 id="单链表问题总结"><a href="#单链表问题总结" class="header-anchor">#</a> 单链表问题总结</h1> <p>这两天比较闲，因此刷了几道HackerRank上的题目，下面就将单链表的一些题目总结一下。首先给出这些题目中通用的单链表节点定义：</p> <div class="language- extra-class"><pre><code>struct Node {
+    int data;
+    struct Node *next;
+}
+</code></pre></div><p>第一题：顺序打印单链表中的元素。
+思路：从头节点处开始遍历输出，直至NULL。
+代码：</p> <div class="language- extra-class"><pre><code>void Print(Node *head)
+{
+    if (head == NULL) {
+        return;
+    } 
+    Node *ptr = head;
+    while(ptr != NULL) {
+        cout &lt;&lt; ptr-&gt;data &lt;&lt; endl;
+        ptr = ptr-&gt;next;
+    }
+}
+</code></pre></div><p>第二题：给定一个数值，生成一个新数值并插入到单链表的尾部。
+思路：遍历到尾节点，然后创建一个新的节点，让尾节点的next指针指向这个新的节点。
+代码：</p> <div class="language- extra-class"><pre><code>Node* Insert(Node *head,int data)
+{
+    Node *newCell = (Node *)malloc(sizeof(Node));
+    newCell-&gt;data = data;
+    newCell-&gt;next = NULL;
+    if (head == NULL) {
+        return newCell;
+    } else {
+        Node *tail = head;
+        while(tail-&gt;next != NULL) {
+            tail = tail-&gt;next;
+        }
+        tail-&gt;next = newCell;
+        return head;
+    }
+}
+</code></pre></div><p>第三题：给定一个数值，生成一个新节点插入到单链表的头部。
+思路：创建一个新的节点，让这个新节点的next指针指向原来链表的头部。
+代码：</p> <div class="language- extra-class"><pre><code>Node* Insert(Node *head,int data)
+{
+    Node *newCell = (Node *)malloc(sizeof(Node));
+    newCell-&gt;data = data;
+    if (head == NULL) {
+        newCell-&gt;next = NULL;
+        return newCell;
+    } else {
+        newCell-&gt;next = head;
+        return newCell;
+    }
+}
+</code></pre></div><p>第四题：给定一个位置和数值，生成一个新节点并插入到单链表的相应位置处。
+思路：保持一个计数器，然后开始遍历单链表，同时计数器进行更新，当计数器的值与位置相等时，表示找到了要插入的位置了，之后的做法类似于第三题。
+代码：</p> <div class="language- extra-class"><pre><code>Node* InsertNth(Node *head, int data, int position)
+{ 
+    Node *newCell = (Node *)malloc(sizeof(Node));
+    newCell-&gt;data = data;
+    if (head == NULL) {
+        newCell-&gt;next = NULL;
+        return newCell;
+    } else {
+        if (position == 0) {
+            newCell-&gt;next = head;
+            return newCell;
+        } else {
+            int i = 1;
+            Node *ptr = head;
+            while(ptr != NULL &amp;&amp; i != position) {
+                i++;
+                ptr = ptr-&gt;next;
+            }
+            newCell-&gt;next = ptr-&gt;next;
+            ptr-&gt;next = newCell;
+            return head;
+        }
+    }
+}
+</code></pre></div><p>第五题：从单链表中删除一个给定位置处的节点。
+思路：很简单，不多说了。
+代码：</p> <div class="language- extra-class"><pre><code>Node* Delete(Node *head, int position)
+{
+    if (head == NULL) {
+        return NULL;
+    } else {
+        Node *ptrToNode;
+        if (position == 0) {
+            ptrToNode = head-&gt;next;
+            free(head);
+            return ptrToNode;
+        } else {
+            int i = 1;
+            ptrToNode = head;
+            while(ptrToNode != NULL &amp;&amp; i != position) {
+                i++;
+                ptrToNode = ptrToNode-&gt;next;
+            }
+            Node *temp = ptrToNode-&gt;next;
+            ptrToNode-&gt;next = temp-&gt;next;
+            free(temp);
+            return head;
+        }
+    }
+}
+</code></pre></div><p>第六题：逆序打印单链表中的元素。
+思路：使用递归。
+代码：</p> <div class="language- extra-class"><pre><code>void ReversePrint(Node *head)
+{
+      if(head) {
+        ReversePrint(head-&gt;next);
+        cout &lt;&lt; head-&gt;data &lt;&lt; endl;
+    } else {
+        return;
+    }
+}
+</code></pre></div><p>第七题：将一个单链表中的所有元素逆序。
+思路：首先需要确定这个单链表是带有头节点的还是不带有头节点的，带有头节点的链表在处理起来稍微复杂一点。然后可以用三个指针，分别指向当前节点cur，前一个节点pre，后一个节点next，然后调整这三个节点之间的指向关系。
+代码：</p> <div class="language- extra-class"><pre><code>Node* Reverse(Node *head)
+{
+    if (head == NULL) {
+        return NULL;
+    } else {
+        Node *reverseHead = NULL;
+        Node *cur = head;
+        Node *pre = NULL;
+        Node *next = NULL;
+        while(cur != NULL) {
+            next = cur-&gt;next;
+            if (next == NULL) {
+                reverseHead = cur;
+            }
+            cur-&gt;next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return reverseHead;
+    }
+}
+</code></pre></div><p>第八题：比较两个单链表中的元素是否相同
+思路：用两个指针分别遍历两个链表，然后比较指针指向的节点数值是否相等。
+代码：</p> <div class="language- extra-class"><pre><code>int CompareLists(Node *headA, Node* headB)
+{
+    if(headA == NULL &amp;&amp; headB == NULL) {
+        return 0;
+    } else if ((!headA &amp;&amp; headB) || (headA &amp;&amp; !headB)){
+        return 0;
+    } else {
+            Node *ptrToA = headA, *ptrToB = headB;
+            while(ptrToA &amp;&amp; ptrToB &amp;&amp; (ptrToA-&gt;data == ptrToB-&gt;data)) {
+                ptrToA = ptrToA-&gt;next;
+                ptrToB = ptrToB-&gt;next;
+            }
+            if(ptrToA == NULL &amp;&amp; ptrToB == NULL) {
+                return 1;
+            } else {
+                return 0;
+            }
+    }
+}
+</code></pre></div><p>第九题：合并两个有序单链表，将合并的结果放在一个新链表中。
+思路：用两个指针来分别遍历两个链表，比较这两个指针指向的节点的数值大小，
+若A&lt;B,那么A++,拷贝A的数据到C,直到A&gt;B;若A&gt;B,则B++,拷贝B的数据到C,直到B&gt;A;若A==B,则A++,B++,拷贝A或B到C。若其中一条链表先遍历完，则将另一条链表的数据直接拷贝到C中。
+代码：</p> <div class="language- extra-class"><pre><code>Node* MergeLists(Node *headA, Node* headB)
+{
+  if (headA == NULL &amp;&amp; headB == NULL) {
+        return NULL;
+    } else if (! headA &amp;&amp; headB) {
+        return headB;
+    } else if (headA &amp;&amp; !headB) {
+        return headA;
+    } else {
+        Node *ptrToA = headA, *ptrToB = headB;
+        Node *cur = (Node *)malloc(sizeof(Node));
+        Node *head = cur;
+        while(ptrToA &amp;&amp; ptrToB) {
+            while(ptrToA &amp;&amp; ptrToB &amp;&amp; (ptrToA-&gt;data &lt; ptrToB-&gt;data)) {
+                Node *newCell = (Node *)malloc(sizeof(Node));
+                newCell-&gt;data = ptrToA-&gt;data;
+                cur-&gt;next = newCell;
+                cur = newCell;
+                ptrToA = ptrToA-&gt;next;
+            }
+            while(ptrToA &amp;&amp; ptrToB &amp;&amp; (ptrToA-&gt;data &gt; ptrToB-&gt;data)) {
+                Node *newCell = (Node *)malloc(sizeof(Node));
+                newCell-&gt;data = ptrToB-&gt;data;
+                cur-&gt;next = newCell;
+                cur = newCell;
+                ptrToB = ptrToB-&gt;next;
+            }
+            while(ptrToA &amp;&amp; ptrToB &amp;&amp; (ptrToA-&gt;data == ptrToB-&gt;data)) {
+                Node *newCell = (Node *)malloc(sizeof(Node));
+                newCell-&gt;data = ptrToA-&gt;data;
+                cur-&gt;next = newCell;
+                cur = newCell;
+                ptrToA = ptrToA-&gt;next;
+                ptrToB = ptrToB-&gt;next;
+            }
+        }
+        if(!ptrToA &amp;&amp; ptrToB) {
+            while(ptrToB) {
+                Node *newCell = (Node *)malloc(sizeof(Node));
+                newCell-&gt;data = ptrToB-&gt;data;
+                cur-&gt;next = newCell;
+                cur = newCell;
+                ptrToB = ptrToB-&gt;next;
+            }
+            cur-&gt;next = NULL;
+        } else if(ptrToA &amp;&amp; !ptrToB) {
+            while(ptrToA) {
+                Node *newCell = (Node *)malloc(sizeof(Node));
+                newCell-&gt;data = ptrToA-&gt;data;
+                cur-&gt;next = newCell;
+                cur = newCell;
+                ptrToA = ptrToA-&gt;next;
+            }
+            cur-&gt;next = NULL;
+        } else if (!ptrToA &amp;&amp; !ptrToB ) {
+            cur-&gt;next = NULL;
+        }
+        return head-&gt;next;
+    }
+}
+</code></pre></div><p>第十题：获得离一个链表尾部距离为K的节点。
+思路：设置两个指针，初始化时均指向头节点，然后让一个指针先往前移动K个节点，然后这两个指针再一起向前移动，当第一个指针指向链表的尾部时，第二个节点所指的位置正好就是离尾部距离为K的节点。
+代码：</p> <div class="language- extra-class"><pre><code>int GetNode(Node *head,int positionFromTail)
+{
+  // This is a &quot;method-only&quot; submission. 
+  // You only need to complete this method. 
+    Node *p, *cur;
+    p = cur = head;
+    for(int i = 0; i &lt;= positionFromTail;i++) {
+        if (p != NULL) {
+            p = p-&gt;next;
+        }
+    }
+    while(p) {
+        cur = cur-&gt;next;
+        p = p-&gt;next;
+    }
+    return cur-&gt;data;
+}
+</code></pre></div><p>第十一题：删除一个有序单链表中的重复元素。
+思路：用两个指针分别指向当前节点cur和下一节点fol，当fol和cur的数值相等时，fol++，直到不再相等，调整cur和fol，然后cur++。
+代码：</p> <div class="language- extra-class"><pre><code>Node* RemoveDuplicates(Node *head)
+{
+    if(head == NULL) {
+        return NULL;
+    } else {
+        Node *cur = head, *fol = cur-&gt;next;
+        while(fol != NULL) {
+            while(fol &amp;&amp; (fol-&gt;data == cur-&gt;data)) {
+                fol = fol-&gt;next;
+            }
+            cur-&gt;next = fol;
+            if(fol) {
+                cur = fol;
+                fol = cur-&gt;next;
+            }
+        }
+        return head;
+    }
+}
+</code></pre></div><p>第十二题：检测链表中是否有环。
+思路：使用两个指针，一个指针每次往前移动一个节点，一个指针每次往前移动两个节点，若是链表中有环的话，那么这两个指针一定会相遇，因此可以用这两个指针是否会相等来检测链表中有没有环。
+代码：</p> <div class="language- extra-class"><pre><code>bool has_cycle(Node* head) {
+    if(head == NULL) {
+        return false;
+    } else {
+        Node *p = head, *q = head;
+        while(p &amp;&amp; q &amp;&amp; q-&gt;next) {
+            q = q-&gt;next-&gt;next;
+            p = p-&gt;next;
+            if(p == q) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+</code></pre></div><p>第十三题：找到两个链表的合并点。
+思路：首先计算出这两个链表的长度和长度差，然后设置两个指针分别指向这两个链表的头部，让长的那个指针先移动长度差个节点，然后两个指针再一起向前移动，当这两个指针相等的时候，所指的点就是这两个链表的合并点。
+代码：</p> <div class="language- extra-class"><pre><code>int FindMergeNode(Node *headA, Node *headB)
+{
+    Node *ptrToA = headA,*ptrToB = headB;
+    int lenA,lenB;
+    lenA = lenB = 0;
+    while(ptrToA) {
+        lenA++;
+        ptrToA = ptrToA-&gt;next;
+    }
+    while(ptrToB) {
+        lenB++;
+        ptrToB = ptrToB-&gt;next;
+    }
+    ptrToA = headA,ptrToB = headB;
+    if(lenA &lt; lenB) {
+        Node *temp = ptrToB;
+        ptrToB = ptrToA;
+        ptrToA = temp;
+        int x = lenA;
+        lenA = lenB;
+        lenB = x;
+    }
+    for(int i = 0; i &lt; lenA-lenB;i++) {
+        ptrToA = ptrToA-&gt;next;
+    }
+    while(ptrToA &amp;&amp; ptrToA != ptrToB) {
+        ptrToA = ptrToA-&gt;next;
+        ptrToB = ptrToB-&gt;next;
+    }
+    return ptrToA-&gt;data;
+}
+</code></pre></div><p>第十四题：向一个有序双向链表中插入一个节点。
+思路：和向单链表中插入节点思路相同，只不过节点的前后关系设置多了几步。
+代码：</p> <div class="language- extra-class"><pre><code>Node* SortedInsert(Node *head,int data)
+{
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode-&gt;data = data;
+    if(head == NULL) {
+        newNode-&gt;next = NULL;
+        newNode-&gt;prev = NULL;
+        return newNode;
+    } else {
+        if(data &lt; head-&gt;data) {
+            newNode-&gt;next = head;
+            head-&gt;prev = newNode;
+            newNode-&gt;prev = NULL;
+            return newNode;
+        } else {
+            Node *ptr = head,*cur;
+            while(ptr &amp;&amp; (data &gt; ptr-&gt;data)) {
+                cur = ptr;
+                ptr = ptr-&gt;next;
+            }
+            if(! ptr) {
+                cur-&gt;next = newNode;
+                newNode-&gt;next = NULL;
+                newNode-&gt;prev = cur;
+                return head;
+            } else {
+                cur-&gt;next = newNode;
+                newNode-&gt;next = ptr;
+                newNode-&gt;prev = cur;
+                ptr-&gt;prev = newNode;
+            }
+            return head;
+        }
+    }
+}
+</code></pre></div><p>第十五题：逆序一个双向链表。
+思路：和逆序一个单链表思路一致，并且由于节点中本身就有prev和next信息，因此只需要用一个指针指向当前节点即可。
+代码：</p> <div class="language- extra-class"><pre><code>Node* Reverse(Node* head)
+{  
+    if (head == NULL) {
+        return NULL;
+    } 
+    Node *cur = head, *next = NULL,*reversedHead = NULL;
+    while(cur) {
+        next = cur-&gt;next;
+        if (next == NULL) {
+            reversedHead = cur;
+        }
+        cur-&gt;next = cur-&gt;prev;
+        cur-&gt;prev = next;
+        cur = next;
+    }
+    return reversedHead;
+}
+</code></pre></div></div> <!----> <div class="content__content-bottom"></div> <footer class="page-meta"><div class="edit-link"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon edit-icon"><path d="M117.953 696.992 64.306 959.696l265.931-49.336 450.204-452.505-212.284-213.376-450.204 452.513zm496.384-296.326L219.039 797.993l-46.108-46.34L568.233 354.33l46.104 46.335zm345.357-122.99-114.45 115.04-212.288-213.377 114.45-115.035 212.288 213.371zm0 0" fill="currentColor"></path></svg> <a href="https://github.com/tamarous/blog/edit/master/docs/Algorithms/single_linkedlist_questions.md" target="_blank" rel="noopener noreferrer">Edit this page</a></div> <div class="meta-item update-time"><span class="label">Last update:</span> <span class="info">August 29, 2021 09:05</span></div> <!----></footer> <!----> <!----> <!----> <div class="content__page-bottom"></div></main> <!----></div><div class="global-ui"><!----><!----><div id="pwa-install"><!----> <div id="install-modal-wrapper" style="display:none;"><div class="background"></div> <div class="install-modal"><div class="header"><button aria-label="Close" class="close-button"><svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" class="icon close-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.12.358a1.224 1.224 0 011.729 0l8.92 8.914L20.686.358a1.224 1.224 0 011.73 1.728L13.497 11l8.92 8.913a1.222 1.222 0 11-1.73 1.729l-8.919-8.913-8.92 8.913a1.224 1.224 0 01-1.729-1.729L10.04 11l-8.92-8.914a1.222 1.222 0 010-1.728z" fill="currentColor"></path></svg></button> <div class="logo"><!----> <div class="title"><h1></h1> <p class="desc">This app can be installed on your PC or mobile device.  This will allow this web app to look and behave like any other installed app.  You will find it in your app lists and be able to pin it to your home screen, start menus or task bars.  This installed web app will also be able to safely interact with other apps and your operating system. </p></div></div></div> <div class="content"><div class="highlight"><!----> <!----></div> <div class="description"><h3>Description</h3> <p></p></div></div> <div class="button-wrapper"><button class="install-button">
+        Install <span></span></button> <button class="cancel-button">
+        Cancel
+      </button></div></div></div></div><div tabindex="-1" role="dialog" aria-hidden="true" class="pswp"><div class="pswp__bg"></div> <div class="pswp__scroll-wrap"><div class="pswp__container"><div class="pswp__item"></div> <div class="pswp__item"></div> <div class="pswp__item"></div></div> <div class="pswp__ui pswp__ui--hidden"><div class="pswp__top-bar"><div class="pswp__counter"></div> <button class="pswp__button pswp__button--close"></button> <button class="pswp__button pswp__button--share"></button> <button class="pswp__button pswp__button--fs"></button> <button class="pswp__button pswp__button--zoom"></button> <div class="pswp__preloader"><div class="pswp__preloader__icn"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div></div></div> <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class="pswp__share-tooltip"></div></div> <button class="pswp__button pswp__button--arrow--left"></button> <button class="pswp__button pswp__button--arrow--right"></button> <div class="pswp__caption"><div class="pswp__caption__center"></div></div></div></div></div></div></div>
+    <script src="/blog/assets/js/app.a184c26e.js" defer></script><script src="/blog/assets/js/vendors~layout-Layout.d33903e9.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.d025ca65.js" defer></script><script src="/blog/assets/js/page-单链表问题总结.f8e20819.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" defer></script>
+  </body>
+</html>
