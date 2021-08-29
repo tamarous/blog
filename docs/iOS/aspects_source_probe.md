@@ -3,6 +3,8 @@ category: iOS
 ---
 # Aspects 源码分析
 [Aspects](https://github.com/steipete/Aspects)是一个用于实现面向切片编程（AOP, Aspect-oriented programming ）思想的第三方库。面向切片编程，指的是在运行时，动态地将代码切入到类的指定方法、指定位置上，从而得到改变方法的实现的目的。由于 Objective-C 本身是一门非常动态的语言，因此 AOP 在 Objective-C 这门语言中很容易利用 Runtime 进行实现。
+
+## NSObject 分类
 这个库里的代码不多，只有`Aspects.h`和`Aspects.m`两个文件。头文件里定义了一个 NSObject 的分类，给所有 NSObject 的子类添加了如下两个方法：
 ```
 + (id<AspectToken>)aspect_hookSelector:(SEL)selector
@@ -40,7 +42,8 @@ category: iOS
     } error:NULL];
 }
 ```
-`testController` Hook 了两个`viewWillDisappear:`和`dealloc`这两个方法。options 指定了 Hook 的时机，可以在指定的时机执行 block 内的方法：
+`testController` Hook 了`viewWillDisappear:`和`dealloc`这两个方法。options 指定了 Hook 的时机，可以在指定的时机执行 block 内的方法：
+
 ```
 typedef NS_OPTIONS(NSUInteger, AspectOptions) {
     AspectPositionAfter   = 0,            /// 在原始方法执行后生效（默认）        
@@ -49,8 +52,7 @@ typedef NS_OPTIONS(NSUInteger, AspectOptions) {
     AspectOptionAutomaticRemoval = 1 << 3 /// 只执行一次
 };
 ```
-所以 `testController`会在`viewWillDisappear`调用后以及`dealloc`调用前执行block 中的方法。
-下面我们看下 hook 这个方法究竟做了什么。进入
+进入
 ```
 - (id<AspectToken>)aspect_hookSelector:(SEL)selector
                       withOptions:(AspectOptions)options
@@ -60,6 +62,7 @@ typedef NS_OPTIONS(NSUInteger, AspectOptions) {
 }
 ```
 其实它调用了 `aspect_add` 这个静态函数：
+
 ```
 static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSError **error) {
     NSCParameterAssert(self);
@@ -90,7 +93,9 @@ static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSE
     return identifier;
 }
 ```
-第1步，`aspect_performLocked`这个方法在执行作为参数的 block 前会进行加锁操作，而在 block 执行完后进行解锁：
+## aspect_performLocked
+
+`aspect_performLocked`这个方法在执行作为参数的 block 前会进行加锁操作，而在 block 执行完后进行解锁：
 ```
 static void aspect_performLocked(dispatch_block_t block) {
     static OSSpinLock aspect_lock = OS_SPINLOCK_INIT;
@@ -99,6 +104,8 @@ static void aspect_performLocked(dispatch_block_t block) {
     OSSpinLockUnlock(&aspect_lock);
 }
 ```
+
+## aspect_isSelectorAllowedAndTrack 
 
 第2步中调用了`aspect_isSelectorAllowedAndTrack(self, selector, options, error)`这个方法：
 ```
@@ -204,6 +211,9 @@ static BOOL aspect_isSelectorAllowedAndTrack(NSObject *self, SEL selector, Aspec
     return YES;
 }
 ```
+
+## aspect_getContainerForObject 
+
 第3步，我们以self 和 selector 为参数，调用`aspect_getContainerForObject`函数，返回一个`AspectsContainer`：
 ```
 AspectsContainer *aspectContainer = aspect_getContainerForObject(self, selector);
@@ -220,6 +230,8 @@ static AspectsContainer *aspect_getContainerForObject(NSObject *self, SEL select
 }
 ```
 AspectsContainer 和 SEL 是通过关联对象技术关联在一起的，因此这个方法里就是通过 SEL 取出对应的 AspectsContainer 实例。
+## identifierWithSelector:object:options:block:error:
+
 第4步是创建出一个`AspectsIdentifier`实例：
 ```
 + (instancetype)identifierWithSelector:(SEL)selector object:(id)object options:(AspectOptions)options block:(id)block error:(NSError **)error {
@@ -242,6 +254,8 @@ AspectsContainer 和 SEL 是通过关联对象技术关联在一起的，因此�
     return identifier;
 }
 ```
+
+## addAspect:withOptions:
 第5步是将上一步中创建的`AspectIdentifier`实例添加到第3步创建的`AspectsContainer`中：
 ```
 - (void)addAspect:(AspectIdentifier *)aspect withOptions:(AspectOptions)options {
@@ -256,6 +270,9 @@ AspectsContainer 和 SEL 是通过关联对象技术关联在一起的，因此�
     }
 }
 ```
+
+## aspect_prepareClassAndHookSelector
+
 第6步是整个方法 Hook 的核心：
 ```
 aspect_prepareClassAndHookSelector(self, selector, error);
@@ -289,6 +306,7 @@ static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSE
 }
 ```
 这个方法也比较复杂，因此我们将它分成四个小步骤来分析。
+
 第(1)步，调用`aspect_hookClass`：
 ```
 static Class aspect_hookClass(NSObject *self, NSError **error) {
@@ -432,9 +450,17 @@ static IMP aspect_getMsgForwardIMP(NSObject *self, SEL selector) {
 }
 ```
 所以我们可以总结下第6步这个方法做了什么事情：
-(1) 创建了一个新的类，然后将这个新类的`forwardInvocation:` 实现替换为了`__ASPECTS_ARE_BEING_CALLED__`，并且将这个新类的类对象和元类的 class 修改为原来的类，最后将 self 所属的类修改为新类。
-(2) 将 selector 对应的 IMP 实现替换为`forwardInvocation:`。
-以上介绍的1~6步，完成了 Hook 的动作。那么在被 Hook 的对象执行被替换的方法时，运行时就会转而执行`__ASPECTS_ARE_BEING_CALLED__`这个方法。接下来我们看下这个方法里有什么奥秘。
+
+1. 创建了一个新的类，然后将这个新类的`forwardInvocation:` 实现替换为了`__ASPECTS_ARE_BEING_CALLED__`，并且将这个新类的类对象和元类的 class 修改为原来的类，最后将 self 所属的类修改为新类。
+
+2. 将 selector 对应的 IMP 实现替换为`forwardInvocation:`。
+
+以上介绍的1~6步，完成了 Hook 的动作。
+
+## __ASPECTS_ARE_BEING_CALLED__
+
+在被 Hook 的对象执行被替换的方法时，运行时就会转而执行`__ASPECTS_ARE_BEING_CALLED__`这个方法。
+
 ```
 static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL selector, NSInvocation *invocation) {
     NSCParameterAssert(self);
@@ -500,8 +526,8 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
     [aspectsToRemove makeObjectsPerformSelector:@selector(remove)];
 }
 ```
-所以这个方法的作用就是根据 option 的设置，在合适的时机调用原来的方法实现以及我们的钩子函数。
-以上就是 Aspects这个库进行方法 Hook 的基本原理了。 
+
+
 
 
 
