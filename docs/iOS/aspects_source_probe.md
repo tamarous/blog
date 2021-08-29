@@ -1,5 +1,7 @@
 ---
 category: iOS
+tags:
+  - 源码分析
 ---
 # Aspects 源码分析
 [Aspects](https://github.com/steipete/Aspects)是一个用于实现面向切片编程（AOP, Aspect-oriented programming ）思想的第三方库。面向切片编程，指的是在运行时，动态地将代码切入到类的指定方法、指定位置上，从而得到改变方法的实现的目的。由于 Objective-C 本身是一门非常动态的语言，因此 AOP 在 Objective-C 这门语言中很容易利用 Runtime 进行实现。

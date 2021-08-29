@@ -1,5 +1,7 @@
 ---
 category: algorithm
+tags:
+  - 链表
 ---
 # LeetCode-234-Palindrome Linked List
 题意：判断一个链表是否是回文链表。

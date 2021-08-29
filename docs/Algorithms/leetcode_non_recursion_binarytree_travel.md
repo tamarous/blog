@@ -1,5 +1,7 @@
 ---
 category: algorithm
+tags:
+  - 二叉树
 ---
 # 前中后序遍历的非递归实现
 

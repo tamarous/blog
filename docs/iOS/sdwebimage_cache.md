@@ -1,9 +1,12 @@
 ---
 category: iOS
+tags:
+  - 源码分析
 ---
 # SDWebImage 源代码剖析-缓存策略
 今天我们将对另外一个在iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的`SDWebImage`。
 ## 使用方法
+
 `SDWebImage` 的使用非常简洁，往往可以用一行代码来完成图片设置工作。下面列出一些常用设置方法。
 ```
 - (void) sd_setImageWithURL:(nullable NSURL *) url;

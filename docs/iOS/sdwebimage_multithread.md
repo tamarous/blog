@@ -1,8 +1,10 @@
 ---
 category: iOS
+tags:
+  - 源码分析
 ---
 # SDWebImage 源代码剖析-多线程策略
-前一篇[文章](./sdwebimage_cache)从缓存策略的角度分析了`SDWebImage` 的部分代码，下面从多线程的角度对它的其他模块进行分析。
+前一篇[文章](./sdwebimage_cache.md)从缓存策略的角度分析了`SDWebImage` 的部分代码，下面从多线程的角度对它的其他模块进行分析。
 
 苹果的多线程解决方案有三种：
 * NSThread
@@ -398,12 +400,6 @@ downloadQueue 的默认执行顺序是
 在A 中，step1 先执行，但是step3 可能会在step2 之前执行完，因此执行顺序可能是`step1->step2->step3`，也可能是`step1->step3->step2`；在B 中，执行的顺序则一定是`step4->step5->step6`。
 
 在`addProgressCallback:`方法中，因为需要返回一个token，而这个token 是在block 中计算的，所以我们一定要等到block 的追加操作完成才可以返回，否则就会得到nil，因此需要使用`dispatch_barrier_sync`；而在`cancel:` 方法中，不需要等待，因此使用`dispatch_barrier_async` 就可以了。
-
-
-## 总结
-多线程策略无疑是iOS 应用开发中一个十分重要的考虑因素。随着项目的进行，需求不断增多，应用的逻辑越加复杂，对性能的要求也随之提要，因此我们不得不借助于多线程来适应这些要求。本文介绍了`SDWebImage` 这个库中多线程策略的选择和实现，在分析过程中，我发觉自己之前写的代码都太小儿科了，也感受到：能够正确地进行多线程编程，应该是一个iOS 开发者必要的能力。
-
-另外，为了写出这篇文章，我又重新研读了几遍`SDWebImage` 的代码，感受和在写前一篇文章时果然有很多不同。看来还是要多读优秀的源代码，而且要多加思考和总结。
 
 
 

@@ -1,5 +1,7 @@
 ---
 category: iOS
+tags:
+  - 源码分析
 ---
 # EasyTuple 源代码分析
 [`EasyTuple`](https://github.com/meituan/EasyTuple)是由美团开源的一个第三方库，它给Objective-C 添加了元组的能力，可以将几个对象包裹在一个对象中，这样我们就可以从一个函数中返回多个值。它的使用非常简单，比如我们想创建一个由两个元素组成的元组，那么可以这样写：

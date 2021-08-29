@@ -1,5 +1,7 @@
 ---
 category: algorithm
+tags:
+  - 二叉树
 ---
 
 # 二叉树的 Morris 遍历
