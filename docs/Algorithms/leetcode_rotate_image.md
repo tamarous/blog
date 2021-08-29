@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-48-Rotate Image
 
 题意：给定一个 N*N 的矩阵，将这个矩阵顺时针旋转90°。

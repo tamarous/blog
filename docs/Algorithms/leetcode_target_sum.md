@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-494-Target Sum
 [这个题](https://leetcode.com/problems/target-sum/description/)也是一道动态规划题目。题意是：给出一系列数和一个目标数，使用`+`和`-`来使这些数字的和等于给定的目标数，求总共可行的方法数。
 

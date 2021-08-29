@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-238-Product of Array Except Self
 这个[题目](https://leetcode.com/problems/product-of-array-except-self/description/)的题意非常简单：传入一个数组，然后返回一个新数组，这个新数组中的每个元素是由原来数组的除了对应位置上的以外元素相乘得到的。比如传入[1,2,3,4]，返回[24, 12, 8, 6]。但是有个额外要求，那就是算法的时间复杂度必须是O(n)，空间复杂度是O(n)或O(1)。
 

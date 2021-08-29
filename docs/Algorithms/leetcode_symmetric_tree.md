@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-101-Symmetric Tree
 这道题的题意是判断一棵二叉树是不是对称的，如下图，当一棵树呈现这样的结构时，就可以称作是对称二叉树。
 

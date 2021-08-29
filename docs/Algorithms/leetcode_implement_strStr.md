@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-28-Implement strStr()
 实现类似C语言中strStr()函数的效果, 即给出两个字符串A和B:(1)如果B为NULL,则返回0;(2)如果B比A长,则返回-1;(3)如果B在A中,则返回B在A中第一次出现的起始位置;(4)如果B不在A中,则返回-1.
 

@@ -1,5 +1,11 @@
+---
+category: algorithm
+---
 # LeetCode-437-Path Sum Ⅲ
-在 [Path Sum](http://www.tamarous.com/2017/11/26/path-sum/) 和 [Path Sum Ⅱ](http://www.tamarous.com/2017/11/26/path-sum-%e2%85%a1/)之后，Path Sum 大家庭又迎来了第三位成员。那么这个[新成员](https://leetcode.com/problems/path-sum-iii/description/)又提出了什么样的要求呢？
+
+在 [Path Sum](./leetcode_path_sum_v1.md) 和 [Path Sum Ⅱ](./leetcode_path_sum_v2.md)之后，Path Sum 大家庭又迎来了第三位成员。
+
+那么这个[新成员](https://leetcode.com/problems/path-sum-iii/description/)又提出了什么样的要求呢？
 
 题意是这样的：给出一棵二叉树和一个数值 sum，计算这棵树上的节点之和等于sum 的所有路径的条数。和之前不同的是，这道题中路径可以从树中的任何一个节点开始。
 

@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-191-Number of 1 Bits
 
 [这道题](https://leetcode.com/problems/number-of-1-bits/description)是一道很有意思的题目，题意是求一个uint32_t 类型数字的二进制表示中字符1的个数。如数字11，它的二进制表示是`00000000000000000000000000001011`，因此1的个数是3。

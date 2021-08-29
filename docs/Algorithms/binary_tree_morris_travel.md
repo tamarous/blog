@@ -1,3 +1,7 @@
+---
+category: algorithm
+---
+
 # 二叉树的 Morris 遍历
 > 转载自：[Morris Traversal方法遍历二叉树（非递归，不用栈，O(1)空间）](https://www.cnblogs.com/AnnieKim/archive/2013/06/15/MorrisTraversal.html)，有所修改。
 
@@ -42,7 +46,7 @@ public:
 
 借用下[这篇博客](http://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html)中的图片：
 
-![Morris InOrder](http://images.cnitblog.com/blog/300640/201306/14214057-7cc645706e7741e3b5ed62b320000354.jpg)
+![Morris InOrder](https://images0.cnblogs.com/blog/300640/201306/14214057-7cc645706e7741e3b5ed62b320000354.jpg)
 
 我们来看下以这幅图中的树为例，对其进行 Morris 中序遍历的过程。
 1. cur = 6，左孩子不为空所以进入步骤2，cur 的左子树的最右节点是5，5的右孩子为空，所以让5的右孩子指向6，然后让 cur = 2。
@@ -92,7 +96,7 @@ public:
 };
 ```
 
-![Morris PreOrder](http://images.cnitblog.com/blog/300640/201306/14221458-aa5f9e92cce743ccacbc735048133058.jpg)
+![Morris PreOrder](https://images0.cnblogs.com/blog/300640/201306/14221458-aa5f9e92cce743ccacbc735048133058.jpg)
 
 ## 后序遍历
 后续遍历又是最为复杂的一个。我们需要建立一个额外节点 dummy，然后将根节点设置为dummy 的左孩子。过程：
@@ -161,7 +165,7 @@ public:
 };
 ```
 
-![Morris PostOrder](http://images.cnitblog.com/blog/300640/201306/15165951-7991525829134fb3beefed9fbf7e0536.jpg)
+![Morris PostOrder](https://images0.cnblogs.com/blog/300640/201306/15165951-7991525829134fb3beefed9fbf7e0536.jpg)
 
 下面以图中的树为例，分析下 Morris 后序遍历的过程。
 1. 新建一个额外节点0，将它设为当前节点，然后将根节点9设置为它的左孩子。

@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-2-Add Two Numbers
 
 思路：将这两个链表先转换成数字，然后对数字进行相加，最后再把这个数字用链表表示出来。

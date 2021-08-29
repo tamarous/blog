@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-347-Top K Frequent Elements
 这道题的题意是：给出一个数组和一个数字k，返回一个由输入数组中出现次数排在前K位的元素组成的数组。
 

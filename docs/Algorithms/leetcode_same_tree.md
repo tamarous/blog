@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-100-Same Tree及572-Subtree of Another Tree
 之所以把这两道题放到一起，是因为第一道题的算法是第二道题的一块小零件，如果理解第一题的解法的话，那么看到第二题应该就很快有思路了。
 ## Same Tree

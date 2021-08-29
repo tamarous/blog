@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-62-Unique Paths
 [这道题](https://leetcode.com/problems/unique-paths/description/)是一道典型的动态规划问题。
 

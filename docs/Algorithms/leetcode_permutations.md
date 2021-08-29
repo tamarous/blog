@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode 上几道经典的排列组合题
 
 LeetCode 上有几道题都和排列组合有关，非常经典，值得放在一起总结一下。这几道题分别是：

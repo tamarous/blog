@@ -1,3 +1,6 @@
+---
+category: algorithm
+---
 # LeetCode-63-Unique Paths Ⅱ
 [这道题](https://leetcode.com/problems/unique-paths-ii/description/)是[Unique Path](http://www.tamarous.com/2018/01/09/unique-paths/)的续集。
 
