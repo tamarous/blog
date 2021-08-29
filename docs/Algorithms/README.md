@@ -1,21 +1,11 @@
 # LeetCode 
 ## 递归
 
-[Add Two Numbers](./LeetCode-2-Add%20Two%20Numbers.md)
-
-[Merge Two Sorted Lists.md](./LeetCode-21-Merge%20Two%20Sorted%20Lists.md)
-
-[Implement strStr()](./LeetCode-28-Implement%20strStr().md)
-
 [Rotate Image](./LeetCode-48-Rotate%20Image.md)
 
 [Unique Paths](./LeetCode-62-Unique%20Paths.md)
 
 [Unique Paths II](./LeetCode-63-Unique%20Paths%20Ⅱ.md)
-
-[Same Tree](./LeetCode-100-Same%20Tree及572-Subtree%20of%20Another%20Tree.md)
-
-[Symmetric Tree](./LeetCode-101-Symmetric%20Tree.md)
 
 [Path Sum](./LeetCode-112-Path%20Sum.md)
 
@@ -56,6 +46,9 @@
 
 [单链表问题总结](./单链表问题总结.md)
 
+[Add Two Numbers](./LeetCode-2-Add%20Two%20Numbers.md)
+
+[Merge Two Sorted Lists.md](./LeetCode-21-Merge%20Two%20Sorted%20Lists.md)
 ## 树
 
 [按层打印二叉树](./print_binarytree_by_level.md)
@@ -68,13 +61,12 @@
 
 [由前序和中序遍历恢复二叉树结构](./由前序和中序遍历恢复二叉树结构.md)
 
+[Same Tree](./LeetCode-100-Same%20Tree及572-Subtree%20of%20Another%20Tree.md)
+
+[Symmetric Tree](./LeetCode-101-Symmetric%20Tree.md)
+
 ## 其他
-
-[背包问题](./背包问题.md)
-
 [独木舟上的旅行](./独木舟上的旅行.md)
-
-[数根](./数根.md)
 
 [转圈打印矩阵](./转圈打印矩阵.md)
 
@@ -82,6 +74,6 @@
 
 [最大子序列和问题](./最大子序列和问题.md)
 
-
+[Implement strStr()](./LeetCode-28-Implement%20strStr().md)
 
 

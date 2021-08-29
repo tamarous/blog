@@ -1,3 +1,6 @@
+---
+category: iOS
+---
 # SDWebImage 源代码剖析-多线程策略
 前一篇[文章](./sdwebimage_cache)从缓存策略的角度分析了`SDWebImage` 的部分代码，下面从多线程的角度对它的其他模块进行分析。
 

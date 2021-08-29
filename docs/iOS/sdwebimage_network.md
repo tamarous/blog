@@ -1,3 +1,6 @@
+---
+category: iOS
+---
 # SDWebImage 源代码剖析-网络部分
 
 前面两篇博文中，简要对SDWebImage的[缓存部分](./sdwebimage_cache)和[多线程部分](./sdwebimage_multithread)进行了分析。建议在阅读本篇内容前先看下缓存策略那篇，以对SDWebImage的基本内容有所了解。在本篇中，我们将对它的网络策略进行分析。我们知道SDWebImage的主要功能就是从远程主机上下载图片，所以前面的几个策略都是为这一目的提供支持的，而网络策略的好坏将直接决定库的性能。不过SDWebImage以GitHub上接近20000的star数向我们证明了它不俗的实力，下面就让我们一起看看吧。

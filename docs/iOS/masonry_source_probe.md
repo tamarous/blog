@@ -1,3 +1,6 @@
+---
+category: iOS
+---
 # Masonry 源代码剖析
 [Masonry](https://github.com/SnapKit/Masonry) 是一个用来代替苹果原生的AutoLayout 的自动布局框架。这个库的代码量不是很多，而且使用也很简单方便，那么就让我们深入到这个库的内部，看看它是怎么实现的。
 
