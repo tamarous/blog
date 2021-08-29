@@ -12,6 +12,6 @@ module.exports = config({
     repoLabel: "GitHub",
     docsDir: "docs",
     docsBranch: "master",
-    sidebar: ["/", "/iOS/", "/Algorithms/"],
+    sidebar: "auto",
   },
 });
