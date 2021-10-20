@@ -6,7 +6,7 @@ module.exports = config({
     nav: [
       { text: "Home", link: "/" },
       { text: "iOS", link: "/iOS/" },
-      { text: "Algorithms", link: "/Algorithms/" },
+      //{ text: "Algorithms", link: "/Algorithms/" },
     ],
     repo: "tamarous/blog",
     repoLabel: "GitHub",
