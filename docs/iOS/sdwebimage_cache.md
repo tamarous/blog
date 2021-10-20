@@ -4,6 +4,7 @@ tags:
   - 源码分析
 ---
 # SDWebImage 源代码剖析-缓存策略
+
 今天我们将对另外一个在iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的`SDWebImage`。
 ## 使用方法
 
@@ -105,7 +106,7 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
     }
 
 
-进入`sd_internalSetImageWithURL:` 这个方法的内部，我们总算看到了一段期望中的复杂代码：
+进入`sd_internalSetImageWithURL:` 这个方法的内部：
 
 ```
 // UIView+WebCache.m
@@ -460,24 +461,21 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
     }];
 
 ```
+
 1. 由if条件，假设后一条件成立，如果缓存存在，那么只有在设置了`SDWebImageRefreshCache`才会进入if 语句体中；如果缓存不存在，那么肯定会进入if 语句体中。
 2. 如果说缓存存在，而且设置了`SDWebImageRefreshCache`，那么就应该从server 上重新下载图片以更新本地缓存。
 3. 设置下载时的选项。
-4. 如果设置了`SDWebImageRefreshCache`，那么必须取消渐进式下载，而且还要忽略从NSURLCache 中获得的缓存响应。（此处我还没有理解到底是怎么回事，等了解了NSURLCache 的知识后再来填这个坑）
+4. 如果设置了`SDWebImageRefreshCache`，那么必须取消渐进式下载，而且还要忽略从NSURLCache 中获得的缓存响应。
 5. 调用imageDownloader 进行图片下载。
 6. 如果发生了错误，且错误原因不是列出来的这些原因中的一个，那么就把这个url 加入黑名单中。
-7. 如果缓存存在，设置了`SDWebImageRefreshCache`，而且downloadedImage为nil，那么说明命中了
-NSURLCache 缓存，什么事也不做。
+7. 如果缓存存在，设置了`SDWebImageRefreshCache`，而且downloadedImage为nil，那么说明命中了 NSURLCache 缓存，什么事也不做。
 8. 如果downloadedImage非nil，并且设置了`SDWebImageTransformAnimatedImage`，那么就在主线程中对图片进行变换，然后将变换后的图片存储在内存中或内存和磁盘上。如果不需要变换，那么直接将downloadedImage 存储在内存中或内存和磁盘上。
 9. 如果缓存存在，且其他条件都不成立，那么直接取出缓存中的图片，然后在主线程中更新视图。
 10. 如果缓存不存在，并且也不允许下载，那么直接调用completedBlock。
 
-#### 缓存策略小结
+## 小结
 我们来小结一下`SDWebImage`的缓存策略。在给一个UIimageView 或者UIButton 设置了远端图片的url 后，`SDWebImage`首先以url 为key 在内存中寻找图片缓存，如果在内存中没找到就会去磁盘中寻找，如果找到了，则将磁盘中的缓存拷贝一份到内存中，然后使用缓存来设置视图。如果在
 磁盘和内存中都没有找到，那么才会下载远程图片，然后将远程图片缓存在内存中或者是内存和磁盘上。
-
-## 总结
-本文对`SDWebImage` 的源代码进行了分析，其中着重介绍了它的缓存策略。因为篇幅有限，所以对于它的其他方面，如GCD 和NSOperationQueue 的使用，网络请求等知识都没有进行深入研究。在日后的系列文章中，我将回过头来针对这些知识进行再次探索，期待有新的收获。
 
 
 
