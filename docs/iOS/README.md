@@ -4,6 +4,10 @@
 
 [Aspects 源码分析](./aspects_source_probe.md)
 
+## Stinger
+
+[Stinger 源码分析](./stinger_source_probe.md)
+
 ## SDWebImage
 
 [SDWebImage 源代码剖析-缓存](./sdwebimage_cache.md)
