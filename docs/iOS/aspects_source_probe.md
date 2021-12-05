@@ -4,7 +4,7 @@ tags:
   - 源码分析
 ---
 # Aspects 源码分析
-[Aspects](https://github.com/steipete/Aspects)是一个非常知名的用于方法 Hook 的 Objective-C 库，可以对类方法或者实例方法进行 Hook，虽然它的作者不推荐在生产环境下使用这个组件，但是了解 Aspects 的原理，对于我们更好地掌握 Objective-C 这门语言还是很有好处的，因此本文就来简要地分析下 Aspects 的实现细节。
+[Aspects](https://github.com/steipete/Aspects)是一个非常知名的用于 AOP 的 Objective-C 库，可以对类方法或者实例方法进行 Hook，虽然它的作者不推荐在生产环境下使用这个组件，但是了解 Aspects 的原理，对于我们更好地掌握 Objective-C 这门语言还是很有好处的，因此本文就来简要地分析下 Aspects 的实现细节。
 
 ## NSObject 分类
 
@@ -22,7 +22,7 @@ tags:
                                  error:(NSError **)error;
 ```
 
-options 指定了 Hook 逻辑执行的时机：
+options 指定了 AOP 切面执行的时机：
 
 ```
 typedef NS_OPTIONS(NSUInteger, AspectOptions) {
