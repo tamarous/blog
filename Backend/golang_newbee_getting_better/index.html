@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Go 语言精进之路学习笔记 | Tamarous&#39; blog</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="manifest" href="/blog/manifest.webmanifest" crossorigin="use-credentials">
+    <meta name="description" content="">
+    <meta property="og:url" content="/blog/Backend/golang_newbee_getting_better.html">
+    <meta property="og:site_name" content="Tamarous' blog">
+    <meta property="og:title" content="Go 语言精进之路学习笔记">
+    <meta property="og:description" content="Go 语言精进之路学习笔记 前言 《Go 语言精进之路》这本书真的非常好，深入讲解了 Go 语言的方方面面，是入门的不二之选。本文是在学习《Go 语言精进之路》时所做的一些摘要和记录。 理解 GO 语言的设计哲学 追求简单，少即是多; 偏好组合，正交耦合; 原生并发，轻量高效; 面向工程，自带电池; Go 特点： 语法简洁，只有 25 个关键字; 内置垃圾收">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="en-US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:alt" content="Tamarous' blog">
+    <meta property="article:tag" content="基础知识">
+    <meta name="theme-color" content="#46bd87">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.8b5d14a7.css" as="style"><link rel="preload" href="/blog/assets/js/app.a5fc5e5c.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Layout.7e998ec2.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.4f318220.js" as="script"><link rel="preload" href="/blog/assets/js/page-Go语言精进之路学习笔记.f76e5743.js" as="script"><link rel="preload" href="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" as="script"><link rel="prefetch" href="/blog/assets/js/20.d0f2ea0a.js"><link rel="prefetch" href="/blog/assets/js/layout-Blog.cd958aaa.js"><link rel="prefetch" href="/blog/assets/js/layout-Layout.54347a9b.js"><link rel="prefetch" href="/blog/assets/js/layout-NotFound.5814876d.js"><link rel="prefetch" href="/blog/assets/js/layout-Slide.7b34a4ba.js"><link rel="prefetch" href="/blog/assets/js/page-Aspects源码分析.412f48d7.js"><link rel="prefetch" href="/blog/assets/js/page-EasyTuple源代码分析.2cf181b1.js"><link rel="prefetch" href="/blog/assets/js/page-Home.60a9dfd0.js"><link rel="prefetch" href="/blog/assets/js/page-Masonry源代码剖析.cbf7490b.js"><link rel="prefetch" href="/blog/assets/js/page-SDWebImage源代码剖析-缓存策略.d1da4df3.js"><link rel="prefetch" href="/blog/assets/js/page-Stinger源码分析.18886dc7.js"><link rel="prefetch" href="/blog/assets/js/page-iOS知识总结.6be13718.js"><link rel="prefetch" href="/blog/assets/js/page-后端精进之路.51ae3f6b.js"><link rel="prefetch" href="/blog/assets/js/page-如何分析iOS系统库的实现.1038afd5.js"><link rel="prefetch" href="/blog/assets/js/vendors~photo-swipe.1934d3ab.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.8b5d14a7.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container has-navbar has-anchor"><header class="navbar"><!----> <div class="content__navbar-start"></div> <button title="Sidebar Button" class="sidebar-button"><span class="icon"></span></button> <a href="/blog/" class="home-link router-link-active"><!----> <!----> <span class="site-name can-hide">Tamarous' blog</span></a> <!----> <div class="content__navbar-center"></div> <div class="links"><button tabindex="-1" aria-hidden="true" class="color-button"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="skin-icon"><path d="M224 800c0 9.6 3.2 44.8 6.4 54.4 6.4 48-48 76.8-48 76.8s80 41.6 147.2 0 134.4-134.4
+        38.4-195.2c-22.4-12.8-41.6-19.2-57.6-19.2C259.2 716.8 227.2 761.6 224 800zM560 675.2l-32
+        51.2c-51.2 51.2-83.2 32-83.2 32 25.6 67.2 0 112-12.8 128 25.6 6.4 51.2 9.6 80 9.6 54.4 0
+        102.4-9.6 150.4-32l0 0c3.2 0 3.2-3.2 3.2-3.2 22.4-16 12.8-35.2
+        6.4-44.8-9.6-12.8-12.8-25.6-12.8-41.6 0-54.4 60.8-99.2 137.6-99.2 6.4 0 12.8 0 22.4
+        0 12.8 0 38.4 9.6 48-25.6 0-3.2 0-3.2 3.2-6.4 0-3.2 3.2-6.4 3.2-6.4 6.4-16 6.4-16 6.4-19.2
+        9.6-35.2 16-73.6 16-115.2 0-105.6-41.6-198.4-108.8-268.8C704 396.8 560 675.2 560 675.2zM224
+        419.2c0-28.8 22.4-51.2 51.2-51.2 28.8 0 51.2 22.4 51.2 51.2 0 28.8-22.4 51.2-51.2 51.2C246.4
+        470.4 224 448 224 419.2zM320 284.8c0-22.4 19.2-41.6 41.6-41.6 22.4 0 41.6 19.2 41.6 41.6 0
+        22.4-19.2 41.6-41.6 41.6C339.2 326.4 320 307.2 320 284.8zM457.6 208c0-12.8 12.8-25.6 25.6-25.6
+        12.8 0 25.6 12.8 25.6 25.6 0 12.8-12.8 25.6-25.6 25.6C470.4 233.6 457.6 220.8 457.6 208zM128
+        505.6C128 592 153.6 672 201.6 736c28.8-60.8 112-60.8 124.8-60.8-16-51.2 16-99.2
+        16-99.2l316.8-422.4c-48-19.2-99.2-32-150.4-32C297.6 118.4 128 291.2 128 505.6zM764.8
+        86.4c-22.4 19.2-390.4 518.4-390.4 518.4-22.4 28.8-12.8 76.8 22.4 99.2l9.6 6.4c35.2 22.4
+        80 12.8 99.2-25.6 0 0 6.4-12.8 9.6-19.2 54.4-105.6 275.2-524.8 288-553.6
+        6.4-19.2-3.2-32-19.2-32C777.6 76.8 771.2 80 764.8 86.4z"></path></svg> <div class="color-picker-menu" style="display:none;"><div class="theme-options"><ul class="themecolor-select"><label for="themecolor-select">Theme Color:</label> <li><span class="default-theme"></span></li> </ul> <div class="darkmode-toggle"><label for="darkmode-toggle" class="desc">Theme Mode:</label> <div class="darkmode-switch"><div class="item day"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon light-icon"><path d="M512 256a42.667 42.667 0 0 0 42.667-42.667V128a42.667 42.667 0 0 0-85.334 0v85.333A42.667 42.667 0 0 0 512 256zm384 213.333h-85.333a42.667 42.667 0 0 0 0 85.334H896a42.667 42.667 0 0 0 0-85.334zM256 512a42.667 42.667 0 0 0-42.667-42.667H128a42.667 42.667 0 0 0 0 85.334h85.333A42.667 42.667 0 0 0 256 512zm9.387-298.667a42.667 42.667 0 0 0-59.307 62.72l61.44 59.307a42.667 42.667 0 0 0 31.147 11.947 42.667 42.667 0 0 0 30.72-13.227 42.667 42.667 0 0 0 0-60.16zm459.946 133.974a42.667 42.667 0 0 0 29.44-11.947l61.44-59.307a42.667 42.667 0 0 0-57.6-62.72l-61.44 60.587a42.667 42.667 0 0 0 0 60.16 42.667 42.667 0 0 0 28.16 13.227zM512 768a42.667 42.667 0 0 0-42.667 42.667V896a42.667 42.667 0 0 0 85.334 0v-85.333A42.667 42.667 0 0 0 512 768zm244.48-79.36a42.667 42.667 0 0 0-59.307 61.44l61.44 60.587a42.667 42.667 0 0 0 29.44 11.946 42.667 42.667 0 0 0 30.72-12.8 42.667 42.667 0 0 0 0-60.586zm-488.96 0-61.44 59.307a42.667 42.667 0 0 0 0 60.586 42.667 42.667 0 0 0 30.72 12.8 42.667 42.667 0 0 0 28.587-10.666l61.44-59.307a42.667 42.667 0 0 0-59.307-61.44zM512 341.333A170.667 170.667 0 1 0 682.667 512 170.667 170.667 0 0 0 512 341.333z" fill="currentColor"></path></svg></div> <div class="item auto active"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon auto-icon"><path d="M460.864 539.072H564.8L510.592 376l-49.728 163.072zM872 362.368V149.504H659.648L510.528 0l-149.12 149.504H149.12v212.928L0 511.872l149.12 149.504v212.928h212.352l149.12 149.504 149.12-149.504h212.352V661.376l149.12-149.504L872 362.368zM614.464 693.12l-31.616-90.624H438.272l-31.616 90.624h-85.888l144.576-407.68h90.368l144.576 407.68h-85.824zm0 0" fill="currentColor"></path></svg></div> <div class="item night"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon dark-icon"><path d="M935.539 630.402c-11.43-11.432-28.674-14.739-43.531-8.354-46.734 20.103-96.363 30.297-147.508 30.297-99.59 0-193.221-38.784-263.64-109.203-108.637-108.637-139.61-270.022-78.908-411.148a39.497 39.497 0 0 0-51.886-51.887c-52.637 22.64-100.017 54.81-140.826 95.616-85.346 85.346-132.346 198.821-132.346 319.52 0 120.7 47.001 234.172 132.347 319.519S408.063 947.11 528.76 947.11c120.7 0 234.172-47.003 319.52-132.351 40.809-40.81 72.978-88.19 95.616-140.826a39.497 39.497 0 0 0-8.356-43.532z" fill="currentColor"></path></svg></div></div> <!----></div></div></div></button> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Backend.html" class="nav-link"><!---->
+  Backend
+</a></div></nav> <!----> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link can-hide">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> <!----> <div class="content__navbar-end"></div></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!----> <!----> <div class="content__sidebar-top"></div> <nav class="sidebar-nav-links"><div class="nav-item"><a href="/blog/" class="nav-link router-link-active"><!---->
+  Home
+</a></div><div class="nav-item"><a href="/blog/iOS/" class="nav-link"><!---->
+  iOS
+</a></div><div class="nav-item"><a href="/blog/Backend.html" class="nav-link"><!---->
+  Backend
+</a></div> <a rel="noopener noreferrer" href="https://github.com/tamarous/blog" target="_blank" class="repo-link">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <!----> <div class="content__sidebar-center"></div> <!----> <!----> <div class="content__sidebar-bottom"></div> <!----></aside> <main class="page"><nav class="breadcrumb"><ol vocab="https://schema.org/" typeof="BreadcrumbList"><li property="itemListElement" typeof="ListItem"><a href="/blog/Backend/" property="item" typeof="WebPage" class="router-link-active"><!----> <span property="name">后端精进之路</span></a> <meta property="position" content="1"></li><li property="itemListElement" typeof="ListItem" class="is-active"><a href="/blog/Backend/golang_newbee_getting_better/" aria-current="page" property="item" typeof="WebPage" class="router-link-exact-active router-link-active"><!----> <span property="name">Go 语言精进之路学习笔记</span></a> <meta property="position" content="2"></li></ol></nav> <!----> <div class="content__page-top"></div> <div vocab="https://schema.org/" typeof="Article" class="page-title"><h1><!----> <span property="headline">Go 语言精进之路学习笔记</span></h1> <div class="page-info"><!----> <!----><!----><span aria-label="Writing Date📅" data-balloon-pos="down" class="time-info"><svg viewBox="0 0 1030 1024" xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 0 1-33.473-33.473V143.657H180.6A134.314 134.314 0 0 0 46.66 277.595v535.756A134.314 134.314 0 0 0 180.6 947.289h669.74a134.36 134.36 0 0 0 133.94-133.938V277.595a134.314 134.314 0 0 0-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 0 1-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 0 1-33.472 33.473z" fill="currentColor"></path></svg> <span property="datePublished">2024-2-24</span></span><span role="navigation" aria-label="Category🌈" data-balloon-pos="down" class="category-info enable"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon category-icon"><path d="M148.41 106.992h282.176c22.263 0 40.31 18.048 40.31 40.31V429.48c0 22.263-18.047 40.31-40.31 40.31H148.41c-22.263 0-40.311-18.047-40.311-40.31V147.302c0-22.263 18.048-40.31 40.311-40.31zm-.854 446.486H429.73c22.263 0 40.311 18.048 40.311 40.31v282.176c0 22.263-18.048 40.312-40.31 40.312H147.555c-22.263 0-40.311-18.049-40.311-40.312V593.79c0-22.263 18.048-40.311 40.31-40.311zm446.371-446.486h282.176c22.263 0 40.31 18.048 40.31 40.31V429.48c0 22.263-18.047 40.31-40.31 40.31H593.927c-22.263 0-40.311-18.047-40.311-40.31V147.302c0-22.263 18.048-40.31 40.31-40.31zm136.293 813.51H623.926c-40.925 0-74.22-33.388-74.22-74.425V623.992c0-41.038 33.387-74.424 74.425-74.424h222.085c41.038 0 74.424 33.226 74.424 74.067v114.233c0 10.244-8.304 18.548-18.547 18.548s-18.548-8.304-18.548-18.548V623.635c0-20.388-16.746-36.974-37.33-36.974H624.13c-20.585 0-37.331 16.747-37.331 37.33v222.086c0 20.585 16.654 37.331 37.126 37.331H730.22c10.243 0 18.547 8.304 18.547 18.547 0 10.244-8.304 18.547-18.547 18.547z" fill="currentColor"></path></svg> <span property="articleSection">Backend</span></span><span aria-label="Tags🏷" data-balloon-pos="down"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon tag-icon"><path d="M939.902 458.563 910.17 144.567c-1.507-16.272-14.465-29.13-30.737-30.737L565.438 84.098h-.402c-3.215 0-5.726 1.005-7.634 2.913l-470.39 470.39a10.004 10.004 0 0 0 0 14.164l365.423 365.424c1.909 1.908 4.42 2.913 7.132 2.913s5.223-1.005 7.132-2.913l470.39-470.39c2.01-2.11 3.014-5.023 2.813-8.036zm-240.067-72.121c-35.458 0-64.286-28.828-64.286-64.286s28.828-64.285 64.286-64.285 64.286 28.828 64.286 64.285-28.829 64.286-64.286 64.286z" fill="currentColor"></path></svg> <ul class="tags-wrapper"><li class="tag clickable tag0"><span role="navigation">基础知识</span></li></ul> <meta property="keywords" content="基础知识"></span><span aria-label="Reading Time⌛" data-balloon-pos="down" class="reading-time-info"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon timer-icon"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z" fill="currentColor"></path></svg> <span>About 32 min</span> <meta property="timeRequired" content="PT32M"></span></div> <!----> <hr></div> <div class="anchor-place-holder"><aside id="anchor"><div class="anchor-wrapper"><ul class="anchor-list"><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#前言" class="anchor-link heading2"><div>前言</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解-go-语言的设计哲学" class="anchor-link heading2"><div>理解 GO 语言的设计哲学</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用一致的变量声明形式" class="anchor-link heading2"><div>使用一致的变量声明形式</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#包级变量" class="anchor-link heading3"><div>包级变量</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#局部变量" class="anchor-link heading3"><div>局部变量</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用无类型常量简化代码" class="anchor-link heading2"><div>使用无类型常量简化代码</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用-iota-实现枚举常量" class="anchor-link heading2"><div>使用 iota 实现枚举常量</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量定义零值可用的类型" class="anchor-link heading2"><div>尽量定义零值可用的类型</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用复合字面值作为初值构造器" class="anchor-link heading2"><div>使用复合字面值作为初值构造器</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#结构体复合字面值" class="anchor-link heading3"><div>结构体复合字面值</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#数组-切面复合字面值" class="anchor-link heading3"><div>数组/切面复合字面值</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#map-复合字面值" class="anchor-link heading3"><div>Map 复合字面值</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解切片实现原理并高效使用" class="anchor-link heading2"><div>了解切片实现原理并高效使用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#切片究竟是什么" class="anchor-link heading3"><div>切片究竟是什么</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#动态扩容" class="anchor-link heading3"><div>动态扩容</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量使用-cap-参数创建切片" class="anchor-link heading3"><div>尽量使用 cap 参数创建切片</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-map-实现原理并高效使用" class="anchor-link heading2"><div>了解 map 实现原理并高效使用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-map" class="anchor-link heading3"><div>了解 map</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#map-的内部实现" class="anchor-link heading3"><div>map 的内部实现</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-string-实现原理并高效使用" class="anchor-link heading2"><div>了解 string 实现原理并高效使用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#string-的高效构造" class="anchor-link heading3"><div>string 的高效构造</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解-go-语言的包导入" class="anchor-link heading2"><div>理解 Go 语言的包导入</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解-go-表达式的求值顺序" class="anchor-link heading2"><div>理解 Go 表达式的求值顺序</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解-go-语言代码块和作用域" class="anchor-link heading2"><div>理解 Go 语言代码块和作用域</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解-go-语言控制语句惯用法和使用注意事项" class="anchor-link heading2"><div>理解 Go 语言控制语句惯用法和使用注意事项</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用-if-语句时遵循快乐路径原则" class="anchor-link heading3"><div>使用 if 语句时遵循快乐路径原则</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#for-range-循环" class="anchor-link heading3"><div>for range 循环</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#明确-break-和-continue-执行后的真实目的地" class="anchor-link heading3"><div>明确 break 和 continue 执行后的真实目的地</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量使用-case-替换-fallthrough" class="anchor-link heading3"><div>尽量使用 case 替换 fallthrough</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#在-init-函数中检查包级变量的初始状态" class="anchor-link heading2"><div>在 init 函数中检查包级变量的初始状态</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#init-函数" class="anchor-link heading3"><div>Init 函数</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#init-函数的作用" class="anchor-link heading3"><div>Init 函数的作用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用-init-函数检查包级变量的初始状态" class="anchor-link heading3"><div>使用 init 函数检查包级变量的初始状态</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#让自己习惯于函数是一等公民" class="anchor-link heading2"><div>让自己习惯于函数是一等公民</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#函数的特殊运用" class="anchor-link heading3"><div>函数的特殊运用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用-defer-让函数更简洁、更健壮" class="anchor-link heading2"><div>使用 defer 让函数更简洁、更健壮</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#运作机制" class="anchor-link heading3"><div>运作机制</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#常见用法" class="anchor-link heading3"><div>常见用法</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#关于-defer-的几个问题" class="anchor-link heading3"><div>关于 defer 的几个问题</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#理解方法的本质以选择正确的-receiver-类型" class="anchor-link heading2"><div>理解方法的本质以选择正确的 receiver 类型</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#方法集合决定接口实现" class="anchor-link heading2"><div>方法集合决定接口实现</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解变长参数函数的妙用" class="anchor-link heading2"><div>了解变长参数函数的妙用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解接口类型变量的内部表示" class="anchor-link heading2"><div>了解接口类型变量的内部表示</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量定义小接口" class="anchor-link heading2"><div>尽量定义小接口</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量避免使用空接口作为函数参数类型" class="anchor-link heading2"><div>尽量避免使用空接口作为函数参数类型</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用接口作为程序水平组合的连接点" class="anchor-link heading2"><div>使用接口作为程序水平组合的连接点</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用接口提高代码的可测试性" class="anchor-link heading2"><div>使用接口提高代码的可测试性</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#优先考虑并发设计" class="anchor-link heading2"><div>优先考虑并发设计</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-goroutine-的调度原理" class="anchor-link heading2"><div>了解 goroutine 的调度原理</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#goroutine-调度模型与演进过程" class="anchor-link heading3"><div>Goroutine 调度模型与演进过程</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#gmp-调度" class="anchor-link heading3"><div>GMP 调度</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#掌握-go-并发模型和常见并发模式" class="anchor-link heading2"><div>掌握 Go 并发模型和常见并发模式</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-channel-的妙用" class="anchor-link heading2"><div>了解 channel 的妙用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#无缓冲-channel" class="anchor-link heading3"><div>无缓冲 channel</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#带缓冲-channel" class="anchor-link heading3"><div>带缓冲 channel</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#nil-channel-的使用" class="anchor-link heading3"><div>Nil channel 的使用</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#与-select-结合使用的一些惯用法" class="anchor-link heading3"><div>与 select 结合使用的一些惯用法</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解-sync-包的正确用法" class="anchor-link heading2"><div>了解 Sync 包的正确用法</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#使用-atomic-包实现伸缩性更好的并发读取" class="anchor-link heading2"><div>使用 atomic 包实现伸缩性更好的并发读取</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#了解错误处理的-4-种策略" class="anchor-link heading2"><div>了解错误处理的 4 种策略</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#尽量优化反复出现的-if-err-nil" class="anchor-link heading2"><div>尽量优化反复出现的 if err != nil</div></a></li><li class="anchor"><a href="/blog/Backend/golang_newbee_getting_better/#不要使用-panic-进行正常的错误处理" class="anchor-link heading2"><div>不要使用 panic 进行正常的错误处理</div></a></li></ul></div></aside></div> <!----> <div class="content__content-top"></div> <div class="theme-default-content content__default"><h1 id="go-语言精进之路学习笔记"><a href="#go-语言精进之路学习笔记" class="header-anchor">#</a> Go 语言精进之路学习笔记</h1> <h2 id="前言"><a href="#前言" class="header-anchor">#</a> 前言</h2> <p>《Go 语言精进之路》这本书真的非常好，深入讲解了 Go 语言的方方面面，是入门的不二之选。本文是在学习《Go 语言精进之路》时所做的一些摘要和记录。</p> <h2 id="理解-go-语言的设计哲学"><a href="#理解-go-语言的设计哲学" class="header-anchor">#</a> 理解 GO 语言的设计哲学</h2> <ul><li>追求简单，少即是多</li> <li>偏好组合，正交耦合</li> <li>原生并发，轻量高效</li> <li>面向工程，自带电池</li></ul> <p>Go 特点：</p> <ul><li>语法简洁，只有 25 个关键字</li> <li>内置垃圾收集，降低内存管理心智负担</li> <li>没有头文件</li> <li>显式依赖</li> <li>没有循环依赖</li> <li>常量只是数字</li> <li>首字母大小写决定可见性</li> <li>任何类型都可以拥有方法</li> <li>没有子类型继承</li> <li>没有算数转换</li> <li>接口是隐式的</li> <li>方法就是函数</li> <li>接口只是方法集合</li> <li>方法仅按照名称匹配</li> <li>没有构造或析构函数</li> <li>赋值不是表达式</li> <li>没有指针算数</li> <li>内存总是初始化为零值</li> <li>没有类型注解语法</li> <li>没有模板或泛型</li> <li>没有异常</li> <li>内置字符串、切片、map 类型</li> <li>内置数据边界检查</li> <li>内置并发支持</li> <li>……</li></ul> <h2 id="使用一致的变量声明形式"><a href="#使用一致的变量声明形式" class="header-anchor">#</a> 使用一致的变量声明形式</h2> <h3 id="包级变量"><a href="#包级变量" class="header-anchor">#</a> 包级变量</h3> <p>只能使用带有 var 关键字的变量声明形式</p> <ol><li>声明并同时显式初始化</li> <li>声明并延迟初始化</li> <li>声明聚类与就近原则</li></ol> <ul><li>延迟初始化的变量放在一个 var 块</li> <li>声明并显式初始化的变量放在另一个 var 块</li> <li>尽可能在第一次使用变量的位置去声明该变量</li></ul> <h3 id="局部变量"><a href="#局部变量" class="header-anchor">#</a> 局部变量</h3> <ol><li>对于延迟初始化的局部变量声明，采用带有 var 关键字的声明形式</li> <li>对于声明且显式初始化的局部变量，建议使用短变量声明形式</li> <li>尽量在分支控制时应用短变量声明形式</li></ol> <h2 id="使用无类型常量简化代码"><a href="#使用无类型常量简化代码" class="header-anchor">#</a> 使用无类型常量简化代码</h2> <p>无类型变量在参与变量赋值和计算过程时，无需显式类型转换，从而能够简化代码</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const (
+    SeekStart = 0
+    SeekCurrent = 1
+    SeekEnd = 2
+)
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><h2 id="使用-iota-实现枚举常量"><a href="#使用-iota-实现枚举常量" class="header-anchor">#</a> 使用 iota 实现枚举常量</h2> <p>Go 的 const 提供了隐式重复前一个非空表达式的机制，如</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const {
+    Apple, Banana = 11, 22
+    Strawberry, Grape
+    Pear, Watermelon
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>等价于</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const {
+    Apple, Banana = 11, 22
+    Strawberry, Grape = 11, 22
+    Pear, Watermelon = 11, 22
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>Itoa 是 Go 中一个预定义标识符，表示的是 const 声明块中每个常量所处位置在块中的偏移量。同时 itoa 也是一个无类型常量，可以向无类型常量那样自动参与不同类型的求值过程，而不需要进行显式类型转换。</p> <p>用法：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const {
+    _ = itoa   
+    IVP6_ONLY   // 1 
+    SOMAXCONN   // 2
+    SO_ERROR    // 3
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h2 id="尽量定义零值可用的类型"><a href="#尽量定义零值可用的类型" class="header-anchor">#</a> 尽量定义零值可用的类型</h2> <p>当通过声明或调用 new 为变量分配存储空间，或者通过复合文字字面量或调用 make 创建新值，且不提供显式初始化时，Go 会为变量或者值提供默认值。此外，零值初始是递归的，也就是数组、结构体等类型的零值初始化就是对其组成元素逐一进行零值初始化。</p> <p>零值可用：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>var zeroSlice []int
+zeroSlice = append(zeroSlice, 1)
+zeroSlice = append(zeroSlice, 2)
+
+var mu sync.Mutex
+mu.Lock()
+mu.Unlock()
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>注意：并不是所有类型都是零值可用，有几点注意事项：</p> <ol><li>在 append 场景下，零值可用的切片不能通过下标操作数据</li> <li><strong>Map 这种原生类型没有提供零值可用支持</strong></li> <li>零值可用类型要尽量避免值复制</li></ol> <h2 id="使用复合字面值作为初值构造器"><a href="#使用复合字面值作为初值构造器" class="header-anchor">#</a> 使用复合字面值作为初值构造器</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>a := [5]int{1,2,3,4,5}
+b := []int{1,2,3,4,5}
+m := map[int]string {1:&quot;hello&quot;,2:&quot;world&quot;}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h3 id="结构体复合字面值"><a href="#结构体复合字面值" class="header-anchor">#</a> 结构体复合字面值</h3> <p>Go 推荐使用 field: value 的复合字面值形式对 struct 类型变量进行值构造</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>type pipe struct {
+        wrMu sync.Mutex // Serialize Write operations
+        wrCh chan []byte
+        rdCh chan int
+        
+        once       sync.Once // Protects closing localDone
+        done  chan struct{}
+        rerr onceError
+        werr onceError
+}
+
+
+func Pipe() (* PipeReader, * PipeWriter) {
+        
+        p := &amp;pipe{
+            wrCh: make(chan []byte),
+            rdCh: make(chan int),
+            done: make(chan struct{}),
+        }
+        
+        return &amp;PipeReader{p}, &amp;PipeWriter{p}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br></div></div><p>复合字面值使得即便是类型零值，我们也会使用字面值构造器形式：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>s := myStruct{}     // 常用
+s := new(myStruct)  // 不常用
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><h3 id="数组-切面复合字面值"><a href="#数组-切面复合字面值" class="header-anchor">#</a> 数组/切面复合字面值</h3> <p>使用下标 idx 作为 filed: value 中的 field，例</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>s := [5]int{0: -10, 1:2, 2:3, 3:4, 4:5}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><h3 id="map-复合字面值"><a href="#map-复合字面值" class="header-anchor">#</a> Map 复合字面值</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>var unitMap = map[string]int64 {
+    &quot;ns&quot;: int64(Nanosecond),
+    &quot;us&quot;: int64(Microsecond),
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h2 id="了解切片实现原理并高效使用"><a href="#了解切片实现原理并高效使用" class="header-anchor">#</a> 了解切片实现原理并高效使用</h2> <h3 id="切片究竟是什么"><a href="#切片究竟是什么" class="header-anchor">#</a> 切片究竟是什么</h3> <p>切片之于数组就像是文件描述符之于文件。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>type slice struct {
+    array unsafe.Pointer   // 指向底层数组元素的指针
+    len int                // 切片长度
+    cap int                // 切片的最大容量
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f7a0ca4bd9c540229dc1ada6bb7bd255~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=3028&amp;h=1462&amp;s=356830&amp;e=png&amp;a=1&amp;b=fbfbfb" alt="image.png"></p> <p>创建切面： s := make([]byte, 5)</p> <p>创建对数组的切面：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>u := [10]byte{1,2,3,4,5,6,7,8,9,10}
+s := u[3:7]
+s.cap = 7, s.len = 4
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>对于同一个数组，可以创建多个切面，对每个切面的修改，都会反映到其它切面上，因为他们的底层是同一个数组</p> <h3 id="动态扩容"><a href="#动态扩容" class="header-anchor">#</a> 动态扩容</h3> <p>Append 会根据切片需要，在当前数组容量无法满足的情况下，动态分配新的数组，新数组长度按照一定算法扩展。新数组建立后，append 会将旧数组中的元素复制到新数组中，之后旧数组会被垃圾回收掉。这样通过数组切面化创建的切面，在切面 cap 触碰到数组的上界，再对切片进行 append 操作，切片就会和原来的数组解除绑定关系</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func growslice(et *_type, old slice, cap int) slice {
+
+        newcap := old.cap
+        doublecap := newcap + newcap
+        if cap &gt; doublecap {
+                newcap = cap
+        } else {
+                const threshold = 256
+                if old.cap &lt; threshold {
+                        newcap = doublecap
+                } else {
+                        // Check 0 &lt; newcap to detect overflow
+                        // and prevent an infinite loop.
+                        for 0 &lt; newcap &amp;&amp; newcap &lt; cap {
+                                // Transition from growing 2x for small slices
+                                // to growing 1.25x for large slices. This formula
+                                // gives a smooth-ish transition between the two.
+                                newcap += (newcap + 3*threshold) / 4
+                        }
+                        // Set newcap to the requested cap when
+                        // the newcap calculation overflowed.
+                        if newcap &lt;= 0 {
+                                newcap = cap
+                        }
+                }
+        }
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br></div></div><h3 id="尽量使用-cap-参数创建切片"><a href="#尽量使用-cap-参数创建切片" class="header-anchor">#</a> 尽量使用 cap 参数创建切片</h3> <p>避免频繁重新创建底层数组及拷贝元素</p> <h2 id="了解-map-实现原理并高效使用"><a href="#了解-map-实现原理并高效使用" class="header-anchor">#</a> 了解 map 实现原理并高效使用</h2> <h3 id="了解-map"><a href="#了解-map" class="header-anchor">#</a> 了解 map</h3> <ol><li>map 类型不支持零值可用，未显式赋初值的 map 类型变量的零值为 nil，对于处零值状态的 map 变量进行操作将会导致运行时 panic</li> <li>总是使用 comma, ok 惯用法来读取 map 中的值。即使要删除的 key 在 map 中不存在，也不会 panic</li> <li>遍历 map 的顺序不可信赖</li> <li>Map 实例不是并发写安全的，不支持并发读写</li> <li>尽量使用 cap 参数来创建 map，避免频繁扩容导致的性能损耗</li></ol> <h3 id="map-的内部实现"><a href="#map-的内部实现" class="header-anchor">#</a> map 的内部实现</h3> <p>Go 运行时使用一张哈希表来实现抽象的 map 类型</p> <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/035a7f2272b949e388ad2fa7893e21f1~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2508&amp;h=2004&amp;s=1357227&amp;e=png&amp;b=fafafa" alt="image.png"></p> <ul><li>count：当前 map 中的元素个数；对 map 类型变量运用 len 内置函数时，len 函数返回的就是 count 这个值。</li> <li>flags：当前 map 所处的状态标志，目前定义了 4 个状态值 ——iterator、oldIterator、hashWriting 和 sameSizeGrow。</li> <li>B：B 的值是 bucket 数量的以 2 为底的对数，即 2^B = bucket 数量。</li> <li>noverflow：overflow bucket 的大约数量。</li> <li>hash0：哈希函数的种子值。</li> <li>buckets：指向 bucket 数组的指针。</li> <li>oldbuckets：在 map 扩容阶段指向前一个 bucket 数组的指针。</li> <li>nevacuate：在 map 扩容阶段充当扩容进度计数器。所有下标号小于 nevacuate 的 bucket 都已经完成了数据排空和迁移操作。</li> <li>extra：可选字段。如果有 overflow bucket 存在，且 key、value 都因不包含指针而被内联（inline）的情况下，该字段将存储所有指向 overflow bucket 的指针，保证 overflow bucket 是始终可用的（不被垃圾回收掉）。</li> <li>真正用来存储键值对数据的是 bucket（桶），每个 bucket 中存储的是 Hash 值低 bit 位数值相同的元素，默认的元素个数为 BUCKETSIZE=8。当某个 bucket 的 8 个空槽（slot）都已填满且 map 尚未达到扩容条件时，运行时会建立 overflow bucket，并将该 overflow bucket 挂在上面 bucket 末尾的 overflow 指针上，这样两个 bucket 形成了一个链表结构，该结构的存在将持续到下一次 map 扩容。</li></ul> <p>hashcode:</p> <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/71c93a1bc7ce41768b844cc8f7c69238~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2508&amp;h=1470&amp;s=1067156&amp;e=png&amp;b=f8f8f8" alt="image.png"></p> <p>Go 运行时的 map 实现中引入了一个 LoadFactor（负载因子），当count &gt; LoadFactor * 2^B 或 overflow bucket 过多时，运行时会对 map 进行扩容，并重新在 bucket 间均衡分配数据。</p> <h2 id="了解-string-实现原理并高效使用"><a href="#了解-string-实现原理并高效使用" class="header-anchor">#</a> 了解 string 实现原理并高效使用</h2> <p>Go 中 string 的特点：</p> <ul><li>string 类型的数据是不可变的</li> <li>零值可用</li> <li>获取长度的时间复杂度是O(1)级别</li> <li>支持通过+/+=操作符进行字符串连接</li> <li>支持各种比较关系操作符：==、!= 、&gt;=、&lt;=、&gt;和&lt;</li></ul> <p>string 的内部表示：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>// $GOROOT/src/runtime/string.go 
+type stringStruct struct { 
+    str unsafe.Pointer 
+    len int
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/de6394a601574b97bb6645f9385e3fd9~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2482&amp;h=2296&amp;s=695250&amp;e=png&amp;a=1&amp;b=fdfdfd" alt="image.png"></p> <h3 id="string-的高效构造"><a href="#string-的高效构造" class="header-anchor">#</a> string 的高效构造</h3> <p>除了 +，Go还提供了其他一些构造字符串的方法，如</p> <ul><li>使用 fmt.Sprintf；</li> <li>使用 strings.Join；</li> <li>使用 strings.Builder；</li> <li>使用 bytes.Buffer。</li></ul> <p>基准测试结果：</p> <ul><li>做了预初始化的 strings.Builder 连接构建字符串效率最高；</li> <li>带有预初始化的 bytes.Buffer 和 strings.Join 这两种方法效率十分接近，分列二三位；</li> <li>未做预初始化的 strings.Builder、bytes.Buffer 和操作符连接在第三档次；</li> <li>fmt.Sprintf 性能最差，排在末尾。</li></ul> <p>由此可以得出一些结论：</p> <ul><li>在能预估出最终字符串长度的情况下，使用预初始化的strings.Builder连接构建字符串效率最高；</li> <li>strings.Join连接构建字符串的平均性能最稳定，如果输入的多个字符串是以[]string承载的，那么strings.Join也是不错的选择；</li> <li>使用操作符连接的方式最直观、最自然，在编译器知晓欲连接的字符串个数的情况下，使用此种方式可以得到编译器的优化处理；</li> <li>fmt.Sprintf虽然效率不高，但也不是一无是处，如果是由多种不同类型变量来构建特定格式的字符串，那么这种方式还是最适合的。</li></ul> <h2 id="理解-go-语言的包导入"><a href="#理解-go-语言的包导入" class="header-anchor">#</a> 理解 Go 语言的包导入</h2> <ol><li>Go 编译器在编译过程中必然要使用的是编译单元所依赖的包的源码</li> <li>Go 源码文件头部的包导入语句中 import 后面的部分是一个路径，路径的最后一个分段是目录名，而不是包名</li> <li>Go 编译器的包源码搜索路径由基本搜索路径和包导入路径组成，两者结合在一起后，编译器便可以确定一个包的所有依赖包的源码路径的集合</li> <li>同一源码文件的依赖包在同一源码搜索路径空间下的包名冲突问题可以由显式指定包名的方式解决</li></ol> <h2 id="理解-go-表达式的求值顺序"><a href="#理解-go-表达式的求值顺序" class="header-anchor">#</a> 理解 Go 表达式的求值顺序</h2> <ol><li>包级别变量声明语句中的表达式求值顺序由变量的声明顺序和初始化依赖关系决定，并且包级变量表达式求值顺序优先级最高</li> <li>表达式操作数中的函数、方法及 channel 操作按照普通求值顺序，即从左到右的顺序依次进行</li> <li>赋值语句求值分为两个阶段：先按照普通求值规则对等号左边的下标表达式、指针解引用表达式和等号右边的表达式中的操作数进行求值，然后按照从左到右的顺序对变量进行赋值</li> <li>重点关注 switch-case 和 select-case 语句中的表达式惰性求值的规则</li></ol> <h2 id="理解-go-语言代码块和作用域"><a href="#理解-go-语言代码块和作用域" class="header-anchor">#</a> 理解 Go 语言代码块和作用域</h2> <h2 id="理解-go-语言控制语句惯用法和使用注意事项"><a href="#理解-go-语言控制语句惯用法和使用注意事项" class="header-anchor">#</a> 理解 Go 语言控制语句惯用法和使用注意事项</h2> <h3 id="使用-if-语句时遵循快乐路径原则"><a href="#使用-if-语句时遵循快乐路径原则" class="header-anchor">#</a> 使用 if 语句时遵循快乐路径原则</h3> <ul><li>出现错误时，快速返回</li> <li>成功逻辑不要嵌入if-else中</li></ul> <h3 id="for-range-循环"><a href="#for-range-循环" class="header-anchor">#</a> for range 循环</h3> <ol><li>小心 for range 的循环变量重用</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>func main() {
+   var m = []int{1, 2, 3, 4, 5}
+   for i, v := range m {
+      go func() {
+         fmt.Println(i, v)
+      }()
+   }
+
+   time.Sleep(time.Second * 5)
+}
+
+➜  LearnGo go run main.go  
+4 5
+4 5
+4 5
+4 5
+4 5
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><p>=&gt;</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func main() {
+   var m = []int{1, 2, 3, 4, 5}
+   for i, v := range m {
+      go func(i, v int) {
+         fmt.Println(i, v)
+      }(i, v)
+   }
+
+   time.Sleep(time.Second * 5)
+}
+
+➜  LearnGo go run main.go  
+0 1
+4 5
+3 4
+2 3
+1 2
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><ol start="2"><li>注意参加迭代的是 range 表达式的副本</li> <li>String 类型迭代时，每次循环的单位是一个 rune，而不是一个 byte</li> <li>Map 类型迭代时，会得到一个 map 内部表示的副本，由于内部表示其实是一个 hmap 描述符结构的指针，因此对副本 map 的操作等同于对源 map 的操作</li> <li>Channel 在迭代时，也会创建一个 channel 的指针副本，指向原 channel；for range 会以阻塞读的方式阻塞在 channel 表达式上；当 channel 中无数据时，也会阻塞，直到 channel 关闭。</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>var c chan int
+for v := range c {
+    fmt.Println(v)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>将永远阻塞在这个 nil channel 上，直到 go panic</p> <h3 id="明确-break-和-continue-执行后的真实目的地"><a href="#明确-break-和-continue-执行后的真实目的地" class="header-anchor">#</a> 明确 break 和 continue 执行后的真实目的地</h3> <p>Break 语句结束执行并跳出的是同一函数内 break 语句所在的最内层的 for switch select 的执行。可以使用 break label来实现定向跳转。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func main() {
+    exit := make(chan interface{})
+
+    go func() {
+    loop:
+        for {
+            select {
+            case &lt;-time.After(time.Second):
+                fmt.Println(&quot;tick&quot;)
+            case &lt;-exit:
+                fmt.Println(&quot;exiting...&quot;)
+                break loop
+            }
+        }
+        fmt.Println(&quot;exit!&quot;)
+    }()
+
+    time.Sleep(3 * time.Second)
+    exit &lt;- struct{}{}
+
+    // 等待子goroutine退出
+    time.Sleep(3 * time.Second)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br></div></div><h3 id="尽量使用-case-替换-fallthrough"><a href="#尽量使用-case-替换-fallthrough" class="header-anchor">#</a> 尽量使用 case 替换 fallthrough</h3> <h2 id="在-init-函数中检查包级变量的初始状态"><a href="#在-init-函数中检查包级变量的初始状态" class="header-anchor">#</a> 在 init 函数中检查包级变量的初始状态</h2> <h3 id="init-函数"><a href="#init-函数" class="header-anchor">#</a> Init 函数</h3> <p>如果一个包定义了 init 函数，Go 运行时会负责在该包初始化时候调用它的 init 函数。一个Go 包可以拥有多个 init 函数，每个源文件中可以定义多个 init 函数。在初始化时，Go 运行时会按照一定次序逐一调用该包的 init 函数。Go 会保证 init 函数的调用是按照一定顺序依次执行的，不会并发执行，每个 init 函数一定只会执行一次。</p> <p>多个文件中的 init 函数按照文件编译顺序依次执行，同一个文件中的 init 函数按照声明顺序依次执行。因此，不要依赖 init 函数的执行顺序。</p> <h3 id="init-函数的作用"><a href="#init-函数的作用" class="header-anchor">#</a> Init 函数的作用</h3> <p>适合做包级数据的初始化及初始状态检查工作</p> <h3 id="使用-init-函数检查包级变量的初始状态"><a href="#使用-init-函数检查包级变量的初始状态" class="header-anchor">#</a> 使用 init 函数检查包级变量的初始状态</h3> <ol><li>重置包级变量值</li> <li>对包级变量进行初始化，保证其后续可用</li> <li>Init 函数中的注册模式</li> <li>Init 函数中检查失败的处理方法：建议直接让程序 panic，快速退出</li></ol> <h2 id="让自己习惯于函数是一等公民"><a href="#让自己习惯于函数是一等公民" class="header-anchor">#</a> 让自己习惯于函数是一等公民</h2> <p>Go 中的函数可以像普通整型值那样被创建和使用</p> <h3 id="函数的特殊运用"><a href="#函数的特殊运用" class="header-anchor">#</a> 函数的特殊运用</h3> <p>进行显式类型转换</p> <p>我们想将 MyAdd 方法赋值给 BinaryAdd 接口，直接赋值不行，我们就需要一个自定义类，这个自定义类的声明和原方法一致，然后让这个类型实现 BinaryAdd 接口。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>type BinaryAddr interface {
+    Add(int, int) int
+}
+
+func MyAdd(x, y int) int {
+    return x + y
+}
+
+func main() {
+    var i BinaryAddr = MyAddrFunc(MyAdd)
+    fmt.Println(i.Add(5,6))
+}
+
+type MyAdderFunc func(int, int) int
+
+func (f MyAdderFunc) Add(x, y int) int {
+    return f(x, y)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><h2 id="使用-defer-让函数更简洁、更健壮"><a href="#使用-defer-让函数更简洁、更健壮" class="header-anchor">#</a> 使用 defer 让函数更简洁、更健壮</h2> <h3 id="运作机制"><a href="#运作机制" class="header-anchor">#</a> 运作机制</h3> <ol><li>在 Go 中，只有在函数和方法内部才能使用 defer</li> <li>defer 关键字后面只能接函数或方法，这些函数被称为 deferred 函数，defer 将他们注册在其所在 goroutine 用于存放 defer 函数的栈数据结构中，在执行 defer 的函数退出前，按照后进先出的顺序依次执行</li></ol> <h3 id="常见用法"><a href="#常见用法" class="header-anchor">#</a> 常见用法</h3> <ol><li>拦截 panic</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>func makeSlice(n int) []byte {
+    defer func() {
+        if recover() != nil {
+            panic(ErrTooLarge)
+        }
+    }()
+    
+    return make([]byte, n)
+ }
+ // 
+ func bar() {
+     panic(-1)
+ }
+ 
+ func foo() {
+     defer func() {
+         if e := recover(); e != nil {
+         }
+     }()
+     bar()
+ }             
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><p>defer 在出现 panic 的时候仍然能够被调度执行</p> <ol start="2"><li>修改函数的具名返回值</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>func foo(a, b int) (x, y int) {
+    defer func() {
+        x = x * 5
+        y = y * 10
+    }()
+    
+    x = a + 5
+    y = b + 6
+    return
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><ol start="3"><li>输出调试信息</li> <li>还原变量旧值</li></ol> <h3 id="关于-defer-的几个问题"><a href="#关于-defer-的几个问题" class="header-anchor">#</a> 关于 defer 的几个问题</h3> <ol><li>明确哪些函数可以作为 deferred 函数</li></ol> <p>对于有返回值的自定义函数或者方法，返回值会在 defer 函数被调度执行的时候自动被丢弃。</p> <ol start="2"><li>掌握 defer 关键字后表达式的求值时机</li></ol> <p>Defer 关键字后面的表达式是将 deferred 函数注册到 deferred 函数栈的时候进行求值的。</p> <ol start="3"><li>知晓 defer 带来的性能损耗</li></ol> <h2 id="理解方法的本质以选择正确的-receiver-类型"><a href="#理解方法的本质以选择正确的-receiver-类型" class="header-anchor">#</a> 理解方法的本质以选择正确的 receiver 类型</h2> <p>Go 方法的一般声明形式：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func (receiver T/*T) MethodName(param list) (return list) {
+
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>Go 方法的特点：</p> <ol><li>方法的首字母是否大写决定了该方法是不是导出方法</li> <li>方法定义要与类型声明放在同一个包里。因此，不能为原生类型添加方法，只能为自定义类型添加方法。</li></ol> <p>Go 方法的本质：一个以方法所绑定类型实例为第一个参数的普通函数。</p> <h2 id="方法集合决定接口实现"><a href="#方法集合决定接口实现" class="header-anchor">#</a> 方法集合决定接口实现</h2> <ol><li><p>对于非接口类型的自定义类型 T，其方法集合由所有 receiver 为 T 类型的方法组成；而类型为 * T 的方法集合则包含所有 receiver 为 T 和 T * 类型的方法。</p></li> <li><p>类型嵌入：</p></li></ol> <ul><li><p>接口类型中嵌入接口类型：嵌入其他接口类型而创建的新接口类型的方法集合包含了被嵌入接口类型的方法集合</p></li> <li><p>结构体类型中嵌入接口类型：在结构体类型中嵌入接口类型后，该结构体类型的方法集合中将包含被嵌入接口类型的方法集合</p></li> <li><p>结构体类型中嵌入结构体类型：在结构体类型中嵌入结构体类型为 Gopher 提供了一种实现 “继承” 的手段，外部的结构体类型 T 可以 “继承” 嵌入的结构体类型的所有方法的实现，并且无论是 T 类型的变量实例还是 T 指针类型变量实例，都可以调用所有 “继承” 的方法</p></li></ul> <ol start="3"><li>Define 类型</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>type MyInterface I
+type Mystruct T
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><ul><li>基于接口类型创建的defined类型与原接口类型的方法集合是一致的</li> <li>基于自定义非接口类型创建的 defined 类型则并没有 “继承” 原类型的方法集合，新的 defined 类型的方法集合是空的。方法集合决定接口实现。基于自定义非接口类型的 defined 类型的方法集合为空，这决定了即便原类型实现了某些接口，基于其创建的 defined 类型也没有 “继承” 这一隐式关联。新 defined 类型要想实现那些接口，仍需重新实现接口的所有方法。</li></ul> <ol start="4"><li>类型别名</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>type T1 = T
+type Interface1 = Interface
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p>类型别名与原类型拥有完全相同的方法集合，无论原类型是接口类型还是非接口类型。</p> <h2 id="了解变长参数函数的妙用"><a href="#了解变长参数函数的妙用" class="header-anchor">#</a> 了解变长参数函数的妙用</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>func Println(a ...interface{}) (n int, err error)
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ul><li>变长参数函数只能有一个“...T”类型形式参数，并且该形式参数应该为函数参数列表中的最后一个形式参数</li> <li>变长参数函数的“...T”类型形式参数在函数体内呈现为[]T类型的变量，我们可以将其理解为一个Go语法糖：</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>// chapter4/sources/variadic_function_1.go
+func sum(args ...int) int {
+    var total int
+
+    // 下面的args的类型为[]int
+    for _, v := range args {
+        total += v
+    }
+
+    return total
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><ul><li>参数函数可以在有限情况下模拟函数重载、可选参数和默认参数</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>// chapter4/sources/variadic_function_5.go
+
+func concat(sep string, args ...interface{}) string {
+    var result string
+    for i, v := range args {
+        if i != 0 {
+            result += sep
+        }
+        switch v.(type) {
+        case int, int8, int16, int32, int64,
+            uint, uint8, uint16, uint32, uint64:
+            result += fmt.Sprintf(&quot;%d&quot;, v)
+        case string:
+            result += fmt.Sprintf(&quot;%s&quot;, v)
+        case []int:
+            ints := v.([]int)
+            for i, v := range ints {
+                if i != 0 {
+                    result += sep
+                }
+                result += fmt.Sprintf(&quot;%d&quot;, v)
+            }
+        case []string:
+            strs := v.([]string)
+            result += strings.Join(strs, sep)
+        default:
+            fmt.Printf(&quot;the argument type [%T] is not supported&quot;, v)
+            return &quot;&quot;
+        }
+    }
+    return result
+}
+
+func main() {
+    println(concat(&quot;-&quot;, 1, 2))
+    println(concat(&quot;-&quot;, &quot;hello&quot;, &quot;gopher&quot;))
+    println(concat(&quot;-&quot;, &quot;hello&quot;, 1, uint32(2),
+        []int{11, 12, 13}, 17,
+        []string{&quot;robot&quot;, &quot;ai&quot;, &quot;ml&quot;},
+        &quot;hacker&quot;, 33))
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br></div></div><ul><li>变长参数函数实现功能选项模式</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>// chapter4/sources/variadic_function_9.go
+
+type FinishedHouse struct {
+    style                  int    // 0: Chinese; 1: American; 2: European
+    centralAirConditioning bool   // true或false
+    floorMaterial          string  // &quot;ground-tile&quot;或&quot;wood&quot;
+    wallMaterial           string // &quot;latex&quot;或&quot;paper&quot;或&quot;diatom-mud&quot;
+}
+
+type Option func(*FinishedHouse)
+
+func NewFinishedHouse(options ...Option) *FinishedHouse {
+    h := &amp;FinishedHouse{
+        // default options
+        style:                  0,
+        centralAirConditioning: true,
+        floorMaterial:          &quot;wood&quot;,
+        wallMaterial:           &quot;paper&quot;,
+    }
+
+    for _, option := range options {
+        option(h)
+    }
+
+    return h
+}
+
+func WithStyle(style int) Option {
+    return func(h *FinishedHouse) {
+        h.style = style
+    }
+}
+
+func WithFloorMaterial(material string) Option {
+    return func(h *FinishedHouse) {
+        h.floorMaterial = material
+    }
+}
+
+func WithWallMaterial(material string) Option {
+    return func(h *FinishedHouse) {
+        h.wallMaterial = material
+    }
+}
+
+func WithCentralAirConditioning(centralAirConditioning bool) Option {
+    return func(h *FinishedHouse) {
+        h.centralAirConditioning = centralAirConditioning
+    }
+}
+
+func main() {
+    fmt.Printf(&quot;%+v\n&quot;, NewFinishedHouse()) // 使用默认选项
+    fmt.Printf(&quot;%+v\n&quot;, NewFinishedHouse(WithStyle(1),
+        WithFloorMaterial(&quot;ground-tile&quot;),
+        WithCentralAirConditioning(false)))
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br></div></div><h2 id="了解接口类型变量的内部表示"><a href="#了解接口类型变量的内部表示" class="header-anchor">#</a> 了解接口类型变量的内部表示</h2> <p>接口的静态特性</p> <ul><li>接口类型变量具有静态类型</li> <li>支持在编译阶段的类型检查：当一个接口类型变量被赋值时，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法</li></ul> <p>接口的动态特性</p> <ul><li>接口类型变量兼具动态类型，即在运行时存储在接口类型变量中的值的真实类型</li> <li>接口类型变量在程序运行时可以被赋值为不同的动态类型变量</li></ul> <p>接口类型变量在运行时表示为 eface 和 iface</p> <p>iface：用于表示其余拥有方法的接口（interface）类型变量。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>// $GOROOT/src/runtime/runtime2.go 
+type iface struct { 
+    tab *itab 
+    data unsafe.Pointer 
+}
+
+// $GOROOT/src/runtime/runtime2.go 
+type itab struct { 
+    inter *interfacetype 
+    _type *_type 
+    hash uint32 
+    _ [4]byte 
+    fun [1]uintptr
+}
+
+// $GOROOT/src/runtime/type.go 
+type interfacetype struct {
+    typ _type
+    pkgpath name
+    mhdr []imethod 
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><p>eface：用于表示没有方法的空接口（empty interface）类型变量，即interface{}类型的变量。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>type eface struct { 
+    _type *_type 
+    data unsafe.Pointer
+}
+
+// $GOROOT/src/runtime/type.go 
+type _type struct { 
+    size uintptr 
+    ptrdata uintptr 
+    hash uint32 
+    tflag tflag
+    align uint8
+    fieldalign uint8 
+    kind uint8 
+    alg *typeAlg 
+    gcdata *byte 
+    str nameOff 
+    ptrToThis typeOff
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br></div></div><p>看一个例子：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>type T struct { 
+    n int
+    s string
+} 
+func main() { 
+    var t = T { 
+        n: 17, s: &quot;hello, interface&quot;,
+    } 
+    var ei interface{} = t // Go运行时使用eface结构表示ei 
+}
+
+func (T) M1() {} 
+func (T) M2() {} 
+
+type NonEmptyInterface interface { 
+    M1() 
+    M2() 
+} 
+
+func main() { 
+    var t = T{ 
+        n: 18, 
+        s: &quot;hello, interface&quot;, 
+    } 
+    var i NonEmptyInterface = t 
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br></div></div><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/129fb32e21b14ee3921d392ddd5e0d25~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1852&amp;h=1384&amp;s=467811&amp;e=png&amp;b=fefefe" alt="image.png"></p> <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/34844aea24174d7c934798ee7ccd6f0f~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=3638&amp;h=2290&amp;s=996010&amp;e=png&amp;a=1&amp;b=ffffff" alt="image.png"></p> <p>当前仅当两个接口类型变量的类型信息相同，且数据指针所指数据相同时，两个接口类型才是相等的。</p> <p>通过 println 可以输出接口类型变量的两部分指针变量的值</p> <p>接口类型变量的装箱由 Go 编译器和运行时共同完成</p> <h2 id="尽量定义小接口"><a href="#尽量定义小接口" class="header-anchor">#</a> 尽量定义小接口</h2> <ol><li>接口越小，抽象程度越高，被接纳度越高</li> <li>易于实现和测试</li> <li>契约职责单一，易于复用组合</li></ol> <h2 id="尽量避免使用空接口作为函数参数类型"><a href="#尽量避免使用空接口作为函数参数类型" class="header-anchor">#</a> 尽量避免使用空接口作为函数参数类型</h2> <ul><li>仅在处理未知类型数据时使用空接口类型</li> <li>在其他情况下，尽可能将你需要的行为抽象为带有方法的接口，并使用这样的非空接口类型作为函数或方法的参数</li></ul> <h2 id="使用接口作为程序水平组合的连接点"><a href="#使用接口作为程序水平组合的连接点" class="header-anchor">#</a> 使用接口作为程序水平组合的连接点</h2> <p>偏向组合，正交解耦</p> <p>通过接口进行水平组合的一种常见模式是使用接受接口类型参数的函数或方法。几种惯用形式：</p> <ol><li>基本形式</li></ol> <p>接受接口类型参数的函数或方法</p> <ol start="2"><li>包裹函数</li></ol> <p>接受接口类型参数，并返回与其参数类型相同的返回值，因此可以将多个接受同一接口类型参数的包裹函数组合成一条链来调用</p> <ol start="3"><li>适配器函数类型</li></ol> <p>是一种类型，可以将一个满足特定函数签名的普通函数显式转换成自身类型的实例，转换后的实例同时也是某个单方法接口类型的实现者。</p> <ol start="4"><li>中间件</li></ol> <p>中间件就是包裹函数和适配器函数类型结合的产物</p> <h2 id="使用接口提高代码的可测试性"><a href="#使用接口提高代码的可测试性" class="header-anchor">#</a> 使用接口提高代码的可测试性</h2> <p>为一段代码编写测试代码的前提是这段代码具有可测试性。如果被测代码耦合了对外部资源的依赖，那么被测代码的可测试性就不高。因此，可以使用接口来降低这种耦合。</p> <h2 id="优先考虑并发设计"><a href="#优先考虑并发设计" class="header-anchor">#</a> 优先考虑并发设计</h2> <p>并行：在处理器核数充足的情况下，启动多个单线程应用的实例</p> <p>并发：重新做应用结构设计，将应用分解成多个在基本执行单元中执行的，可能有一定关联关系的代码片段。Go 实现了 goroutine 这一由 Go 运行时负责调度的用户层轻量级线程为并发程序提供原生支持。特点：</p> <ol><li>资源占用小，每个 goroutine 的初始栈大小仅为 2KB</li> <li>由 GO 运行时而不是操作系统调度，上下文切换代价小</li> <li>语言原生支持</li> <li>语言内置 channel 作为 goroutine 间通信原语</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>chan&lt;- int是一个只能发送的通道，可以发送但是不能接收；
+&lt;-chan int是一个只能接收的通道，可以接收但是不能发送。
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><h2 id="了解-goroutine-的调度原理"><a href="#了解-goroutine-的调度原理" class="header-anchor">#</a> 了解 goroutine 的调度原理</h2> <h3 id="goroutine-调度模型与演进过程"><a href="#goroutine-调度模型与演进过程" class="header-anchor">#</a> Goroutine 调度模型与演进过程</h3> <ol><li>G-M 模型</li></ol> <p>每个 goroutine 对应于运行时中的一个抽象结构 G（goroutine），而被视作 “物理 CPU” 的操作系统线程则被抽象为另一个结构 M（machine）</p> <ol start="2"><li>G-P-M 模型</li></ol> <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f339b58bebba4ac3a2a80dafc798e188~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2566&amp;h=2148&amp;s=1217794&amp;e=png&amp;a=1&amp;b=fcfcfc" alt="image.png"></p> <p>P 是一个 “逻辑处理器”，每个 G 要想真正运行起来，首先需要被分配一个 P，即进入 P 的本地运行队列（local runq）中，这里暂忽略全局运行队列（global runq）那个环节。对于 G 来说，P 就是运行它的 “CPU”，可以说在 G 的眼里只有 P。但从 goroutine 调度器的视角来看，真正的 “CPU” 是 M，只有将 P 和 M 绑定才能让 P 的本地运行队列中的 G 真正运行起来。这样的 P 与 M 的关系就好比 Linux 操作系统调度层面用户线程（user thread）与内核线程（kernel thread）的对应关系：多对多（N:M）。</p> <h3 id="gmp-调度"><a href="#gmp-调度" class="header-anchor">#</a> GMP 调度</h3> <ol><li>抢占式调度</li></ol> <p>在 Go 程序启动时，运行时会启动一个名为 sysmon 的 M（一般称为监控线程），该 M 的特殊之处在于它无须绑定 P 即可运行（以 g0 这个 G 的形式）。</p> <p>sysmon 每 20us~10ms 启动一次，主要完成如下工作：</p> <ul><li>释放闲置超过 5 分钟的 span 物理内存</li> <li>如果超过 2 分钟没有垃圾回收，强制执行</li> <li>将长时间未处理的 netpoll 结果添加到任务队列</li> <li>向长时间运行的 G 任务发出抢占调度</li> <li>收回因 syscall 长时间阻塞的 P。</li></ul> <p>如果一个 G 任务运行超过 10ms，sysmon 就会认为其运行时间太久而发出抢占式调度的请求。一旦 G 的抢占标志位被设为 true，那么在这个 G 下一次调用函数或方法时，运行时便可以将 G 抢占并移出运行状态，放入 P 的本地运行队列中（如果 P 的本地运行队列已满，那么将放在全局运行队列中），等待下一次被调度。</p> <ol start="2"><li>channel 阻塞或网络 I/O 情况下的调度</li></ol> <p>如果 G 被阻塞在某个 channel 操作或网络 I/O 操作上，那么 G 会被放置到某个等待队列中，而 M 会尝试运行 P 的下一个可运行的 G。如果此时 P 没有可运行的 G 供 M 运行，那么 M 将解绑 P，并进入挂起状态。当 I/O 操作完成或 channel 操作完成，在等待队列中的 G 会被唤醒，标记为 runnable（可运行），并被放入某个 P 的队列中，绑定一个 M 后继续执行。</p> <ol start="3"><li>系统调用阻塞情况下的调度</li></ol> <p>如果 G 被阻塞在某个系统调用上，那么不仅 G 会阻塞，执行该 G 的 M 也会解绑 P（实质是被 sysmon 抢走了），与 G 一起进入阻塞状态。如果此时有空闲的 M，则 P 会与其绑定并继续执行其他 G；如果没有空闲的 M，但仍然有其他 G 要执行，那么就会创建一个新 M（线程）。当系统调用返回后，阻塞在该系统调用上的 G 会尝试获取一个可用的 P，如果有可用 P，之前运行该 G 的 M 将绑定 P 继续运行 G；如果没有可用的 P，那么 G 与 M 之间的关联将解除，同时 G 会被标记为 runnable，放入全局的运行队列中，等待调度器的再次调度。</p> <h2 id="掌握-go-并发模型和常见并发模式"><a href="#掌握-go-并发模型和常见并发模式" class="header-anchor">#</a> 掌握 Go 并发模型和常见并发模式</h2> <p>不要通过共享内存来通信，而应该通过通信来共享内存。</p> <p>三种并发原语</p> <ul><li>Goroutine，对应 CSP模型中的 P，封装了数据的处理逻辑，是 Go 运行时调度的基本单位</li> <li>channel，对应于 CSP 模型中的输入输出原语，用于 goroutine 间的通信和同步</li> <li>select，用于多路输入输出，可以让 goroutine 同时协调处理多个 channel</li></ul> <p>并发模式</p> <ol><li>创建模式：在内部创建一个 goroutine 并返回一个 channel 类型变量的函数</li> <li>退出模式</li></ol> <ul><li>分离模式：对于分离的 goroutine，创建它的 goroutine 不需要关心它的退出，这类 goroutine 在启动后即与其创建者彻底分离，生命周期由其主函数决定</li> <li>Join 模式：goroutine 的创建者需要等待新的 goroutine 的结束</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>var OK = errors.New(&quot;ok&quot;)
+
+func worker(args ...interface{}) error {
+   if len(args) == 0 {
+      return errors.New(&quot;invalid args&quot;)
+   }
+   interval, ok := args[0].(int)
+   if !ok {
+      return errors.New(&quot;invalid interval args&quot;)
+   }
+   time.Sleep(time.Second * (time.Duration(interval)))
+   return OK
+}
+
+func spawn(f func(args ...interface{}) error, args ...interface{}) chan error {
+   c := make(chan error)
+   go func() {
+      c &lt;- f(args...)
+   }()
+   return c
+}
+
+func main() {
+   done := spawn(worker, 5)
+   println(&quot;spawn worker1&quot;)
+   err := &lt;-done
+   fmt.Println(&quot;worker 1 done: &quot;, err)
+
+   done = spawn(worker)
+   println(&quot;spawn worker2&quot;)
+   err = &lt;- done
+   println(&quot;worker2 done: &quot;, err)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br></div></div><p>sync.WaitGroup 可以用来等待多个 goroutine 退出</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func worker(args ...interface{}) {
+   if len(args) == 0 {
+      return
+   }
+   interval, ok := args[0].(int)
+   if !ok {
+      return
+   }
+   time.Sleep(time.Second * (time.Duration(interval)))
+   return
+}
+
+func spawnGroup(n int, f func(args ...interface{}), args ...interface{}) chan struct{} {
+   c := make(chan struct{})
+   var wg sync.WaitGroup
+   for i := 0; i &lt; n; i++ {
+      wg.Add(1)
+      go func(i int) {
+         name := fmt.Sprintf(&quot;worker-%d&quot;, i)
+         f(args)
+         println(name, &quot;done&quot;)
+         wg.Done()
+      }(i)
+   }
+
+   go func() {
+      wg.Wait()
+      c &lt;- struct{}{}
+   }()
+
+   return c
+}
+
+func main() {
+   done := spawnGroup(5, worker, 3)
+   println(&quot;spawn a group of workers&quot;)
+   &lt;-done
+   println(&quot;group workers done&quot;)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br></div></div><p>超时等待机制：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func main() {
+   done := spawnGroup(100000, worker, 3)
+   println(&quot;spawn a group of workers&quot;)
+
+   timer := time.NewTimer(time.Second * 1)
+   defer timer.Stop()
+   select {
+   case &lt;-timer.C:
+      println(&quot;wait group workers exit timeout&quot;)
+   case &lt;-done:
+      println(&quot;group workers done&quot;)
+   }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><ul><li>Notify-and-wait 模式</li></ul> <p>通知单一 goroutine 退出</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func worker(i int) {
+   time.Sleep(time.Second * (time.Duration(i)))
+   return
+}
+
+func spawn(f func(i int)) chan string {
+   quit := make(chan string)
+   go func() {
+      var job chan int
+      for {
+         select {
+         case j := &lt;-job:
+            f(j)
+         case &lt;-quit:
+            quit &lt;- &quot;Ok&quot;
+         }
+      }
+   }()
+   return quit
+}
+
+func main() {
+   quit := spawn(worker)
+
+   time.Sleep(time.Second * 5)
+
+   quit &lt;- &quot;quit&quot;
+   timer := time.NewTimer(time.Second * 10)
+   defer timer.Stop()
+   select {
+   case status := &lt;-quit:
+      println(&quot;workder done: &quot;, status)
+   case &lt;-timer.C:
+      println(&quot;wait for worker exit timeout&quot;)
+   }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br></div></div><p>通知并等待多个 goroutine 退出：当使用 close 关闭 channel 时，所有阻塞在该 channel 上的 goroutine 都会得到通知</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>func worker(i int) {
+   time.Sleep(time.Second * (time.Duration(i)))
+}
+
+func spawnGroup(n int, f func(int)) chan struct{} {
+   quit := make(chan struct{})
+   job := make(chan int)
+
+   var wg sync.WaitGroup
+   for i := 0; i &lt; n; i++ {
+      wg.Add(1)
+      go func(i int) {
+         defer wg.Done()
+         name := fmt.Sprintf(&quot;worker %d&quot;, i)
+         for {
+            j, ok := &lt;-job
+            if !ok {
+               println(name, &quot;done&quot;)
+               return
+            }
+            worker(j)
+         }
+      }(i)
+   }
+
+   go func() {
+      &lt;-quit
+      close(job)
+      wg.Wait()
+      quit &lt;- struct{}{}
+
+   }()
+
+   return quit
+}
+
+func main() {
+   quit := spawnGroup(5, worker)
+
+   time.Sleep(time.Second * 5)
+
+   quit &lt;- struct{}{}
+   timer := time.NewTimer(time.Second * 5)
+   defer timer.Stop()
+   select {
+   case &lt;-quit:
+      println(&quot;workder done: &quot;)
+   case &lt;-timer.C:
+      println(&quot;wait for worker exit timeout&quot;)
+   }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br></div></div><ol start="3"><li>管道模式</li></ol> <p>Goroutine 从数据输入 channel 获取前一个环节生产的数据，进行处理后，通过 channel 发往下一个环节</p> <p>扇出模式：在某个处理环节，多个功能相同的 goroutine 从同一个 channel 读取数据并处理，直到该 channel 关闭</p> <p>扇入模式：将所有输入 channel 的数据汇聚到一个统一的输入 channel，然后处理程序再从这个 channel中读取数据并处理，直到该 channel 因为所有输入 channel 关闭而关闭</p> <ol start="4"><li>超时与取消模式</li></ol> <p>使用 context 包来实现取消模式</p> <h2 id="了解-channel-的妙用"><a href="#了解-channel-的妙用" class="header-anchor">#</a> 了解 channel 的妙用</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>c := make(chan int)
+c := make(chan int, 5)
+c &lt;- x
+&lt;- c
+x = &lt;- c
+x, ok = &lt;- c
+for i := range c
+close(c)
+
+c := make(chan chan int) // 一个无缓冲的chan int 类型的 channel
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>通过 select，可以同时在多个 channel 上进行发送接收操作</p> <h3 id="无缓冲-channel"><a href="#无缓冲-channel" class="header-anchor">#</a> 无缓冲 channel</h3> <p>不带有缓冲区，因此对无缓冲 channel 的接收和发送操作是同步的，因此发送和接收必须同时存在，否则就会陷入阻塞状态</p> <p>结论</p> <ul><li>发送动作一定<strong>发生</strong>在接受动作<strong>完成</strong>之前</li> <li>接受动作一定<strong>发生</strong>在发送动作<strong>完成</strong>之前</li></ul> <p>应用：</p> <ol><li>用作信号传递</li> <li>用作替代锁机制</li></ol> <h3 id="带缓冲-channel"><a href="#带缓冲-channel" class="header-anchor">#</a> 带缓冲 channel</h3> <p>对带缓冲 channel 的发送操作在缓冲区未满、接收操作在缓冲区非空的情况下是异步的。也就是说，当缓冲区无数据或者没满的时候，进行发送不会阻塞；当缓冲区满的时候，进行发送会阻塞；当缓冲区空的时候，进行接收会阻塞</p> <p>应用：</p> <ol><li>用作消息队列</li> <li>用作计数信号量：当前数据个数代表的是当前同时处于活动状态的 goroutine 的数量，容量代表允许同时处于活动状态的 goroutine 的最大数量。一个发往带缓冲 channel 的发送操作表示获得一个信号量槽位，一个来自带缓冲 channel 的接收操作表示释放一个信号量槽位。</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>var active = make(chan struct{}, 3)
+var jobs = make(chan int, 10)
+
+func main() {
+   go func() {
+      for i := 0; i &lt; 10; i++ {
+         jobs &lt;- i + 1
+      }
+      close(jobs)
+   }()
+
+   var wg sync.WaitGroup
+   for j := range jobs {
+      wg.Add(1)
+      go func(j int) {
+         active &lt;- struct{}{}
+         log.Printf(&quot;Handle job :%d&quot;, j)
+         time.Sleep(2 * time.Second)
+         &lt;-active
+         wg.Done()
+      }(j)
+   }
+   wg.Wait()
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br></div></div><ol start="3"><li>len(channel) 的应用</li></ol> <p>当 channel 是无缓冲 channel 时，len(channel) 总是返回 0</p> <p>当 channel 为带缓冲 channel 时，len(channel) 返回当前 channel 中尚未被读取的元素个数</p> <p>使用 len(channel) 来判空后，多个 goroutine 之间可能存在竞态，导致判断失效。</p> <p>因此常见的方法是将判空与读取放在一个事务中，将判满和写入放在一个事务中，这类事务可以通过 select 来实现。当是单接收多发送或者单发送多接收这两种场景时，可以使用 len(channel)</p> <h3 id="nil-channel-的使用"><a href="#nil-channel-的使用" class="header-anchor">#</a> Nil channel 的使用</h3> <p>对没有初始化的 channel 进行读写操作将会发生阻塞</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>对一个关闭的通道再发送值就会导致panic。
+对一个关闭的通道进行接收会一直获取值直到通道为空。
+对一个关闭的并且没有值的通道执行接收操作会得到对应类型的零值。
+关闭一个已经关闭的通道会导致panic。
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h3 id="与-select-结合使用的一些惯用法"><a href="#与-select-结合使用的一些惯用法" class="header-anchor">#</a> 与 select 结合使用的一些惯用法</h3> <ol><li>利用 default 分支避免阻塞</li></ol> <p>select 的 default 分支会在其它分支均因通信未就绪而无法被选择的时候执行，因此可以利用此特性来避免阻塞</p> <ol start="2"><li>实现超时机制</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>func worker() {
+   select {
+   case &lt;-c:
+   // ...
+   case &lt;-time.After(30 * time.Second):
+      return
+   }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><ol start="3"><li>实现心跳机制</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>func worker() {
+   heartbeat := time.NewTicker(30 * time.Second)
+   defer heartbeat.Stop()
+   for {
+      select {
+      case &lt;-c:
+      //
+      case &lt;-heartbeat.C:
+         //...
+      }
+   }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><h2 id="了解-sync-包的正确用法"><a href="#了解-sync-包的正确用法" class="header-anchor">#</a> 了解 Sync 包的正确用法</h2> <p>Go 提倡不通过共享内存来通信，而是通过通信来共享内存。</p> <ul><li>在使用 sync 包中类型时，推荐通过闭包方式或传递类型实例的地址或者指针的方式进行</li> <li>读写锁适用于具有一定并发量并且读多写少的场合</li> <li>synx.Cond 实例的初始化需要一个满足实现了 sync.Locker 接口的类型实例，通常使用 sync.Mutex</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>groupSignal := sync.NewCond(&amp;sync.Mutex{})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ul><li>使用 sync.Once 来实现单例模式</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>var instance *Foo
+var once sync.Once
+func getInstance() *Foo {
+   once.Do(func() {
+      instance = &amp;Foo{}  
+   })
+   return instance
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><ul><li>使用 sync.Pool 来减轻垃圾回收压力</li></ul> <p>sync.Pool 是一个数据对象缓冲池，具有如下特点：</p> <ul><li>是 goroutine 并发安全的，可以被多个 goroutine 同时使用</li> <li>放入该缓存池的数据对象的生命是暂时的，随时都可能被垃圾回收掉</li> <li>缓存池中的对象是可以被重复利用的</li></ul> <p>存在问题：如果从 pool 中返回的 buffer 是刚刚被大数据撑大的，并且即将长期被用于处理一些小数据，那么这个 buffer 占用的大内存将长时间得不到释放。Go 标准库的做法：</p> <ol><li>限制要放回缓存池中的数据对象的大小</li> <li>建立多级缓冲池</li></ol> <h2 id="使用-atomic-包实现伸缩性更好的并发读取"><a href="#使用-atomic-包实现伸缩性更好的并发读取" class="header-anchor">#</a> 使用 atomic 包实现伸缩性更好的并发读取</h2> <p>适合一些对性能十分敏感、并发量较大且读多写少的场合</p> <h2 id="了解错误处理的-4-种策略"><a href="#了解错误处理的-4-种策略" class="header-anchor">#</a> 了解错误处理的 4 种策略</h2> <ul><li>构造错误值</li> <li>透明错误处理策略</li></ul> <p>使用 Go 标准库提供的两个基本错误值构造方法 errors.New 和 fmt.Errorf构造出来的错误值，对错误处理方是透明的，这种策略被称为透明错误处理策略</p> <ul><li>哨兵错误处理策略</li></ul> <p>通过定义导出的错误值的方式，避免字符串的硬编码，这种值就称为哨兵值</p> <ul><li>错误值类型检视策略</li></ul> <h2 id="尽量优化反复出现的-if-err-nil"><a href="#尽量优化反复出现的-if-err-nil" class="header-anchor">#</a> 尽量优化反复出现的 if err != nil</h2> <h2 id="不要使用-panic-进行正常的错误处理"><a href="#不要使用-panic-进行正常的错误处理" class="header-anchor">#</a> 不要使用 panic 进行正常的错误处理</h2></div> <!----> <div class="content__content-bottom"></div> <footer class="page-meta"><div class="edit-link"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon edit-icon"><path d="M117.953 696.992 64.306 959.696l265.931-49.336 450.204-452.505-212.284-213.376-450.204 452.513zm496.384-296.326L219.039 797.993l-46.108-46.34L568.233 354.33l46.104 46.335zm345.357-122.99-114.45 115.04-212.288-213.377 114.45-115.035 212.288 213.371zm0 0" fill="currentColor"></path></svg> <a href="https://github.com/tamarous/blog/edit/master/docs/Backend/golang_newbee_getting_better.md" target="_blank" rel="noopener noreferrer">Edit this page</a></div> <div class="meta-item update-time"><span class="label">Last update:</span> <span class="info">February 24, 2024 15:04</span></div> <!----></footer> <!----> <!----> <!----> <div class="content__page-bottom"></div></main> <!----></div><div class="global-ui"><!----><!----><div id="pwa-install"><!----> <div id="install-modal-wrapper" style="display:none;"><div class="background"></div> <div class="install-modal"><div class="header"><button aria-label="Close" class="close-button"><svg width="23" height="22" xmlns="http://www.w3.org/2000/svg" class="icon close-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.12.358a1.224 1.224 0 011.729 0l8.92 8.914L20.686.358a1.224 1.224 0 011.73 1.728L13.497 11l8.92 8.913a1.222 1.222 0 11-1.73 1.729l-8.919-8.913-8.92 8.913a1.224 1.224 0 01-1.729-1.729L10.04 11l-8.92-8.914a1.222 1.222 0 010-1.728z" fill="currentColor"></path></svg></button> <div class="logo"><!----> <div class="title"><h1></h1> <p class="desc">This app can be installed on your PC or mobile device.  This will allow this web app to look and behave like any other installed app.  You will find it in your app lists and be able to pin it to your home screen, start menus or task bars.  This installed web app will also be able to safely interact with other apps and your operating system. </p></div></div></div> <div class="content"><div class="highlight"><!----> <!----></div> <div class="description"><h3>Description</h3> <p></p></div></div> <div class="button-wrapper"><button class="install-button">
+        Install <span></span></button> <button class="cancel-button">
+        Cancel
+      </button></div></div></div></div><div tabindex="-1" role="dialog" aria-hidden="true" class="pswp"><div class="pswp__bg"></div> <div class="pswp__scroll-wrap"><div class="pswp__container"><div class="pswp__item"></div> <div class="pswp__item"></div> <div class="pswp__item"></div></div> <div class="pswp__ui pswp__ui--hidden"><div class="pswp__top-bar"><div class="pswp__counter"></div> <button class="pswp__button pswp__button--close"></button> <button class="pswp__button pswp__button--share"></button> <button class="pswp__button pswp__button--fs"></button> <button class="pswp__button pswp__button--zoom"></button> <div class="pswp__preloader"><div class="pswp__preloader__icn"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div></div></div> <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class="pswp__share-tooltip"></div></div> <button class="pswp__button pswp__button--arrow--left"></button> <button class="pswp__button pswp__button--arrow--right"></button> <div class="pswp__caption"><div class="pswp__caption__center"></div></div></div></div></div></div></div>
+    <script src="/blog/assets/js/app.a5fc5e5c.js" defer></script><script src="/blog/assets/js/vendors~layout-Layout.7e998ec2.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound.4f318220.js" defer></script><script src="/blog/assets/js/page-Go语言精进之路学习笔记.f76e5743.js" defer></script><script src="/blog/assets/js/vendors~layout-Blog~layout-Layout~layout-NotFound~layout-Slide.335ce4c4.js" defer></script>
+  </body>
+</html>
