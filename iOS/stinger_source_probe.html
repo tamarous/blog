@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en-US" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.20" />
+    <meta name="theme" content="VuePress Theme Hope 2.0.0-rc.73" />
+    <style>
+      :root {
+        --vp-c-bg: #fff;
+      }
+
+      [data-theme="dark"] {
+        --vp-c-bg: #1b1b1f;
+      }
+
+      html,
+      body {
+        background: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const userMode = localStorage.getItem("vuepress-theme-hope-scheme");
+      const systemDarkMode =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <title>Stinger 源码分析 | Tamarous' blog</title><meta name="description" content="">
+    <link rel="stylesheet" href="/blog/assets/css/styles.d0a4da1b.css">
+    <link rel="preload" href="/blog/assets/js/runtime~app.882def59.js" as="script"><link rel="preload" href="/blog/assets/css/styles.d0a4da1b.css" as="style"><link rel="preload" href="/blog/assets/js/966.1ade2cbb.js" as="script"><link rel="preload" href="/blog/assets/js/app.bd0b79ff.js" as="script">
+    <link rel="prefetch" href="/blog/assets/js/Backend_golang_newbee_getting_better.html.e61c3128.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_easytuple_source_probe.html.7b6195de.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_aspects_source_probe.html.8b4d7720.js" as="script"><link rel="prefetch" href="/blog/assets/js/178.6922d326.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_sdwebimage_cache.html.5f84b864.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_stinger_source_probe.html.d67ffe0f.js" as="script"><link rel="prefetch" href="/blog/assets/js/Backend_gopool.html.9574efe2.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_dyld_shared_cache.html.8d361baf.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_masonry_source_probe.html.32b089b6.js" as="script"><link rel="prefetch" href="/blog/assets/js/iOS_index.html.59ed4d1d.js" as="script"><link rel="prefetch" href="/blog/assets/js/Backend_index.html.3634e7da.js" as="script"><link rel="prefetch" href="/blog/assets/js/index.html.67196f3b.js" as="script"><link rel="prefetch" href="/blog/assets/js/tag_基础知识_index.html.5f4f1675.js" as="script"><link rel="prefetch" href="/blog/assets/js/tag_源码分析_index.html.e0f69416.js" as="script"><link rel="prefetch" href="/blog/assets/js/tag_稳定性_index.html.a168b7b3.js" as="script"><link rel="prefetch" href="/blog/assets/js/category_backend_index.html.04d70a01.js" as="script"><link rel="prefetch" href="/blog/assets/js/category_ios_index.html.49316e42.js" as="script"><link rel="prefetch" href="/blog/assets/js/category_index.html.52f4511b.js" as="script"><link rel="prefetch" href="/blog/assets/js/timeline_index.html.c1555d93.js" as="script"><link rel="prefetch" href="/blog/assets/js/article_index.html.83f0dfd1.js" as="script"><link rel="prefetch" href="/blog/assets/js/tag_index.html.f73f1f0d.js" as="script"><link rel="prefetch" href="/blog/assets/js/star_index.html.f5201eed.js" as="script"><link rel="prefetch" href="/blog/assets/js/404.html.4a8378cb.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><!--[--><!--[--><span tabindex="-1"></span><a href="#main-content" class="vp-skip-link sr-only">Skip to main content</a><!--]--><!--[--><div class="theme-container external-link-icon has-toc" vp-container><!--[--><header id="navbar" class="vp-navbar" vp-navbar><div class="vp-navbar-start"><button type="button" class="vp-toggle-sidebar-button" title="Toggle Sidebar"><span class="icon"></span></button><!--[--><a class="route-link vp-brand" href="/blog/" aria-label="Take me home"><!----><!----><span class="vp-site-name">Tamarous&#39; blog</span></a><!--]--></div><div class="vp-navbar-center"><!--[--><nav class="vp-nav-links"><div class="vp-nav-item hide-in-mobile"><a class="route-link auto-link" href="/blog/" aria-label="Home" iconsizing="height"><!---->Home<!----></a></div><div class="vp-nav-item hide-in-mobile"><a class="route-link route-link-active auto-link" href="/blog/iOS/" aria-label="iOS" iconsizing="height"><!---->iOS<!----></a></div><div class="vp-nav-item hide-in-mobile"><a class="route-link auto-link" href="/blog/Backend/" aria-label="Backend" iconsizing="height"><!---->Backend<!----></a></div></nav><!--]--></div><div class="vp-navbar-end"><!--[--><!----><!----><div class="vp-nav-item hide-in-mobile"><button type="button" class="vp-color-mode-switch" id="color-mode-switch"><svg xmlns="http://www.w3.org/2000/svg" class="icon auto-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="auto icon" name="auto" style="display:block;"><path d="M512 992C246.92 992 32 777.08 32 512S246.92 32 512 32s480 214.92 480 480-214.92 480-480 480zm0-840c-198.78 0-360 161.22-360 360 0 198.84 161.22 360 360 360s360-161.16 360-360c0-198.78-161.22-360-360-360zm0 660V212c165.72 0 300 134.34 300 300 0 165.72-134.28 300-300 300z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="dark icon" name="dark" style="display:none;"><path d="M524.8 938.667h-4.267a439.893 439.893 0 0 1-313.173-134.4 446.293 446.293 0 0 1-11.093-597.334A432.213 432.213 0 0 1 366.933 90.027a42.667 42.667 0 0 1 45.227 9.386 42.667 42.667 0 0 1 10.24 42.667 358.4 358.4 0 0 0 82.773 375.893 361.387 361.387 0 0 0 376.747 82.774 42.667 42.667 0 0 1 54.187 55.04 433.493 433.493 0 0 1-99.84 154.88 438.613 438.613 0 0 1-311.467 128z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon light-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="light icon" name="light" style="display:none;"><path d="M952 552h-80a40 40 0 0 1 0-80h80a40 40 0 0 1 0 80zM801.88 280.08a41 41 0 0 1-57.96-57.96l57.96-58a41.04 41.04 0 0 1 58 58l-58 57.96zM512 752a240 240 0 1 1 0-480 240 240 0 0 1 0 480zm0-560a40 40 0 0 1-40-40V72a40 40 0 0 1 80 0v80a40 40 0 0 1-40 40zm-289.88 88.08-58-57.96a41.04 41.04 0 0 1 58-58l57.96 58a41 41 0 0 1-57.96 57.96zM192 512a40 40 0 0 1-40 40H72a40 40 0 0 1 0-80h80a40 40 0 0 1 40 40zm30.12 231.92a41 41 0 0 1 57.96 57.96l-57.96 58a41.04 41.04 0 0 1-58-58l58-57.96zM512 832a40 40 0 0 1 40 40v80a40 40 0 0 1-80 0v-80a40 40 0 0 1 40-40zm289.88-88.08 58 57.96a41.04 41.04 0 0 1-58 58l-57.96-58a41 41 0 0 1 57.96-57.96z"></path></svg></button></div><!----><!--]--><button type="button" class="vp-toggle-navbar-button" aria-label="Toggle Navbar" aria-expanded="false" aria-controls="nav-screen"><span><span class="vp-top"></span><span class="vp-middle"></span><span class="vp-bottom"></span></span></button></div></header><!----><!--]--><!----><div class="toggle-sidebar-wrapper"><span class="arrow start"></span></div><aside id="sidebar" class="vp-sidebar" vp-sidebar><!----><ul class="vp-sidebar-links"><li><a class="route-link auto-link vp-sidebar-link" href="/blog/" aria-label="/" iconsizing="both"><!---->/<!----></a></li><li><section class="vp-sidebar-group"><button class="vp-sidebar-header clickable active" type="button"><!----><span class="vp-sidebar-title">iOS 知识总结</span><span class="vp-arrow down"></span></button><ul class="vp-sidebar-links"><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/" aria-label="iOS 知识总结" iconsizing="both"><!---->iOS 知识总结<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/aspects_source_probe.html" aria-label="Aspects 源码分析" iconsizing="both"><!---->Aspects 源码分析<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/easytuple_source_probe.html" aria-label="EasyTuple 源代码分析" iconsizing="both"><!---->EasyTuple 源代码分析<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/masonry_source_probe.html" aria-label="Masonry 源代码剖析" iconsizing="both"><!---->Masonry 源代码剖析<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/sdwebimage_cache.html" aria-label="SDWebImage 源代码剖析-缓存策略" iconsizing="both"><!---->SDWebImage 源代码剖析-缓存策略<!----></a></li><li><a class="route-link route-link-active auto-link vp-sidebar-link active" href="/blog/iOS/stinger_source_probe.html" aria-label="Stinger 源码分析" iconsizing="both"><!---->Stinger 源码分析<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/iOS/dyld_shared_cache.html" aria-label="如何分析 iOS 系统库的实现" iconsizing="both"><!---->如何分析 iOS 系统库的实现<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><button class="vp-sidebar-header clickable" type="button"><!----><span class="vp-sidebar-title">后端精进之路</span><span class="vp-arrow end"></span></button><!----></section></li></ul><!----></aside><!--[--><main id="main-content" class="vp-page"><!--[--><!----><!----><nav class="vp-breadcrumb disable"></nav><div class="vp-page-title"><h1><!---->Stinger 源码分析</h1><!----><hr></div><!----><!----><div class="theme-hope-content" vp-content><h1 id="stinger-源码分析" tabindex="-1"><a class="header-anchor" href="#stinger-源码分析"><span>Stinger 源码分析</span></a></h1><h2 id="前言" tabindex="-1"><a class="header-anchor" href="#前言"><span>前言</span></a></h2><p><a class="route-link" href="/blog/iOS/aspects_source_probe.html">前文</a>分析过 <code>Aspects</code> 实现 AOP 的原理，而由饿了么开源的组件 <a href="https://github.com/eleme/Stinger" target="_blank" rel="noopener noreferrer">Stinger</a>同样是一个用于 AOP 的组件，并且饿了么宣称 <code>Stinger</code> 在性能上能够吊打 <code>Aspects</code>，并且给出了测试的数据。那么 <code>Stinger</code> 究竟是如何实现性能的飞跃的呢？让我们一起来探究一下。</p><blockquote><p>本文分析时的 <code>Stinger</code> 版本为 <a href="https://github.com/eleme/Stinger/tree/1.0.0" target="_blank" rel="noopener noreferrer">1.0.0</a>。</p></blockquote><h2 id="接口设计" tabindex="-1"><a class="header-anchor" href="#接口设计"><span>接口设计</span></a></h2><p><code>Stinger</code> 提供了同 <code>Aspects</code> 类似的接口，分别用于 Hook 一个类以及 Hook 一个实例对象：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>@interface NSObject (Stinger)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#pragma mark - For specific class</span></span>
+<span class="line"><span>+ (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block;</span></span>
+<span class="line"><span>+ (STHookResult)st_hookClassMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#pragma mark - For specific instance</span></span>
+<span class="line"><span>- (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>@end</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="stoption" tabindex="-1"><a class="header-anchor" href="#stoption"><span>STOption</span></a></h3><p><code>STOption</code> 用于设置 AOP 切面逻辑的执行时机及签名校验：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>typedef NS_OPTIONS(NSInteger, STOption) {</span></span>
+<span class="line"><span>  STOptionAfter = 0,     // 在原方法调用后执行</span></span>
+<span class="line"><span>  STOptionInstead = 1,   // 替换原方法</span></span>
+<span class="line"><span>  STOptionBefore = 2,    // 在原方法调用前执行</span></span>
+<span class="line"><span>  STOptionAutomaticRemoval = 1 &lt;&lt; 3, // Hook 逻辑只执行一次，第二次及以后都等同于调用原方法</span></span>
+<span class="line"><span>  STOptionWeakCheckSignature = 1 &lt;&lt; 16, // 弱校验模式</span></span>
+<span class="line"><span>};</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>在默认情况下，原方法和 hook block 的方法签名应该是完全相同的。</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>  //argument count</span></span>
+<span class="line"><span>  if (strictCheck &amp;&amp; methodSignature.numberOfArguments != blockSignature.numberOfArguments) {</span></span>
+<span class="line"><span>    NSCAssert(NO, @&quot;count of arguments isn&#39;t equal. Class: (%@), SEL: (%@), Identifier: (%@)&quot;, cls, NSStringFromSelector(sel), identifier);</span></span>
+<span class="line"><span>    return NO;</span></span>
+<span class="line"><span>  };</span></span>
+<span class="line"><span>  if (strictCheck) {</span></span>
+<span class="line"><span>    // from loc 2.</span></span>
+<span class="line"><span>    for (NSInteger i = 2; i &lt; methodSignature.numberOfArguments; i++) {</span></span>
+<span class="line"><span>      const char *methodType = [methodSignature getArgumentTypeAtIndex:i];</span></span>
+<span class="line"><span>      const char *blockType = [blockSignature getArgumentTypeAtIndex:i];</span></span>
+<span class="line"><span>      if (!methodType || !blockType || methodType[0] != blockType[0]) {</span></span>
+<span class="line"><span>        NSCAssert(NO, @&quot;argument (%zd) type isn&#39;t equal. Class: (%@), SEL: (%@), Identifier: (%@)&quot;, i, cls, NSStringFromSelector(sel), identifier);</span></span>
+<span class="line"><span>        return NO;</span></span>
+<span class="line"><span>      }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  }</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>当 <code>STOptionWeakCheckSignature</code> 选项开启时，<code>Stinger</code> 内部只会检查第一个参数和返回值的类型。</p><h3 id="sthookresult" tabindex="-1"><a class="header-anchor" href="#sthookresult"><span>STHookResult</span></a></h3><p><code>STHookResult</code>表示 Hook 的结果，有以下几种取值：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>typedef NS_ENUM(NSInteger, STHookResult) {</span></span>
+<span class="line"><span>  STHookResultSuccuss = 1, // fix typo</span></span>
+<span class="line"><span>  STHookResultSuccess = 1,</span></span>
+<span class="line"><span>  STHookResultErrorMethodNotFound = -1,</span></span>
+<span class="line"><span>  STHookResultErrorBlockNotMatched = -2,</span></span>
+<span class="line"><span>  STHookResultErrorIDExisted = -3,</span></span>
+<span class="line"><span>  STHookResultOther = -4,</span></span>
+<span class="line"><span>};</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="hook-一个类" tabindex="-1"><a class="header-anchor" href="#hook-一个类"><span>Hook 一个类</span></a></h3><blockquote><p>当 Hook 的对象是一个类的时候，Hook 逻辑对于这个类的所有实例都生效。</p></blockquote><p>Hook 一个类时，实质是调用 <code>hookMethod</code> 这个静态方法，当 Hook 的为实例方法时，传入类对象本身，当 Hook 的为类方法时，传入类的元类。</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>+ (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block {</span></span>
+<span class="line"><span>  return hookMethod(self, sel, option, identifier, block);</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>+ (STHookResult)st_hookClassMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block {</span></span>
+<span class="line"><span>  return hookMethod(object_getClass(self), sel, option, identifier, block);</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="hook-一个类的实例" tabindex="-1"><a class="header-anchor" href="#hook-一个类的实例"><span>Hook 一个类的实例</span></a></h3><blockquote><p>当 Hook 的对象是一个类的实例的时候，Hook 逻辑仅对这个特定的实例对象生效。</p></blockquote><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>- (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block {</span></span>
+<span class="line"><span>  @synchronized(self) {</span></span>
+<span class="line"><span>    Class stSubClass = getSTSubClass(self);</span></span>
+<span class="line"><span>    if (!stSubClass) return STHookResultOther;</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    STHookResult hookMethodResult = hookMethod(stSubClass, sel, option, identifier, block);</span></span>
+<span class="line"><span>    if (hookMethodResult != STHookResultSuccess) return hookMethodResult;</span></span>
+<span class="line"><span>    if (!objc_getAssociatedObject(self, STSubClassKey)) {</span></span>
+<span class="line"><span>      object_setClass(self, stSubClass);</span></span>
+<span class="line"><span>      objc_setAssociatedObject(self, STSubClassKey, stSubClass, OBJC_ASSOCIATION_ASSIGN);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    id&lt;STHookInfoPool&gt; instanceHookInfoPool = st_getHookInfoPool(self, sel);</span></span>
+<span class="line"><span>    if (!instanceHookInfoPool) {</span></span>
+<span class="line"><span>      instanceHookInfoPool = [STHookInfoPool poolWithTypeEncoding:nil originalIMP:NULL selector:sel];</span></span>
+<span class="line"><span>      st_setHookInfoPool(self, sel, instanceHookInfoPool);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    STHookInfo *instanceHookInfo = [STHookInfo infoWithOption:option withIdentifier:identifier withBlock:block];</span></span>
+<span class="line"><span>    return [instanceHookInfoPool addInfo:instanceHookInfo] ? STHookResultSuccess : STHookResultErrorIDExisted;</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>Hook 类实例的时候，由于目的是只让 Hook 逻辑对于这个特定的实例生效，那么其实只要将这个实例的类对象通过 runtime 修改为一个唯一的类，就可以将逻辑转换为 Hook 类对象的方法，因此其核心同样是 <code>hookMethod</code> 方法。</p><h2 id="hookmethod" tabindex="-1"><a class="header-anchor" href="#hookmethod"><span>hookMethod</span></a></h2><p>如前文所述，<code>hookMethod</code> 是 <code>Stinger</code> 的核心，它的实现如下：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>NS_INLINE STHookResult hookMethod(Class hookedCls, SEL sel, STOption option, STIdentifier identifier, id block) {</span></span>
+<span class="line"><span>  NSCParameterAssert(hookedCls);</span></span>
+<span class="line"><span>  NSCParameterAssert(sel);</span></span>
+<span class="line"><span>  NSCParameterAssert(identifier);</span></span>
+<span class="line"><span>  NSCParameterAssert(block);</span></span>
+<span class="line"><span>  Method m = class_getInstanceMethod(hookedCls, sel);</span></span>
+<span class="line"><span>  NSCAssert(m, @&quot;SEL (%@) doesn&#39;t has a imp in Class (%@) originally&quot;, NSStringFromSelector(sel), hookedCls);</span></span>
+<span class="line"><span>  if (!m) return STHookResultErrorMethodNotFound;</span></span>
+<span class="line"><span>  const char * typeEncoding = method_getTypeEncoding(m);</span></span>
+<span class="line"><span>  NSMethodSignature *methodSignature = [NSMethodSignature signatureWithObjCTypes:typeEncoding];</span></span>
+<span class="line"><span>  NSMethodSignature *blockSignature = st_getSignatureForBlock(block);</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  if (!isMatched(methodSignature, blockSignature, option, hookedCls, sel, identifier)) {</span></span>
+<span class="line"><span>    return STHookResultErrorBlockNotMatched;</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>  </span></span>
+<span class="line"><span>  IMP originalImp = method_getImplementation(m);</span></span>
+<span class="line"><span>  @synchronized(hookedCls) {</span></span>
+<span class="line"><span>    id&lt;STHookInfoPool&gt; hookInfoPool = st_getHookInfoPool(hookedCls, sel);</span></span>
+<span class="line"><span>    if (!hookInfoPool) {</span></span>
+<span class="line"><span>      hookInfoPool = [STHookInfoPool poolWithTypeEncoding:[NSString stringWithUTF8String:typeEncoding] originalIMP:NULL selector:sel];</span></span>
+<span class="line"><span>      hookInfoPool.hookedCls = hookedCls;</span></span>
+<span class="line"><span>      hookInfoPool.statedCls = [hookedCls class];</span></span>
+<span class="line"><span>      </span></span>
+<span class="line"><span>      IMP stingerIMP = [hookInfoPool stingerIMP];</span></span>
+<span class="line"><span>      hookInfoPool.originalIMP = originalImp;</span></span>
+<span class="line"><span>      if (!class_addMethod(hookedCls, sel, stingerIMP, typeEncoding)) {</span></span>
+<span class="line"><span>        class_replaceMethod(hookedCls, sel, stingerIMP, typeEncoding);</span></span>
+<span class="line"><span>      }</span></span>
+<span class="line"><span>      </span></span>
+<span class="line"><span>      st_setHookInfoPool(hookedCls, sel, hookInfoPool);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    if (st_isIntanceHookCls(hookedCls)) {</span></span>
+<span class="line"><span>      return STHookResultSuccess;</span></span>
+<span class="line"><span>    } else {</span></span>
+<span class="line"><span>      STHookInfo *hookInfo = [STHookInfo infoWithOption:option withIdentifier:identifier withBlock:block];</span></span>
+<span class="line"><span>      return [hookInfoPool addInfo:hookInfo] ? STHookResultSuccess :  STHookResultErrorIDExisted;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>粗略看来，这个方法内部的逻辑和 <code>Method Swizzling</code> 的步骤基本上类似，首先拿到被 hook 的 selector 的原始实现 originalImp，然后通过一个类 <code>STHookInfoPool</code> 的实例 hookInfoPool 拿到 stingerIMP，之后通过 <code>class_addMethod</code> 和 <code>class_replaceMethod</code> 来交换 selector 对应的实现。 hookInfoPool 实例，先尝试通过 hookedClass 和 selector 来获取：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>id&lt;STHookInfoPool&gt; st_getHookInfoPool(id obj, SEL key) {</span></span>
+<span class="line"><span>  NSCParameterAssert(obj);</span></span>
+<span class="line"><span>  NSCParameterAssert(key);</span></span>
+<span class="line"><span>  return objc_getAssociatedObject(obj, NSSelectorFromString([NSString stringWithFormat:@&quot;%@%@&quot;, STSelectorPrefix, NSStringFromSelector(key)]));</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>如果获得不到，则传入 selector 和 selector 对应的原方法的 IMP 的 type encoding 和 selector 来创建一个新的实例，并保存类对象和类的元类对象：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>// STHookInfoPool.m</span></span>
+<span class="line"><span>+ (instancetype)poolWithTypeEncoding:(NSString *)typeEncoding originalIMP:(IMP)imp selector:(SEL)sel {</span></span>
+<span class="line"><span>  STHookInfoPool *pool = [[STHookInfoPool alloc] init];</span></span>
+<span class="line"><span>  pool.typeEncoding = typeEncoding;</span></span>
+<span class="line"><span>  pool.originalIMP = imp;</span></span>
+<span class="line"><span>  pool.sel = sel;</span></span>
+<span class="line"><span>  return pool;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>- (instancetype)init {</span></span>
+<span class="line"><span>  if (self = [super init]) {</span></span>
+<span class="line"><span>    _beforeInfos = [[NSMutableArray alloc] init];</span></span>
+<span class="line"><span>    _insteadInfo = nil;</span></span>
+<span class="line"><span>    _afterInfos = [[NSMutableArray alloc] init];</span></span>
+<span class="line"><span>    _semaphore = dispatch_semaphore_create(1);</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>  return self;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>- (void)setTypeEncoding:(NSString *)typeEncoding {</span></span>
+<span class="line"><span>  _typeEncoding = typeEncoding;</span></span>
+<span class="line"><span>  _signature = typeEncoding ? [NSMethodSignature signatureWithObjCTypes:[typeEncoding UTF8String]]: nil;</span></span>
+<span class="line"><span>  _argsCount = _signature.numberOfArguments;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>- (void)setHookedCls:(Class)hookedCls {</span></span>
+<span class="line"><span>  _hookedCls = hookedCls;</span></span>
+<span class="line"><span>  _isInstanceHook = st_isIntanceHookCls(hookedCls);</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>- (void)setSel:(SEL)sel {</span></span>
+<span class="line"><span>  _sel = sel;</span></span>
+<span class="line"><span>  _uniqueKey = NSSelectorFromString([NSString stringWithFormat:@&quot;%@%@&quot;, STSelectorPrefix, NSStringFromSelector(sel)]);</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>在方法交换后，将 hookInfoPool 对象关联到 hookedClass 上。</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>void st_setHookInfoPool(id obj, SEL key, id&lt;STHookInfoPool&gt; infoPool) {</span></span>
+<span class="line"><span>  NSCParameterAssert(obj);</span></span>
+<span class="line"><span>  NSCParameterAssert(key);</span></span>
+<span class="line"><span>  objc_setAssociatedObject(obj, NSSelectorFromString([STSelectorPrefix stringByAppendingString:NSStringFromSelector(key)]), infoPool, OBJC_ASSOCIATION_RETAIN);</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>最后，通过 <code>st_isInstanceHook</code> 来判断是不是对 hookedCls 类实例的 hook，是的话直接返回，不是的话，生成一个 hookInfo 实例，加入到 hookInfoPool 中。</p><h2 id="libffi" tabindex="-1"><a class="header-anchor" href="#libffi"><span>libffi</span></a></h2><p>在继续分析之前，我们先停下来，简单了解下 <code>libffi</code> 的使用。</p><p>FFI（Foreign Function Interface，外部函数接口）允许在一门语言中动态地去调用另一门语言的代码，而<a href="https://github.com/libffi/libffi" target="_blank" rel="noopener noreferrer">libffi</a> 就是一种提供最底层支持、面向架构的 FFI。让我们通过两个例子来看下如何使用 <code>libffi</code>。</p><h3 id="直接调用-c-方法" tabindex="-1"><a class="header-anchor" href="#直接调用-c-方法"><span>直接调用 C 方法</span></a></h3><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>int hello(int a , int b) {</span></span>
+<span class="line"><span>    int x = a + b;</span></span>
+<span class="line"><span>    return x;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>int main() {</span></span>
+<span class="line"><span>    ffi_cif cif;</span></span>
+<span class="line"><span>    ffi_type *argTypes[] = {&amp;ffi_type_sint, &amp;ffi_type_sint};</span></span>
+<span class="line"><span>    ffi_prep_cif(&amp;cif, FFI_DEFAULT_ABI, 2, &amp;ffi_type_sint, argTypes);</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    int a = 123;</span></span>
+<span class="line"><span>    int b = 456;</span></span>
+<span class="line"><span>    void *args[] = {&amp;a, &amp;b};</span></span>
+<span class="line"><span>    int retValue;</span></span>
+<span class="line"><span>    ffi_call(&amp;cif, (void *)hello, &amp;retValue, args);</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    return 0;</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>总共分为以下几步：</p><ol><li>首先先生成一个 <code>ffi_cif</code> 对象 ，这个对象相当于 Objective-C 中的 Method Signature。</li><li>argsTypes 数组用于告诉 cif 每个参数的类型。</li><li>调用 <code>ffi_prep_cif</code> 来告诉 cif，参数的数量、返回值的类型。</li><li>最后调用 <code>ffi_call</code>，传入参数、保存返回值的地址和被调用方法的地址。</li></ol><h3 id="通用闭包函数" tabindex="-1"><a class="header-anchor" href="#通用闭包函数"><span>通用闭包函数</span></a></h3><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>/* Acts like puts with the file given at time of enclosure. */</span></span>
+<span class="line"><span>void puts_binding(ffi_cif *cif, unsigned int *ret, void* args[],</span></span>
+<span class="line"><span>    FILE *stream)</span></span>
+<span class="line"><span>{</span></span>
+<span class="line"><span>  *ret = fputs(*(char **)args[0], stream);</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>int main()</span></span>
+<span class="line"><span>{</span></span>
+<span class="line"><span>  ffi_cif cif;</span></span>
+<span class="line"><span>  ffi_type *args[1];</span></span>
+<span class="line"><span>  ffi_closure *closure;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  int (*bound_puts)(char *);</span></span>
+<span class="line"><span>  int rc;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  /* Allocate closure and bound_puts */</span></span>
+<span class="line"><span>  closure = ffi_closure_alloc(sizeof(ffi_closure), &amp;bound_puts);</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  if (closure)</span></span>
+<span class="line"><span>  {</span></span>
+<span class="line"><span>    /* Initialize the argument info vectors */</span></span>
+<span class="line"><span>    args[0] = &amp;ffi_type_pointer;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    /* Initialize the cif */</span></span>
+<span class="line"><span>    if (ffi_prep_cif(&amp;cif, FFI_DEFAULT_ABI, 1,</span></span>
+<span class="line"><span>          &amp;ffi_type_uint, args) == FFI_OK)</span></span>
+<span class="line"><span>    {</span></span>
+<span class="line"><span>      /* Initialize the closure, setting stream to stdout */</span></span>
+<span class="line"><span>      if (ffi_prep_closure_loc(closure, &amp;cif, puts_binding,</span></span>
+<span class="line"><span>            stdout, bound_puts) == FFI_OK)</span></span>
+<span class="line"><span>      {</span></span>
+<span class="line"><span>        printf(&quot;Before bound_put()\n&quot;);</span></span>
+<span class="line"><span>        rc = bound_puts(&quot;Hello World!&quot;);</span></span>
+<span class="line"><span>        /* rc now holds the result of the call to fputs */</span></span>
+<span class="line"><span>      }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  /* Deallocate both closure, and bound_puts */</span></span>
+<span class="line"><span>  ffi_closure_free(closure);</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  return 0;</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>在上述的例子中，通过<code>ffi_prep_closure_loc</code>创建了一个新的指向 puts_binding 方法的函数指针 bounds_puts，并且将 stdout 作为 user_data 传入到了 puts_binding 中。</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>fi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif, void (*fun) (ffi_cif *cif, void *ret, void **args, void *user_data), void *user_data, void *codeloc)</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div></div></div><p>实际上，可以将任意数据通过 user_data 塞到 fun 中。比如我们可以自定义一个类型，存储想要 hook 的方法的原始实现地址、方法参数、返回值等信息，那么我们就可以在 fun 中通过 user_data 拿到被 hook 方法的原始实现地址、方法参数及返回值，然后通过前面介绍的 <code>ffi_call</code> 来进行调用，这样便实现了一个能 hook 各种函数调用的通用闭包方法。</p><h2 id="stingerimp" tabindex="-1"><a class="header-anchor" href="#stingerimp"><span>stingerIMP</span></a></h2><p>stingerIMP 这个方法的实现就是对上文中 <code>libffi</code> 的利用：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>// STHookInfoPool.m</span></span>
+<span class="line"><span>- (StingerIMP)stingerIMP {</span></span>
+<span class="line"><span>  if (_stingerIMP == NULL) {</span></span>
+<span class="line"><span>    ffi_type *returnType = st_ffiTypeWithType(self.signature.methodReturnType);</span></span>
+<span class="line"><span>    NSCAssert(returnType, @&quot;can&#39;t find a ffi_type of %s&quot;, self.signature.methodReturnType);</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    NSUInteger argumentCount = self-&gt;_argsCount;</span></span>
+<span class="line"><span>    _args = malloc(sizeof(ffi_type *) * argumentCount) ;</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    for (int i = 0; i &lt; argumentCount; i++) {</span></span>
+<span class="line"><span>      ffi_type* current_ffi_type = st_ffiTypeWithType([self.signature getArgumentTypeAtIndex:i]);</span></span>
+<span class="line"><span>      NSCAssert(current_ffi_type, @&quot;can&#39;t find a ffi_type of %s&quot;, [self.signature getArgumentTypeAtIndex:i]);</span></span>
+<span class="line"><span>      _args[i] = current_ffi_type;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    _closure = ffi_closure_alloc(sizeof(ffi_closure), (void **)&amp;_stingerIMP);</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    if(ffi_prep_cif(&amp;_cif, FFI_DEFAULT_ABI, (unsigned int)argumentCount, returnType, _args) == FFI_OK) {</span></span>
+<span class="line"><span>      if (ffi_prep_closure_loc(_closure, &amp;_cif, _st_ffi_function, (__bridge void *)(self), _stingerIMP) != FFI_OK) {</span></span>
+<span class="line"><span>        NSCAssert(NO, @&quot;genarate IMP failed&quot;);</span></span>
+<span class="line"><span>      }</span></span>
+<span class="line"><span>    } else {</span></span>
+<span class="line"><span>      NSCAssert(NO, @&quot;OMG&quot;);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    </span></span>
+<span class="line"><span>    [self _genarateBlockCif];</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>  return _stingerIMP;</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>前面我们分析过，被 hook 的 selector 的实现已经被替换为 stingerIMP，那么在调用selector 时，会调用 stingerIMP，进而调用 <code>_st_ffi_function</code>。</p><h2 id="st-ffi-function" tabindex="-1"><a class="header-anchor" href="#st-ffi-function"><span>_st_ffi_function</span></a></h2><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>NS_INLINE void _st_ffi_function(ffi_cif *cif, void *ret, void **args, void *userdata) {</span></span>
+<span class="line"><span>  STHookInfoPool *hookedClassInfoPool = (__bridge STHookInfoPool *)userdata;</span></span>
+<span class="line"><span>  STHookInfoPool *statedClassInfoPool = nil;</span></span>
+<span class="line"><span>  STHookInfoPool *instanceInfoPool = nil;</span></span>
+<span class="line"><span>  </span></span>
+<span class="line"><span>  void **innerArgs = alloca(hookedClassInfoPool-&gt;_argsCount * sizeof(*innerArgs));</span></span>
+<span class="line"><span>  void **slf = args[0];</span></span>
+<span class="line"><span>  </span></span>
+<span class="line"><span>  if (hookedClassInfoPool-&gt;_isInstanceHook) {</span></span>
+<span class="line"><span>    statedClassInfoPool = _st_fast_get_HookInfoPool(hookedClassInfoPool-&gt;_statedCls, hookedClassInfoPool-&gt;_uniqueKey);</span></span>
+<span class="line"><span>    instanceInfoPool = _st_fast_get_HookInfoPool((__bridge id)(*slf), hookedClassInfoPool-&gt;_uniqueKey);</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  StingerParams *params = [[StingerParams alloc] initWithType:hookedClassInfoPool-&gt;_typeEncoding originalIMP:hookedClassInfoPool-&gt;_originalIMP sel:hookedClassInfoPool-&gt;_sel args:args argumentTypes:hookedClassInfoPool-&gt;_signature.argumentTypes];</span></span>
+<span class="line"><span>  innerArgs[1] = &amp;params;</span></span>
+<span class="line"><span>  </span></span>
+<span class="line"><span>  memcpy(innerArgs + 2, args + 2, (hookedClassInfoPool-&gt;_argsCount - 2) * sizeof(*args));</span></span>
+<span class="line"><span>  </span></span>
+<span class="line"><span>  // before hooks</span></span>
+<span class="line"><span>  if (REAL_STATED_CALSS_INFO_POOL) ffi_call_infos(REAL_STATED_CALSS_INFO_POOL-&gt;_beforeInfos);</span></span>
+<span class="line"><span>  if (instanceInfoPool) ffi_call_infos(instanceInfoPool-&gt;_beforeInfos);</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  // instead hooks</span></span>
+<span class="line"><span>  if (instanceInfoPool &amp;&amp; instanceInfoPool-&gt;_insteadInfo) {</span></span>
+<span class="line"><span>    innerArgs[0] = &amp;(((STHookInfo *)(instanceInfoPool-&gt;_insteadInfo))-&gt;_block);</span></span>
+<span class="line"><span>    ffi_call(&amp;(hookedClassInfoPool-&gt;_blockCif), _st_impForBlock(((STHookInfo *)(instanceInfoPool-&gt;_insteadInfo))-&gt;_block), ret, innerArgs);</span></span>
+<span class="line"><span>    if (((STHookInfo *)(instanceInfoPool-&gt;_insteadInfo))-&gt;automaticRemoval) {</span></span>
+<span class="line"><span>      instanceInfoPool-&gt;_insteadInfo = nil;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  } else if (REAL_STATED_CALSS_INFO_POOL &amp;&amp; REAL_STATED_CALSS_INFO_POOL-&gt;_insteadInfo) {</span></span>
+<span class="line"><span>    innerArgs[0] = &amp;(((STHookInfo *)(REAL_STATED_CALSS_INFO_POOL-&gt;_insteadInfo))-&gt;_block);</span></span>
+<span class="line"><span>    ffi_call(&amp;(hookedClassInfoPool-&gt;_blockCif), _st_impForBlock(((STHookInfo *)(REAL_STATED_CALSS_INFO_POOL-&gt;_insteadInfo))-&gt;_block), ret, innerArgs);</span></span>
+<span class="line"><span>    if (((STHookInfo *)(REAL_STATED_CALSS_INFO_POOL-&gt;_insteadInfo))-&gt;automaticRemoval) {</span></span>
+<span class="line"><span>      REAL_STATED_CALSS_INFO_POOL-&gt;_insteadInfo = nil;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  } else {</span></span>
+<span class="line"><span>    /// original IMP</span></span>
+<span class="line"><span>    /// if original selector is hooked by aspects or jspatch.., which use message-forwarding, invoke invacation.</span></span>
+<span class="line"><span>    BOOL isForward = hookedClassInfoPool-&gt;_originalIMP == _objc_msgForward</span></span>
+<span class="line"><span>#if !defined(__arm64__)</span></span>
+<span class="line"><span>    || hookedClassInfoPool-&gt;_originalIMP == (IMP)_objc_msgForward_stret</span></span>
+<span class="line"><span>#endif</span></span>
+<span class="line"><span>    ;</span></span>
+<span class="line"><span>    if (isForward) {</span></span>
+<span class="line"><span>      [params invokeAndGetOriginalRetValue:ret];</span></span>
+<span class="line"><span>    } else {</span></span>
+<span class="line"><span>      ffi_call(cif, (void (*)(void))hookedClassInfoPool-&gt;_originalIMP, ret, args);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>  // after hooks</span></span>
+<span class="line"><span>  if (REAL_STATED_CALSS_INFO_POOL) ffi_call_infos(REAL_STATED_CALSS_INFO_POOL-&gt;_afterInfos);</span></span>
+<span class="line"><span>  if (instanceInfoPool) ffi_call_infos(instanceInfoPool-&gt;_afterInfos);</span></span>
+<span class="line"><span>}</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>粗略来说，该方法就是从 hookInfoPool 中依次取出 beforeInfos、insteadInfos、afterInfos，然后遍历 infos 数组，从 info 中取出 block，然后通过 <code>ffi_call</code> 来调用各个 block。</p><p><code>ffi_call_infos</code> 是 <code>Stinger</code> 内部定义的宏：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>#define REAL_STATED_CALSS_INFO_POOL (statedClassInfoPool ?: hookedClassInfoPool)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#define ffi_call_infos(infos) \</span></span>
+<span class="line"><span>for (NSUInteger i = 0; i &lt; infos.count; i++) { \</span></span>
+<span class="line"><span>  STHookInfo *info = infos[i];\</span></span>
+<span class="line"><span>  innerArgs[0] = &amp;(info-&gt;_block); \</span></span>
+<span class="line"><span>  ffi_call(&amp;(hookedClassInfoPool-&gt;_blockCif), _st_impForBlock(info-&gt;_block), NULL, innerArgs); \</span></span>
+<span class="line"><span>  if (info-&gt;automaticRemoval) { \</span></span>
+<span class="line"><span>    [(NSMutableArray *)infos removeObject:info]; \</span></span>
+<span class="line"><span>    i--; \</span></span>
+<span class="line"><span>  } \</span></span>
+<span class="line"><span>}  \</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>在调用原始实现的时候，可以看到 <code>Stinger</code> 已经兼容了 <code>Aspects</code> 及 <code>JSPatch</code> 这种将被 selector 的原始实现交换为 <code>objc_msgForward</code> 的情况：</p><div class="language- line-numbers-mode" data-highlighter="shiki" data-ext="" data-title="" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>/// original IMP</span></span>
+<span class="line"><span>    /// if original selector is hooked by aspects or jspatch.., which use message-forwarding, invoke invacation.</span></span>
+<span class="line"><span>    BOOL isForward = hookedClassInfoPool-&gt;_originalIMP == _objc_msgForward</span></span>
+<span class="line"><span>#if !defined(__arm64__)</span></span>
+<span class="line"><span>    || hookedClassInfoPool-&gt;_originalIMP == (IMP)_objc_msgForward_stret</span></span>
+<span class="line"><span>#endif</span></span>
+<span class="line"><span>    ;</span></span>
+<span class="line"><span>    if (isForward) {</span></span>
+<span class="line"><span>      [params invokeAndGetOriginalRetValue:ret];</span></span>
+<span class="line"><span>    } else {</span></span>
+<span class="line"><span>      ffi_call(cif, (void (*)(void))hookedClassInfoPool-&gt;_originalIMP, ret, args);</span></span>
+<span class="line"><span>    }</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h2 id="总结" tabindex="-1"><a class="header-anchor" href="#总结"><span>总结</span></a></h2><p>总结下 <code>Stinger</code> 实现 AOP 的基本原理：</p><ol><li>将被 hook 的 selector 的实现交换为 stingerIMP。</li><li>使用 <code>libffi</code>的创建函数闭包的能力，将 stingerIMP 和 <code>_st_ffi_function</code> 绑定在一起。</li><li>执行被 hook 的 selector 的时候，转为执行 stingerIMP 方法，进而执行 <code>_st_ffi_function</code>。</li><li>在 <code>_st_ffi_function</code> 中，通过 <code>ffi_call</code>来执行被 hook 的 selector 对应的原始实现，并根据设置在合适时机执行切面的逻辑。</li></ol><p>可以看出，<code>Stinger</code> 在执行 hook 逻辑时，并没有走 <code>Objective-C</code> 的消息转发的流程，因此它在性能上要显著优于 Aspects。</p></div><!----><footer class="vp-page-meta"><div class="vp-meta-item edit-link"><a class="auto-link external-link vp-meta-label" href="https://github.com/tamarous/blog/edit/master/docs/iOS/stinger_source_probe.md" aria-label="Edit this page" rel="noopener noreferrer" target="_blank" iconsizing="both"><!--[--><svg xmlns="http://www.w3.org/2000/svg" class="icon edit-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="edit icon" name="edit"><path d="M430.818 653.65a60.46 60.46 0 0 1-50.96-93.281l71.69-114.012 7.773-10.365L816.038 80.138A60.46 60.46 0 0 1 859.225 62a60.46 60.46 0 0 1 43.186 18.138l43.186 43.186a60.46 60.46 0 0 1 0 86.373L588.879 565.55l-8.637 8.637-117.466 68.234a60.46 60.46 0 0 1-31.958 11.229z"></path><path d="M728.802 962H252.891A190.883 190.883 0 0 1 62.008 771.98V296.934a190.883 190.883 0 0 1 190.883-192.61h267.754a60.46 60.46 0 0 1 0 120.92H252.891a69.962 69.962 0 0 0-69.098 69.099V771.98a69.962 69.962 0 0 0 69.098 69.098h475.911A69.962 69.962 0 0 0 797.9 771.98V503.363a60.46 60.46 0 1 1 120.922 0V771.98A190.883 190.883 0 0 1 728.802 962z"></path></svg><!--]-->Edit this page<!----></a></div><div class="vp-meta-item git-info"><div class="update-time"><span class="vp-meta-label">Last update: </span><span class="vp-meta-info" data-allow-mismatch="text">3/1/2025, 12:15:50 PM</span></div><div class="contributors"><span class="vp-meta-label">Contributors: </span><!--[--><!--[--><span class="vp-meta-info" title="email: hiwangzewei@qq.com">wangzewei</span><!--]--><!--]--></div></div></footer><nav class="vp-page-nav"><a class="route-link auto-link prev" href="/blog/iOS/sdwebimage_cache.html" aria-label="SDWebImage 源代码剖析-缓存策略" iconsizing="both"><div class="hint"><span class="arrow start"></span>Prev</div><div class="link"><!---->SDWebImage 源代码剖析-缓存策略</div></a><a class="route-link auto-link next" href="/blog/iOS/dyld_shared_cache.html" aria-label="如何分析 iOS 系统库的实现" iconsizing="both"><div class="hint">Next<span class="arrow end"></span></div><div class="link">如何分析 iOS 系统库的实现<!----></div></a></nav><!----><!----><!--]--></main><!--]--><!----></div><!--]--><!--]--><!--[--><!----><!--[--><!--]--><!--]--><!--]--></div>
+    <script src="/blog/assets/js/runtime~app.882def59.js" defer></script><script src="/blog/assets/js/966.1ade2cbb.js" defer></script><script src="/blog/assets/js/app.bd0b79ff.js" defer></script>
+  </body>
+</html>
