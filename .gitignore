@@ -90,8 +90,16 @@ dist
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
-# vuepress build output
-.vuepress/dist
+# vuepress build output and cache
+docs/.vuepress/dist
+docs/.vuepress/.temp
+docs/.vuepress/.cache
+
+# macOS system files
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
 
 # Serverless directories
 .serverless/
