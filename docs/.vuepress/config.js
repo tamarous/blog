@@ -1,6 +1,7 @@
 import { defineUserConfig } from "vuepress";
 import { hopeTheme } from "vuepress-theme-hope";
 import { webpackBundler } from '@vuepress/bundler-webpack';
+import { mdEnhancePlugin } from "vuepress-plugin-md-enhance";
 
 export default defineUserConfig({
   base: "/blog/",
@@ -43,7 +44,11 @@ export default defineUserConfig({
         atom: true,
         json: true,
         rss: true,
-      }
+      },
+      mdEnhancePlugin({
+        // 启用 mermaid
+        mermaid: true,
+      })
     }
   }),
 });
