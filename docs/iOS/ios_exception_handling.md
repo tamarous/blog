@@ -3,7 +3,6 @@ category: iOS
 star: true
 tags:
   - 技术原理
-  - 源码分析
 ---
 
 # iOS 异常捕获原理
@@ -409,6 +408,6 @@ graph TB
 
 ## 总结
 
-本篇文章介绍了 iOS 异常的分类以及捕获的原理。下一篇文章我们将介绍 iOS上一个知名的异常监控 KSCrash 是如何实现的。
+本篇文章介绍了 iOS 异常的分类以及捕获的原理。接下来的[几篇文章](./kscrash_monitor.md)里我们将逐步介绍 iOS上一个知名的异常监控 KSCrash 是如何实现的。
 
 
