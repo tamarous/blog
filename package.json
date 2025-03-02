@@ -8,6 +8,7 @@
   "devDependencies": {
     "@vuepress/bundler-webpack": "^2.0.0-rc.20",
     "gh-pages": "^3.1.0",
+    "mermaid": "^11.4.1",
     "sass": "^1.85.0",
     "sass-loader": "^16.0.5",
     "vuepress": "^v2.0.0-rc.20",
