@@ -9256,6 +9256,7 @@ __metadata:
     sass-loader: "npm:^16.0.5"
     vue: "npm:^3.3.0"
     vuepress: "npm:^v2.0.0-rc.20"
+    vuepress-plugin-md-enhance: "npm:^2.0.0-rc.72"
     vuepress-theme-hope: "npm:^v2.0.0-rc.73"
     webpack: "npm:^5.0.0"
   languageName: unknown
@@ -9755,7 +9756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuepress-plugin-md-enhance@npm:2.0.0-rc.72":
+"vuepress-plugin-md-enhance@npm:2.0.0-rc.72, vuepress-plugin-md-enhance@npm:^2.0.0-rc.72":
   version: 2.0.0-rc.72
   resolution: "vuepress-plugin-md-enhance@npm:2.0.0-rc.72"
   dependencies:

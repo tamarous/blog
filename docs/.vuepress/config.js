@@ -45,10 +45,10 @@ export default defineUserConfig({
         json: true,
         rss: true,
       },
-      mdEnhancePlugin({
+      mdEnhancePlugin: {
         // 启用 mermaid
         mermaid: true,
-      })
+      }
     }
   }),
 });
