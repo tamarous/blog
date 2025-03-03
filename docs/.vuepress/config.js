@@ -45,10 +45,9 @@ export default defineUserConfig({
         json: true,
         rss: true,
       },
-      mdEnhancePlugin: {
-        // 启用 mermaid
-        mermaid: true,
+      mdEnhance: {
+        mermaid: true
       }
     }
-  }),
+  })
 });
