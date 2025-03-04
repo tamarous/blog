@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktamarous_blog=self.webpackChunktamarous_blog||[]).push([[1439],{1439:(e,a,s)=>{s.d(a,{createInfoServices:()=>r.b});var r=s(2280);s(1624),s(6772),s(9913),s(1869),s(6375)}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktamarous_blog=self.webpackChunktamarous_blog||[]).push([[6817],{6817:(e,a,s)=>{s.d(a,{createPieServices:()=>r.b});var r=s(4637);s(1624),s(6772),s(9913),s(1869),s(6375)}}]);

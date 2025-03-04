@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktamarous_blog=self.webpackChunktamarous_blog||[]).push([[5720],{5720:(e,a,s)=>{s.d(a,{createPacketServices:()=>c.b});var c=s(4323);s(1624),s(6772),s(9913),s(1869),s(6375)}}]);
