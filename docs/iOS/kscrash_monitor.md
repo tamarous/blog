@@ -370,7 +370,7 @@ Mach 异常监控器的核心是其异常端口管理机制。在监控器启动
 
 ### Signal 异常监控器
 
-#### 工作流程
+#### 完整流程
 
 ```mermaid
 sequenceDiagram
@@ -378,6 +378,7 @@ sequenceDiagram
     participant Stack as 信号栈
     participant System as 系统调用
     
+    %% 初始化阶段
     Handler->>Stack: 检查信号栈状态
     alt 未分配
         Stack->>System: 申请栈空间(SIGSTKSZ)
@@ -402,20 +403,21 @@ sequenceDiagram
             end
         end
     end
-```
-
-#### 信号处理执行流程
-```mermaid
-graph LR
-    A[信号触发] --> B{是否启用且应处理}
-    B -- 否 --> C[卸载处理器] --> D[重新抛出信号]
-    B -- 是 --> E[暂停所有线程]
-    E --> F[获取机器上下文]
-    F --> G[初始化栈游标]
-    G --> H[填充监控上下文]
-    H --> I[处理异常]
-    I --> J[恢复线程运行]
-    J --> D
+    
+    %% 信号处理阶段
+    Note over Handler,System: 信号触发后的处理流程
+    System->>Handler: 信号触发
+    alt 启用且应处理
+        Handler->>System: 暂停所有线程
+        Handler->>System: 获取机器上下文
+        Handler->>Handler: 初始化栈游标
+        Handler->>Handler: 填充监控上下文
+        Handler->>Handler: 处理异常
+        Handler->>System: 恢复线程运行
+    else 不处理
+        Handler->>System: 卸载处理器
+    end
+    Handler->>System: 重新抛出信号
 ```
 
 #### 特点
@@ -507,18 +509,31 @@ raise(sigNum);
 
 #### 异常捕获流程
 ```mermaid
-graph LR
-    A[异常捕获] --> B{是否启用}
-    B -- 否 --> C[结束]
-    B -- 是 --> D[暂停所有线程]
-    D --> E[获取机器上下文]
-    E --> F[初始化栈游标]
-    F --> G[填充监控上下文]
-    G --> H[处理异常]
-    H --> I[释放资源]
-    I --> J[恢复线程运行]
-    J --> K[调用原处理器]
-    K --> C
+sequenceDiagram
+    participant Handler as 异常处理器
+    participant Thread as 线程管理
+    participant Context as 监控上下文
+
+    Note over Handler: 异常捕获
+    Handler->>Handler: 检查是否启用
+    alt 未启用
+        Handler->>Handler: 直接结束
+    else 已启用
+        Handler->>Thread: 请求暂停所有线程
+        Thread-->>Handler: 线程已暂停
+
+        Handler->>Context: 获取机器上下文
+        Handler->>Context: 初始化栈游标
+        Handler->>Context: 填充监控信息
+
+        Handler->>Handler: 处理异常
+        Handler->>Handler: 释放资源
+
+        Handler->>Thread: 请求恢复线程
+        Thread-->>Handler: 线程已恢复
+
+        Handler->>Handler: 调用原处理器
+    end
 ```
 
 #### 代码实现
