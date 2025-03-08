@@ -3,377 +3,171 @@ category: iOS
 tags:
   - 源码分析
 ---
-# Masonry 源代码剖析
-[Masonry](https://github.com/SnapKit/Masonry) 是一个用来代替苹果原生的AutoLayout 的自动布局框架。这个库的代码量不是很多，而且使用也很简单方便，那么就让我们深入到这个库的内部，看看它是怎么实现的。
 
-## 使用范例
-下面是一个使用Masonry 的范例：
-    
-    [view mas_makeConstraints: ^(MASConstraintMaker *make) {
-        make.top.equalTo(superview.mas_top).with.offset(padding.top);
-        make.left.equalTo(superview.mas_left).with.offset(padding.left);
-        make.bottom.equalTo(superview.mas_bottom).with.offset(-padding.bottom);
-        make.right.equalTo(superview.mas_right).with.offset(-padding.right);
-    }];
-    
-可以看到，view 与superview 之间的约束，是通过一个block 设置的。这个block 接受一个类型为MASConstraintMaker 的参数make，然后在block 函数体内通过make 来实现约束设置。make 看起来像是view 的一个替身，当我们写
-    
+# Masonry 源码解析：优雅的自动布局方案
+
+在 iOS 开发中，布局是一个永恒的话题。[Masonry](https://github.com/SnapKit/Masonry) 作为一个广受欢迎的自动布局框架，以其简洁的链式语法优雅地解决了这个问题。今天，让我们揭开它的神秘面纱，一起探索其内部实现原理。
+
+## 从使用体验说起
+
+在深入源码之前，我们先看看 Masonry 是如何简化我们的日常开发工作的。下面是一个典型的使用示例：
+
+```objc
+[view mas_makeConstraints:^(MASConstraintMaker *make) {
     make.top.equalTo(superview.mas_top).with.offset(padding.top);
+    make.left.equalTo(superview.mas_left).with.offset(padding.left);
+    make.bottom.equalTo(superview.mas_bottom).with.offset(-padding.bottom);
+    make.right.equalTo(superview.mas_right).with.offset(-padding.right);
+}];
+```
+
+这段代码展示了 Masonry 的核心特点：通过一个优雅的 block 语法，我们可以用链式调用的方式设置视图的约束。`make` 参数就像是 `view` 的一个代理，当我们写下：
+
+```objc
+make.top.equalTo(superview.mas_top).with.offset(padding.top);
+```
+
+实际上就相当于在表达：
+
+```objc
+view.top.equalTo(superview.mas_top).with.offset(padding.top);
+```
+
+## 揭秘内部实现
+
+### 约束创建的入口：mas_makeConstraints:
+
+让我们从约束创建的入口开始探索。通过查看 `mas_makeConstraints:` 的实现，我们可以看到整个过程的开端：
+
+```objc
+- (NSArray *)mas_makeConstraints:(void(^)(MASConstraintMaker *))block {
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    MASConstraintMaker *constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
+    block(constraintMaker);
+    return [constraintMaker install];
+}
+```
+
+这个方法做了三件关键的事：
+1. 禁用自动转换约束的功能，这是使用自动布局的必要步骤
+2. 创建一个约束制造器（`MASConstraintMaker`）
+3. 执行用户的约束设置代码，并最终安装这些约束
+
+### 约束制造器：MASConstraintMaker
+
+`MASConstraintMaker` 是整个框架的核心，它负责创建和管理约束。让我们看看它是如何工作的：
+
+```objc
+@interface MASConstraintMaker : NSObject
+@property (nonatomic, weak) MAS_VIEW *view;
+@property (nonatomic, strong) NSMutableArray *constraints;
+
+- (id)initWithView:(MAS_VIEW *)view;
+@end
+
+@implementation MASConstraintMaker
+- (id)initWithView:(MAS_VIEW *)view {
+    self = [super init];
+    if (!self) return nil;
     
-时，实际效果是
+    self.view = view;
+    self.constraints = NSMutableArray.new;
+    return self;
+}
+@end
+```
 
-    view.top.equalTo(superview.mas_top).with.offset(padding.top);
+约束制造器持有对目标视图的弱引用，并维护一个约束数组。当我们使用链式语法时，每个属性访问（如 `make.left`）都会创建一个新的约束对象：
 
-## 内部实现
+```objc
+- (MASConstraint *)left {
+    return [self addConstraintWithLayoutAttribute:NSLayoutAttributeLeft];
+}
+```
 
-### mas_makeConstraints:
+### 约束的安装过程
 
-在Xcode 中，按住Command，在方法上点击鼠标左键就可以进入方法的内部实现。我们进入`mas_makeConstraints:`，可以看到这个方法的实现如下：
+当所有约束都配置完成后，`install` 方法会被调用来实际安装这些约束：
 
-    - (NSArray *)mas_makeConstraints:(void(^)(MASConstraintMaker *))block       {
-        self.translatesAutoresizingMaskIntoConstraints = NO;
-        MASConstraintMaker *constraintMaker = [[MASConstraintMaker alloc] initWithView: self];
-        block(constraintMaker);
-        return [constraintMaker install];
-    }
-        
-首先要将被设置的view 的`translatesAutoresizingMaskIntoConstraints`属性设置成NO，这样才可以成功添加约束。
-
-然后，创建一个`MASConstraintMaker`的实例。block 接受这个实例，然后执行block 块内的内容。最后返回`[constraintMaker install]`的结果。
-
-### MASConstraintMaker
- 
-#### 初始化
-    // MASContraintMaker.m
-    
-    // MAS_VIEW 是UIView 的别名
-    @property (nonatomic, weak) MAS_VIEW *view;
-    
-    - (id) initWithView:(MAS_VIEW *) view {
-        self = [super init];
-        if (! self) {
-            return nil;
+```objc
+- (NSArray *)install {
+    if (self.removeExisting) {
+        NSArray *installedConstraints = [MASViewConstraint installedConstraintsForView:self.view];
+        for (MASConstraint *constraint in installedConstraints) {
+            [constraint uninstall];
         }
-        self.view = view;
-        self.constraints = NSMutableArray.new;
-        return self;
-    }
-
-在初始化方法中，`MASContraintMaker` 将要设置的视图赋值给它的属性view，因此 `MASContraintMaker` 对将要设置的视图拥有了一个弱引用。
-
-#### block 的执行
-block 中实际进行了约束的设置工作。
-
-        make.top.equalTo(superview.mas_top).with.offset(padding.top);
-        make.left.equalTo(superview.mas_left).with.offset(padding.left);
-        make.bottom.equalTo(superview.mas_bottom).with.offset(-padding.bottom);
-        make.right.equalTo(superview.mas_right).with.offset(-padding.right);
-
-这个调用过程是链式的，即每次调用都是作用于`MASConstraint` 类型上，而本次调用的返回类型仍然是`MASConstraint` 类型。
-
-##### right,left,bottom,top
-right，left，bottom和top 实际上是`MASConstraintMaker`中的相应属性的getter 方法，以top 为例，其定义如下：
-    
-    - (MASConstraint *) top {
-        return [self addConstraintWithLayoutAttribute: NSLayoutAttributeTop];
     }
     
-这个方法中还涉及到一些其他方法：
-
-    - (MASContraint *) addConstraintWithLayoutAttribute:(NSLayoutAttribute) layoutAttribute {
-        return [self constraint: nil addConstraintWithLayoutAttribute: layoutAttribute];
+    NSArray *constraints = self.constraints.copy;
+    for (MASConstraint *constraint in constraints) {
+        constraint.updateExisting = self.updateExisting;
+        [constraint install];
     }
+    [self.constraints removeAllObjects];
+    return constraints;
+}
+```
 
-    - (MASConstraint *) constraint:(MASContraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute) layoutAttribute {
-        MASViewAttribute *viewAttribute = [[MASViewAttribute alloc] initWithView:self.view layoutAttribute:layoutAttribute]; // 1
-        MASViewAttribute *newAttribute = [[MASViewAttribute alloc] initWithFirstViewAttribute:viewAttribute]; // 2
-        if ([constraint isKindOfClass: MASViewConstraint.class]) {
-            NSArray *children = @[constraint, newConstraint];
-            MASCompositeConstraint *compositeConstraint = [[MASCompositeConstraint alloc] initWithChildren: children];
-            compositeConstraint.delegate = self;
-            [self constraint: constraint shouleBeReplaceWithConstraint: compositeConstraint];
-            return compositeConstraint;
-        }
-        // 因为传入的constraint 为nil，所以直接进入下面的判断
-        if (! constraint) {
-            newConstraint.delegate = self;
-            [self.constraints addObject: newConstraint]; // 3
-        }
-        return newConstraint;
-    }
+### 约束的具体实现：MASViewConstraint
+
+`MASViewConstraint` 是实际的约束封装类，它负责处理具体的约束关系。每个约束本质上都是在处理两个视图属性之间的关系：
+
+```objc
+@interface MASViewConstraint : NSObject
+@property (nonatomic, strong, readonly) MASViewAttribute *firstViewAttribute;
+@property (nonatomic, strong, readonly) MASViewAttribute *secondViewAttribute;
+@end
+```
+
+这两个属性分别对应约束等式的左右两边：
+
+> item1.attribute1 = multiplier × item2.attribute2 + constant
+
+约束的安装过程也是在这个类中完成的：
+
+```objc
+- (void)install {
+    if (self.hasBeenInstalled) return;
     
-在上面这个方法中：
-1. 根据传入的要设置的`NSLayoutAttribute` 生成对应的`MASViewAttribute`。
-2. 根据`MASViewAttribute` 生成当前视图的新约束。
-3. 将2中生成的新约束加入`MASContraintMaker` 的约束数组中。
-
-##### equalTo, greaterThanOrEqualTo, lessThanOrEqualTo    
-
-    - (MASConstraint * (^)(id attr))equalTo;
-    - (MASConstraint * (^)(id attr))greaterThanOrEqualTo;
-    - (MASConstraint * (^)(id attr))lessThanOrEqualTo; 
-
-这三个方法的参数是id 类型的，因此它们既可以接受NSValue 类型的参数，如NSNumber，CGPoint，CGSize等，也可以接受`UIView` 类型的参数，还可以接受`MASViewConstraint` 类型的参数。
-当接受NSValue 类型的参数时，如
-    
-    make.top.equalTo(@100)
-表示当前视图的top与它的superview 的top相距100；
-当接受`UIView` 类型的参数时，会和`UIView` 的对应属性做比较，如
-
-    make.top.equalTo(secondView)
-表示当前视图和secondView 的top是平齐的；
-当接受`MASViewConstraint` 类型的参数时，如
-
-    make.bottom.equalTo(secondView.mas_bottom)
-表示当前视图和secondView 的bottom 是平齐的。
-
-这个特性的实现原理会在稍后进行介绍。
-
-以上方法虽然定义不同，但是内部实现相似，都是调用了`MASConstraint` 的`equalToWithRelation` 方法，但是传入了不同的参数：
-    
-    - (MASConstraint * (^)(id attr))equalTo 「
-        return ^id(id attribute) {
-            return self.equalToWithRelation(attribute, NSLayoutRelationEqual);
-        };
-    }
-    - (MASConstraint * (^)(id attr))greaterThanOrEqualTo {
-        return ^id(id attribute) {
-            return self.equalToWithRelation(attribute, NSLayoutRelationGreaterThanOrEqual);
-        };
-    }
-    - (MASConstraint * (^)(id attr)) lessThanOrEqualTo{
-        return ^id(id attribute) {
-            return self.equalToWithRelation(attribute,
-            NSLayoutRelationLessThanOrEqual);
-        };
-    }
-            
-继续向下寻找`equalToWithRelation` 的定义。使用Command + 鼠标左键，我们发现这个方法在三个地方有定义：
-    
-    [MASConstraint(Abstract) equalToWithRelation];
-    [MASViewConstraint equalToWithRelation];
-    [MASCompositeConstraint equalToWithRelation];
-
-`MASCompositeConstraint` 和`MASViewContraint` 是`MASConstraint` 的子类。在`MASConstraint` 中定义了很多抽象方法，都是需要在这两个子类中进行实现的。
-> MASCompositeConstraint: A composite with a predefined array of children.
-
-从定义和名称中可以看出，`MASCompositeConstraint` 是约束的组合。按照我的理解，它的作用可以看作是一颗树的根，这个根确定了哪些节点位于这棵树上，而树的子节点的类型都是`MASViewConstraint`。
-
-`equalToWithRelation` 是一个抽象方法，在`MASContraint` 中没有实现，如果调用此方法就会抛出一个异常：
-
-    - (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation { MASMethodNotImplemented(); }
-
-    #define MASMethodNotImplemented() \
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException \
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
-                                 userInfo:nil]
-
-`MASViewConstraint` 重载了此方法：
-    
-        - (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation {
-    return ^id(id attribute, NSLayoutRelation relation) {
-        if ([attribute isKindOfClass:NSArray.class]) { // 1
-            NSAssert(!self.hasLayoutRelation, @"Redefinition of constraint relation");
-            NSMutableArray *children = NSMutableArray.new;
-            for (id attr in attribute) {
-                MASViewConstraint *viewConstraint = [self copy];
-                viewConstraint.layoutRelation = relation;
-                viewConstraint.secondViewAttribute = attr;
-                [children addObject:viewConstraint];
-            }
-            MASCompositeConstraint *compositeConstraint = [[MASCompositeConstraint alloc] initWithChildren:children];
-            compositeConstraint.delegate = self.delegate;
-            [self.delegate constraint:self shouldBeReplacedWithConstraint:compositeConstraint];
-            return compositeConstraint;
-        } else {
-            NSAssert(!self.hasLayoutRelation || self.layoutRelation == relation && [attribute isKindOfClass:NSValue.class], @"Redefinition of constraint relation");
-            self.layoutRelation = relation;
-            self.secondViewAttribute = attribute;  // 2
-            return self;
-        }
-    };
-    }
-    
-1. 判断传入的attribute 是否为NSArray 类型。
-2. 如果不是，则将传入的参数赋值给某些属性。注意secondViewAttribute 这个属性的setter 方法，它并不是一个简单的赋值过程，而是会根据传入的attribute 的类型进行额外的设置。
-
-        - (void)setSecondViewAttribute:(id)secondViewAttribute {
-
-            if ([secondViewAttribute isKindOfClass:NSValue.class]) {
-            
-            // 1 对应于上文中的equalTo(@100) 这种情况
-                [self setLayoutConstantWithValue:secondViewAttribute]; 
-            } else if ([secondViewAttribute isKindOfClass:MAS_VIEW.class]) {
-            
-            // 2 对应于上文中的equalTo(secondView) 这种情况
-                _secondViewAttribute = [[MASViewAttribute alloc] initWithView:secondViewAttribute layoutAttribute:self.firstViewAttribute.layoutAttribute]; // 2
-            } else if ([secondViewAttribute isKindOfClass:MASViewAttribute.class]) {
-            
-            // 3 对应于上文中的equalTo(secondView.mas_bottom) 这种情况
-                _secondViewAttribute = secondViewAttribute;
-            } else {
-                NSAssert(NO, @"attempting to add unsupported attribute: %@", secondViewAttribute);
-            }
-        }
-
-`MASCompositeConstraint` 对此方法的实现则要简单得多：
-
-    - (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation {
-        return ^id(id attr, NSLayoutRelation relation) {
-            for (MASConstraint *constraint in self.childConstraints.copy) {
-                constraint.equalToWithRelation(attr, relation);
-        }
-            return self;
-        };
-    }
-    
-可以看出，这个方法的实现是递归的，它对当前`MASCompositeConstraint` 的每一个childConstraint 调用对应的`equalToWithRelation` 方法，如果当前某一个constraint 的childConstraint 为空，就返回这个constraint。怎么样，是不是有点类似于后续遍历？
-因为实际的工作都是由`MASViewConstraint` 类型完成的，下面我们就只关心方法在这个类中的实现。
-
-
-#### 安装约束
-
-    - (NSArray *)install {
-        if (self.removeExisting) {
-            NSArray *installedConstraints = [MASViewConstraint installedConstraintsForView: self.view]; // 1
-            for (MASConstraint *constraint in installedConstraints) {
-                [constraint uninstall]; // 2
-            }
-        }
-        NSArray *constraints = self.constraints.copy;
-        for (MASConstraint *constraint in constraints) {
-            constraint.updateExisting = self.updateExisting;
-            [constraint install]; // 3
-        }
-        [self.constraints removeAllObjects]; // 4
-        return constraints;
-    }
-    
-
-在`MASConstraintMaker`的`install`方法中，有如下几个过程：
-1. 查看当前视图上已经安装的约束。
-2. 对于**已经**安装的约束，逐一进行卸载。
-3. 对于**将要**安装的约束，逐一`[constaint install]`，进行安装。
-4. 将自身的`constraints`数组中的所有元素清除掉。
-
-### MASViewConstraint
-我们着重来看上一节描述的`[constraintMaker install]`中的第三点。
-
-
-    // MASViewConstraint.m
-    - (void)install {
-    if (self.hasBeenInstalled) {
-        return;
-    }
-    
-    // 1
-    if ([self supportsActiveProperty] && self.layoutConstraint) {
-        self.layoutConstraint.active = YES;
-        [self.firstViewAttribute.view.mas_installedConstraints addObject:self];
-        return;
-    }
-    
-    // 2
     MAS_VIEW *firstLayoutItem = self.firstViewAttribute.item;
     NSLayoutAttribute firstLayoutAttribute = self.firstViewAttribute.layoutAttribute;
     MAS_VIEW *secondLayoutItem = self.secondViewAttribute.item;
     NSLayoutAttribute secondLayoutAttribute = self.secondViewAttribute.layoutAttribute;
 
-    // 3
-    // alignment attributes must have a secondViewAttribute
-    // therefore we assume that is refering to superview
-    // eg make.left.equalTo(@10)
+    // 处理特殊情况，如 equalTo(@10)
     if (!self.firstViewAttribute.isSizeAttribute && !self.secondViewAttribute) {
         secondLayoutItem = self.firstViewAttribute.view.superview;
         secondLayoutAttribute = firstLayoutAttribute;
     }
     
-    // 4
-    MASLayoutConstraint *layoutConstraint
-        = [MASLayoutConstraint constraintWithItem:firstLayoutItem
-                                        attribute:firstLayoutAttribute
-                                        relatedBy:self.layoutRelation
-                                           toItem:secondLayoutItem
-                                        attribute:secondLayoutAttribute
-                                       multiplier:self.layoutMultiplier
-                                         constant:self.layoutConstant];
+    // 创建实际的布局约束
+    MASLayoutConstraint *layoutConstraint =
+        [MASLayoutConstraint constraintWithItem:firstLayoutItem
+                                    attribute:firstLayoutAttribute
+                                    relatedBy:self.layoutRelation
+                                       toItem:secondLayoutItem
+                                    attribute:secondLayoutAttribute
+                                   multiplier:self.layoutMultiplier
+                                     constant:self.layoutConstant];
     
-    layoutConstraint.priority = self.layoutPriority;
-    layoutConstraint.mas_key = self.mas_key;
-    
-    
-    // 5
+    // 确定约束应该被添加到哪个视图上
     if (self.secondViewAttribute.view) {
-        MAS_VIEW *closestCommonSuperview = [self.firstViewAttribute.view mas_closestCommonSuperview:self.secondViewAttribute.view];
-        NSAssert(closestCommonSuperview,
-                 @"couldn't find a common superview for %@ and %@",
-                 self.firstViewAttribute.view, self.secondViewAttribute.view);
-        self.installedView = closestCommonSuperview;
+        self.installedView = [self.firstViewAttribute.view mas_closestCommonSuperview:self.secondViewAttribute.view];
     } else if (self.firstViewAttribute.isSizeAttribute) {
         self.installedView = self.firstViewAttribute.view;
     } else {
         self.installedView = self.firstViewAttribute.view.superview;
     }
-
-
-    MASLayoutConstraint *existingConstraint = nil;
-    if (self.updateExisting) {
-        existingConstraint = [self layoutConstraintSimilarTo:layoutConstraint];
-    }
-    if (existingConstraint) {
-        // just update the constant
-        existingConstraint.constant = layoutConstraint.constant;
-        self.layoutConstraint = existingConstraint;
-    } else {
-        [self.installedView addConstraint:layoutConstraint];
-        self.layoutConstraint = layoutConstraint;
-        [firstLayoutItem.mas_installedConstraints addObject:self];
-    }
-    }
-
-
-
-在对代码进行分析之前，我们需要知道：因为每个约束需要处理的，是两个item 之间的关系。
->item1.attribute1 = multiplier × item2.attribute2 + constant // 约束等式
-
-所以`MASViewConstraint` 有两个属性，分别是
     
-    @property (nonatomic, strong, readonly) MASViewAttribute *firstViewAttribute;
-
-和
-    
-    @property (nonatomic, strong, readonly) MASViewAttribute *secondViewAttribute;
-
-这两个属性分别描述了约束等式的左边和右边。
-因此，代码的执行过程为：
-
-1. 将当前约束加入约束等式左边的view 的已安装约束列表中。
-2. 获取当前约束的左右两边的item 和它们对应的layoutAttribute。
-3. 如果item1 描述的不是数值，并且item2 为nil，则当前约束对应着前面所说的`equalTo(@100)`这种情况，所以当前的约束的item2 应该是item1中view 的superview。这和我们平时手写UI时的逻辑是相同的。
-4. 调用系统API 来进行约束设置。
-5. 如果item2 是一个view，那么这个约束应该被安装在item1 和item2 的共同superview 上，因此需要找到item1 和item2 的最近共同superview。其他情况同理。
-    
-```
-- (instancetype)mas_closestCommonSuperview:(MAS_VIEW *)view {
-    MAS_VIEW *closestCommonSuperview = nil;
-
-    MAS_VIEW *secondViewSuperview = view;
-    while (!closestCommonSuperview && secondViewSuperview) {
-        MAS_VIEW *firstViewSuperview = self;
-        while (!closestCommonSuperview && firstViewSuperview) {
-            if (secondViewSuperview == firstViewSuperview) {
-                closestCommonSuperview = secondViewSuperview;
-            }
-            firstViewSuperview = firstViewSuperview.superview;
-        }
-        secondViewSuperview = secondViewSuperview.superview;
-    }
-    return closestCommonSuperview;
+    // 添加约束
+    [self.installedView addConstraint:layoutConstraint];
+    self.layoutConstraint = layoutConstraint;
 }
 ```
 
-## 小结
-下面是 Masonry 执行约束的完整流程图：
+## 设计精髓
+
+通过分析 Masonry 的源码，我们可以看到它的几个关键设计思想：
 
 ```mermaid
 sequenceDiagram
@@ -384,14 +178,14 @@ sequenceDiagram
 
     View->>Maker: mas_makeConstraints:
     activate Maker
-    Note over View,Maker: 创建 MASConstraintMaker 实例
+    Note over View,Maker: 创建约束制造器
     
     Maker->>Constraint: addConstraintWithLayoutAttribute
     activate Constraint
-    Note over Maker,Constraint: 创建约束（如 make.left）
+    Note over Maker,Constraint: 创建具体约束
     
     Constraint->>Constraint: equalToWithRelation
-    Note over Constraint: 设置约束关系和属性
+    Note over Constraint: 设置约束关系
     
     Maker->>Maker: install
     Note over Maker: 开始安装约束
@@ -411,13 +205,17 @@ sequenceDiagram
     deactivate Maker
 ```
 
-从泳道图中可以清晰地看到，整个过程主要涉及四个对象：
-1. UIView：作为约束的载体，提供约束的添加接口
-2. MASConstraintMaker：约束创建的管理者，负责创建和安装约束
-3. MASViewConstraint：具体约束的封装，处理约束的属性设置和安装
-4. MASLayoutConstraint：对系统原生 NSLayoutConstraint 的封装
+1. **职责分离**：每个类都有其明确的职责
+   - UIView：作为约束的载体
+   - MASConstraintMaker：约束创建的管理者
+   - MASViewConstraint：具体约束的封装
+   - MASLayoutConstraint：系统约束的包装
 
-这些对象之间的交互构成了 Masonry 的核心工作流程，通过这种设计，Masonry 成功地将复杂的约束创建和安装过程隐藏在简洁的链式调用背后。
+2. **链式调用**：通过巧妙的方法设计，实现了流畅的链式语法
+
+3. **封装复杂性**：将复杂的约束创建和安装过程隐藏在简洁的接口之后
+
+通过这种精心的设计，Masonry 成功地将 AutoLayout 的复杂性转化为了优雅的链式调用，这也是它能够广受欢迎的重要原因。
 
 
 
