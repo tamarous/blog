@@ -509,16 +509,68 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
 
 ## 总结
 
-总结下 Aspects Hook 方法的基本原理：
+下面是一个泳道图，展示了 Aspects 的完整工作流程和工作原理：
 
-1. 将 selector 对应的 IMP 修改为 `_objc_msgForward` 或 `_objc_msgForward_stret`。这样在调用被 Hook 的 selector 时，会直接进入消息转发流程。
+1. 首先检查类是否已被 Hook（是否已有 _Aspects_ 后缀的子类）
+2. 如果未被 Hook，通过 Runtime 创建新的子类
+3. 替换子类的 forwardInvocation 方法实现为 __ASPECTS_ARE_BEING_CALLED__
+4. 保存原始的 forwardInvocation 实现到 __aspects_forwardInvocation:
+5. 修改子类的 class 方法，使其返回原始类
+6. 注册新创建的子类
+7. 修改实例的 isa 指针，指向新创建的子类
+8. 将原方法的实现替换为 _objc_msgForward
+9. 当方法被调用时，触发消息转发，执行 __ASPECTS_ARE_BEING_CALLED__
+10. 根据 Hook 时机（Before/Instead/After）执行对应的切面逻辑和原始方法
 
-2. 将 `forwardInvocation` 对应的 IMP 修改为 `__ASPECTS_ARE_BEING_CALLED__`。
+```mermaid
+sequenceDiagram
+    participant Client
+    participant AspectIdentifier
+    participant RuntimeSystem as Runtime System
+    participant SubClass as 新创建的子类
+    participant OriginalClass as 原始类
 
-3. 在 `__ASPECTS_ARE_BEING_CALLED__` 中，调用原始实现并根据设置的 Hook 时机来执行额外的逻辑。
-
-
-
+    Client->>AspectIdentifier: 调用 aspect_hookSelector
+    
+    AspectIdentifier->>RuntimeSystem: 检查类是否已被 Hook
+    RuntimeSystem-->>AspectIdentifier: 返回检查结果
+    
+    Note over AspectIdentifier: 如果类未被 Hook，创建新的子类
+    AspectIdentifier->>RuntimeSystem: objc_allocateClassPair
+    RuntimeSystem-->>AspectIdentifier: 返回新创建的子类
+    
+    AspectIdentifier->>SubClass: 替换 forwardInvocation 为 __ASPECTS_ARE_BEING_CALLED__
+    Note over SubClass: class_replaceMethod
+    
+    AspectIdentifier->>SubClass: 保存原始 forwardInvocation 实现
+    Note over SubClass: class_addMethod(__aspects_forwardInvocation:)
+    
+    AspectIdentifier->>SubClass: 修改 class 方法实现
+    Note over SubClass: 返回原始类而非子类
+    
+    AspectIdentifier->>RuntimeSystem: 注册新创建的子类
+    RuntimeSystem-->>AspectIdentifier: objc_registerClassPair
+    
+    AspectIdentifier->>RuntimeSystem: 修改实例的 isa 指针
+    RuntimeSystem->>OriginalClass: object_setClass 指向新子类
+    
+    AspectIdentifier->>RuntimeSystem: 替换原方法实现
+    RuntimeSystem->>OriginalClass: 将方法实现替换为 _objc_msgForward
+    
+    Client->>SubClass: 调用被 Hook 的方法
+    SubClass->>SubClass: 触发消息转发
+    SubClass->>SubClass: 执行 __ASPECTS_ARE_BEING_CALLED__
+    
+    alt Hook 时机为 Before
+        SubClass->>Client: 执行前置切面逻辑
+        SubClass->>Client: 执行原始方法
+    else Hook 时机为 Instead
+        SubClass->>Client: 仅执行切面逻辑
+    else Hook 时机为 After
+        SubClass->>Client: 执行原始方法
+        SubClass->>Client: 执行后置切面逻辑
+    end
+```
 
 
 
