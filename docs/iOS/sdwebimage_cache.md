@@ -477,6 +477,32 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 我们来小结一下`SDWebImage`的缓存策略。在给一个UIimageView 或者UIButton 设置了远端图片的url 后，`SDWebImage`首先以url 为key 在内存中寻找图片缓存，如果在内存中没找到就会去磁盘中寻找，如果找到了，则将磁盘中的缓存拷贝一份到内存中，然后使用缓存来设置视图。如果在
 磁盘和内存中都没有找到，那么才会下载远程图片，然后将远程图片缓存在内存中或者是内存和磁盘上。
 
+```mermaid
+sequenceDiagram
+    participant UIImageView
+    participant SDWebImageManager
+    participant SDImageCache
+    participant SDWebImageDownloader
+
+    UIImageView->>SDWebImageManager: sd_setImageWithURL:options:
+    SDWebImageManager->>SDImageCache: queryImageForKey:options:context:completion:
+    alt 内存缓存命中
+        SDImageCache-->>SDWebImageManager: 返回内存缓存
+        SDWebImageManager-->>UIImageView: 设置图片
+    else 磁盘缓存命中
+        SDImageCache-->>SDImageCache: 从磁盘加载
+        SDImageCache-->>SDImageCache: 存入内存缓存
+        SDImageCache-->>SDWebImageManager: 返回磁盘缓存
+        SDWebImageManager-->>UIImageView: 设置图片
+    else 缓存未命中
+        SDImageCache-->>SDWebImageManager: 未找到缓存
+        SDWebImageManager->>SDWebImageDownloader: downloadImageWithURL:options:
+        SDWebImageDownloader-->>SDWebImageManager: 下载完成
+        SDWebImageManager->>SDImageCache: storeImage:imageData:forKey:cacheType:
+        SDWebImageManager-->>UIImageView: 设置图片
+    end
+```
+
 
 
 

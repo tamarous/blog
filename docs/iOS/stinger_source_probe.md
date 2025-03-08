@@ -110,7 +110,7 @@ Hook 一个类时，实质是调用 `hookMethod` 这个静态方法，当 Hook �
   }
 }
 ```
-Hook 类实例的时候，由于目的是只让 Hook 逻辑对于这个特定的实例生效，那么其实只要将这个实例的类对象通过 runtime 修改为一个唯一的类，就可以将逻辑转换为 Hook 类对象的方法，因此其核心同样是 `hookMethod` 方法。
+Hook 类实例的时候，由于目的是只让 Hook 逻辑对于这个特定的实例生效，那么其实只要将这个实例的类对象通过 runtime 修改为一个唯一的类，就可以将逻辑转换为 Hook 类对象的方法，因此其核心仍然是 `hookMethod` 方法。
 
 ## hookMethod
 如前文所述，`hookMethod` 是 `Stinger` 的核心，它的实现如下：
@@ -432,4 +432,77 @@ for (NSUInteger i = 0; i < infos.count; i++) { \
 3. 执行被 hook 的 selector 的时候，转为执行 stingerIMP 方法，进而执行 `_st_ffi_function`。
 4. 在 `_st_ffi_function` 中，通过 `ffi_call`来执行被 hook 的 selector 对应的原始实现，并根据设置在合适时机执行切面的逻辑。
 
-可以看出，`Stinger` 在执行 hook 逻辑时，并没有走 `Objective-C` 的消息转发的流程，因此它在性能上要显著优于 Aspects。
+整体执行流程如下图所示：
+
+```mermaid
+sequenceDiagram
+    participant Client as 客户端
+    participant Stinger as Stinger
+    participant libffi as libffi
+    participant Original as 原始方法
+
+    Client->>Stinger: 调用 st_hookInstanceMethod/st_hookClassMethod
+    activate Stinger
+    Stinger->>Stinger: 创建 STHookInfoPool
+    Note over Stinger: 配置 typeEncoding、originalIMP、sel
+    Note over Stinger: 初始化 beforeInfos、insteadInfo、afterInfos
+    Stinger->>libffi: 调用 ffi_prep_cif 配置函数接口
+    activate libffi
+    libffi-->>Stinger: 返回 ffi_cif
+    deactivate libffi
+    Stinger->>libffi: 调用 ffi_prep_closure_loc
+    activate libffi
+    libffi-->>Stinger: 返回 stingerIMP
+    deactivate libffi
+    Stinger->>Stinger: 交换原方法实现为 stingerIMP
+    Note over Stinger: 通过 class_replaceMethod 替换方法实现
+    Stinger-->>Client: 返回 Hook 结果
+    deactivate Stinger
+
+    Note over Client,Original: 方法调用阶段
+
+    Client->>Stinger: 调用被 Hook 的方法
+    activate Stinger
+    Stinger->>Stinger: 执行 _st_ffi_function
+    Note over Stinger: 获取 hookedClassInfoPool
+    Note over Stinger: 处理实例 Hook 的特殊情况
+    Stinger->>Stinger: 获取 beforeInfos
+    loop 执行前置切面
+        Stinger->>libffi: 调用 ffi_call 执行 block
+        activate libffi
+        Note over libffi: 传入 StingerParams 参数
+        libffi-->>Stinger: 返回执行结果
+        deactivate libffi
+        Note over Stinger: 处理自动移除逻辑
+    end
+
+    alt 存在替换切面
+        Stinger->>libffi: 调用 ffi_call 执行替换 block
+        activate libffi
+        libffi-->>Stinger: 返回执行结果
+        deactivate libffi
+    else 执行原方法
+        alt 原方法已被其他框架 Hook
+            Note over Stinger: 处理 msgForward 情况
+            Stinger->>Original: 调用 _objc_msgForward
+        else 原方法未被 Hook
+            Stinger->>Original: 调用原始实现
+        end
+        activate Original
+        Original-->>Stinger: 返回执行结果
+        deactivate Original
+    end
+
+    Stinger->>Stinger: 获取 afterInfos
+    loop 执行后置切面
+        Stinger->>libffi: 调用 ffi_call 执行 block
+        activate libffi
+        Note over libffi: 传入 StingerParams 参数
+        libffi-->>Stinger: 返回执行结果
+        deactivate libffi
+        Note over Stinger: 处理自动移除逻辑
+    end
+
+    Stinger-->>Client: 返回最终结果
+    deactivate Stinger
+```

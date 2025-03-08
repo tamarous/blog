@@ -259,6 +259,35 @@ func (t *task) Recycle() {
 4. 不满足上述条件时，现有 worker 会按照 FIFO 顺序依次执行 task 链表中的 task。
 5. task 和 worker 实例都会通过 sync.Pool 来实现复用，减少内存分配，降低 GC 压力。
 
+下面用一个泳道图来展示 Gopool 的核心工作流程：
+
+```mermaid
+sequenceDiagram
+    participant Client 
+    participant Pool 
+    participant Worker 
+    participant TaskQueue 
+
+    Client->>Pool: 调用 gopool.Go(func)
+    Pool->>TaskQueue: 从 taskPool 获取 task 对象
+    TaskQueue-->>Pool: 返回可复用的 task 对象
+    Pool->>Pool: 将 func 封装为 task
+    Pool->>TaskQueue: 将 task 添加到任务队列
+    
+    alt task 数量超过阈值 或 无可用 worker
+        Pool->>Worker: 从 workerPool 获取 worker
+        Worker-->>Pool: 返回可复用的 worker
+        Pool->>Worker: 启动 worker
+        loop 任务执行循环
+            Worker->>TaskQueue: 获取队列中的 task
+            TaskQueue-->>Worker: 返回待执行的 task
+            Worker->>Worker: 执行 task.f()
+            Worker->>TaskQueue: 回收 task 到 taskPool
+        end
+        Worker->>Worker: 回收 worker 到 workerPool
+    end
+```
+
 
 
 

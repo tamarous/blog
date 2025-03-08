@@ -373,7 +373,51 @@ right，left，bottom和top 实际上是`MASConstraintMaker`中的相应属性�
 ```
 
 ## 小结
-本文简要分析了用`Masonry` 设置视图间布局约束时的代码的内部实现。从分析过程中，我感受到了写一个库的难度，也体会到了那句话的含义：“将简洁留给用户，将复杂留给自己”。无论是`SDWebImage` 的一行代码设置图片还是`Masonry` 的链式设置方法，其简洁的背后藏有复杂的逻辑，恼人的边界处理和多种策略的应用。
+下面是 Masonry 执行约束的完整流程图：
+
+```mermaid
+sequenceDiagram
+    participant View as UIView
+    participant Maker as MASConstraintMaker
+    participant Constraint as MASViewConstraint
+    participant Layout as MASLayoutConstraint
+
+    View->>Maker: mas_makeConstraints:
+    activate Maker
+    Note over View,Maker: 创建 MASConstraintMaker 实例
+    
+    Maker->>Constraint: addConstraintWithLayoutAttribute
+    activate Constraint
+    Note over Maker,Constraint: 创建约束（如 make.left）
+    
+    Constraint->>Constraint: equalToWithRelation
+    Note over Constraint: 设置约束关系和属性
+    
+    Maker->>Maker: install
+    Note over Maker: 开始安装约束
+    
+    Maker->>Constraint: install
+    Note over Constraint: 处理约束安装
+    
+    Constraint->>Layout: constraintWithItem
+    activate Layout
+    Note over Constraint,Layout: 创建系统约束
+    
+    Constraint->>View: addConstraint
+    deactivate Layout
+    Note over Constraint,View: 添加约束到视图
+    
+    deactivate Constraint
+    deactivate Maker
+```
+
+从泳道图中可以清晰地看到，整个过程主要涉及四个对象：
+1. UIView：作为约束的载体，提供约束的添加接口
+2. MASConstraintMaker：约束创建的管理者，负责创建和安装约束
+3. MASViewConstraint：具体约束的封装，处理约束的属性设置和安装
+4. MASLayoutConstraint：对系统原生 NSLayoutConstraint 的封装
+
+这些对象之间的交互构成了 Masonry 的核心工作流程，通过这种设计，Masonry 成功地将复杂的约束创建和安装过程隐藏在简洁的链式调用背后。
 
 
 
