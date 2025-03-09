@@ -169,36 +169,41 @@ flowchart TB
 
 在新架构中，引入了几个关键模块：`JSI`、`Fabric`、`TurboModules`、`Codegen`以及`Hermes`。
 
-1. **JavaScript Interface (JSI)**
-   - 取代了旧架构中的 Bridge
-   - 提供 JavaScript 和原生代码的直接通信能力
-   - 支持同步调用，无需序列化和反序列化
-   - 允许 JavaScript 持有原生对象的引用
+1.**JavaScript Interface (JSI)**
 
-2. **Fabric 渲染系统**
-   - 新的渲染器实现，替代旧的 Virtual DOM
-   - 支持优先级调度的并发渲染
-   - 使用 C++ 重写了渲染核心，提供跨平台一致性
-   - 引入 React Suspense 机制处理异步渲染
+- 取代了旧架构中的 Bridge
+- 提供 JavaScript 和原生代码的直接通信能力
+- 支持同步调用，无需序列化和反序列化
+- 允许 JavaScript 持有原生对象的引用
 
-3. **TurboModules**
-   - 按需加载原生模块，减少启动时间
-   - 支持类型安全的原生模块调用
-   - 通过 JSI 实现同步通信
-   - 优化内存占用和模块生命周期管理
+2.**Fabric 渲染系统**
 
-4. **Codegen**
-   - 静态代码生成工具
-   - 在编译时生成类型安全的接口代码
-   - 支持 TypeScript 类型定义
-   - 提前发现类型错误，增强代码健壮性
+- 新的渲染器实现，替代旧的 Virtual DOM
+- 支持优先级调度的并发渲染
+- 使用 C++ 重写了渲染核心，提供跨平台一致性
+- 引入 React Suspense 机制处理异步渲染
 
-5. **Hermes 引擎**
-   - 专为 React Native 优化的 JavaScript 引擎
-   - 通过字节码预编译提升启动性能
-   - 减少内存占用和包体积
-   - 与 JSI 无缝集成，支持同步操作
-   - 提供更好的调试和性能分析工具
+3.**TurboModules**
+
+- 按需加载原生模块，减少启动时间
+- 支持类型安全的原生模块调用
+- 通过 JSI 实现同步通信
+- 优化内存占用和模块生命周期管理
+
+4.**Codegen**
+
+- 静态代码生成工具
+- 在编译时生成类型安全的接口代码
+- 支持 TypeScript 类型定义
+- 提前发现类型错误，增强代码健壮性
+
+5.**Hermes 引擎**
+
+- 专为 React Native 优化的 JavaScript 引擎
+- 通过字节码预编译提升启动性能
+- 减少内存占用和包体积
+- 与 JSI 无缝集成，支持同步操作
+- 提供更好的调试和性能分析工具
 
 ### Javascript Interface
 
@@ -240,31 +245,31 @@ flowchart LR
 
 JSI 是通过 C++ 实现的一个轻量级抽象层，它提供了 JavaScript 引擎和原生代码之间的直接通信能力。选择 C++ 作为实现语言主要有以下几个原因：
 
-1. **跨平台一致性**：C++ 作为底层语言，可以在不同平台（iOS、Android）上提供一致的接口和行为，确保了 JSI 的跨平台特性。
+1.**跨平台一致性**：C++ 作为底层语言，可以在不同平台（iOS、Android）上提供一致的接口和行为，确保了 JSI 的跨平台特性。
 
-2. **性能优势**：C++ 可以直接与系统底层交互，避免了额外的语言绑定开销，同时其高效的内存管理和指针操作特性也有助于提升性能。
+2.**性能优势**：C++ 可以直接与系统底层交互，避免了额外的语言绑定开销，同时其高效的内存管理和指针操作特性也有助于提升性能。
 
-3. **与 JavaScript 引擎的集成**：主流的 JavaScript 引擎（如 V8、JavaScriptCore）都提供了 C++ API，使用 C++ 实现 JSI 可以更好地与这些引擎集成。
+3.**与 JavaScript 引擎的集成**：主流的 JavaScript 引擎（如 V8、JavaScriptCore）都提供了 C++ API，使用 C++ 实现 JSI 可以更好地与这些引擎集成。
 
 #### 工作原理
 
 JSI 的工作原理主要包含以下几个方面：
 
-1. **Host 函数注册**：通过 C++ 实现的 JSI，原生模块可以直接将函数注册到 JavaScript 运行时，这些函数可以被 JavaScript 代码同步调用。
+1.**Host 函数注册**：通过 C++ 实现的 JSI，原生模块可以直接将函数注册到 JavaScript 运行时，这些函数可以被 JavaScript 代码同步调用。
 
-2. **对象引用管理**：JSI 维护了一个对象引用系统，使 JavaScript 代码可以安全地持有和操作原生对象，同时确保内存安全和正确的生命周期管理。
+2.**对象引用管理**：JSI 维护了一个对象引用系统，使 JavaScript 代码可以安全地持有和操作原生对象，同时确保内存安全和正确的生命周期管理。
 
-3. **类型转换**：JSI 提供了高效的类型转换机制，可以在 JavaScript 和原生类型之间进行快速转换，而无需经过序列化过程。
+3.**类型转换**：JSI 提供了高效的类型转换机制，可以在 JavaScript 和原生类型之间进行快速转换，而无需经过序列化过程。
 
 #### 与其他新架构组件的协同
 
 JSI 作为新架构的基础设施，与其他组件紧密协作：
 
-1. **Fabric 渲染系统**：JSI 使 JavaScript 可以直接调用 Fabric 的 C++ 渲染核心，实现高效的 UI 更新。
+1.**Fabric 渲染系统**：JSI 使 JavaScript 可以直接调用 Fabric 的 C++ 渲染核心，实现高效的 UI 更新。
 
-2. **TurboModules**：基于 JSI 的同步调用能力，TurboModules 可以实现原生模块的按需加载和高效调用。
+2.**TurboModules**：基于 JSI 的同步调用能力，TurboModules 可以实现原生模块的按需加载和高效调用。
 
-3. **Codegen**：通过代码生成工具，可以自动生成类型安全的 JSI 绑定代码，简化了开发过程并提高了代码质量。
+3.**Codegen**：通过代码生成工具，可以自动生成类型安全的 JSI 绑定代码，简化了开发过程并提高了代码质量。
 
 ### Fabric 渲染系统
 
@@ -332,23 +337,26 @@ flowchart LR
     class Mount mount
 ```
 
-1. **渲染阶段（Render Phase）**
-   - 负责创建和更新 Shadow Tree
-   - 处理组件的属性和状态变化
-   - 在 JavaScript 线程中执行，与 React 的调和过程同步
-   - 通过 JSI 直接与 C++ 层通信，避免序列化开销
+1.**渲染阶段（Render Phase）**
 
-2. **提交阶段（Commit Phase）**
-   - 使用 Yoga 引擎进行布局计算
-   - 对比新旧 Shadow Tree，计算需要更新的内容
-   - 生成高效的更新补丁
-   - 可以在后台线程并发执行，提高性能
+- 负责创建和更新 Shadow Tree
+- 处理组件的属性和状态变化
+- 在 JavaScript 线程中执行，与 React 的调和过程同步
+- 通过 JSI 直接与 C++ 层通信，避免序列化开销
 
-3. **挂载阶段（Mount Phase）**
-   - 在主线程上执行实际的 UI 更新
-   - 将更新补丁应用到原生视图
-   - 确保视图状态的同步
-   - 支持优先级调度，保证关键更新的及时性
+2.**提交阶段（Commit Phase）**
+
+- 使用 Yoga 引擎进行布局计算
+- 对比新旧 Shadow Tree，计算需要更新的内容
+- 生成高效的更新补丁
+- 可以在后台线程并发执行，提高性能
+
+3.**挂载阶段（Mount Phase）**
+
+- 在主线程上执行实际的 UI 更新
+- 将更新补丁应用到原生视图
+- 确保视图状态的同步
+- 支持优先级调度，保证关键更新的及时性
 
 这种三阶段的设计带来了几个重要优势：
 
@@ -442,11 +450,11 @@ flowchart TB
 
 TurboModules 对模块的生命周期进行了精细化管理。在旧架构中，原生模块一旦加载就会常驻内存，直到应用退出。这种设计虽然简单，但在大型应用中会导致严重的内存浪费。TurboModules 引入了更智能的生命周期管理机制：
 
-1. **延迟初始化**：模块只在首次使用时才会被初始化
-2. **按需释放**：不再使用的模块可以被释放，释放内存资源
-3. **重用机制**：频繁使用的模块会被缓存，避免重复初始化的开销
+1.**延迟初始化**：模块只在首次使用时才会被初始化
+2.**按需释放**：不再使用的模块可以被释放，释放内存资源
+3.**重用机制**：频繁使用的模块会被缓存，避免重复初始化的开销
 
-这种精细化的生命周期管理不仅优化了内存使用，还提升了应用的整体性能。特别是在内存受限的设备上，这种优化的效果更为明显。
+这些精细化的生命周期管理不仅优化了内存使用，还提升了应用的整体性能。特别是在内存受限的设备上，这种优化的效果更为明显。
 
 #### 类型安全与开发体验
 
@@ -478,10 +486,9 @@ flowchart LR
 
 通过与 Codegen 的配合，TurboModules 提供了：
 
-1. **静态类型检查**：在编译时发现类型错误
-2. **IDE 智能提示**：更好的代码补全和文档提示
-3. **接口一致性**：确保 JavaScript 和原生代码的接口定义匹配
-
+1.**静态类型检查**：在编译时发现类型错误
+2.**IDE 智能提示**：更好的代码补全和文档提示
+3.**接口一致性**：确保 JavaScript 和原生代码的接口定义匹配
 
 ### Hermes 引擎
 
@@ -588,7 +595,138 @@ flowchart TB
 
 此外，Codegen 还为代码维护带来了显著优势。接口变更能够被及时发现，文档能够自动保持最新，这不仅降低了维护成本，还提高了代码的可维护性。通过统一的类型系统，它还减少了平台特定的类型错误，使得跨平台开发更加顺畅。
 
+## 新旧架构对比
 
+本节中，我们将在新旧两套架构下来实现同样一个原生模块，这样可以直观对比出来新旧架构的一些差异。
 
+### 示例：计算器模块
 
+我们以一个简单的计算器模块为例，实现一个加法运算功能。这个示例将展示如何在两种架构下定义和实现原生模块，以及如何处理与 JavaScript 端的通信。
 
+#### 旧架构实现
+
+在旧架构中，实现一个原生模块需要遵循以下步骤：
+
+1.**定义原生模块类**
+
+首先需要创建一个继承自 `NSObject` 并遵循 `RCTBridgeModule` 协议的类。通过在头文件中声明接口，我们定义了一个可以被 React Native 识别的原生模块。
+
+```objc
+// CalcModule.h
+#import <React/RCTBridgeModule.h>
+
+@interface CalcModule : NSObject <RCTBridgeModule>
+@end
+```
+
+2.**实现模块方法**
+
+在实现文件中，我们使用 `RCT_EXPORT_MODULE()` 宏来导出模块，并通过 `RCT_EXPORT_METHOD` 宏来导出具体的方法。
+
+```objc
+// CalcModule.m
+#import "CalcModule.h"
+
+@implementation CalcModule
+
+RCT_EXPORT_MODULE()
+
+RCT_EXPORT_METHOD(add:(NSInteger)a
+                  b:(NSInteger)b
+                  callback:(RCTResponseSenderBlock)callback)
+{
+    NSInteger result = a + b;
+    callback(@[@(result)]);
+}
+
+@end
+```
+
+3.**导出模块到 JavaScript**
+
+最后，我们在 JavaScript 端封装这个原生模块。通过 React Native 提供的 `NativeModules` API 获取原生模块的引用，并将回调式的 API 封装成返回 Promise 的现代 JavaScript 接口，使其更易于使用。
+
+```javascript
+// Calculator.js
+import { NativeModules } from 'react-native';
+
+const { CalcModule } = NativeModules;
+
+export const add = (a, b) => {
+  return new Promise((resolve) => {
+    CalcModule.add(a, b, (result) => {
+      resolve(result);
+    });
+  });
+};
+```
+
+#### 新架构实现
+
+在新架构中，实现一个原生模块需要遵循以下步骤：
+
+1.**定义模块规范（TypeScript）**
+
+首先，我们需要使用 TypeScript 定义模块的接口规范。通过继承 `TurboModule` 接口，我们可以声明模块的方法签名，包括参数类型和返回值类型。
+
+```typescript
+// CalcModule.ts
+import type { TurboModule } from 'react-native/Libraries/TurboModule/RCTExport';
+import { TurboModuleRegistry } from 'react-native';
+
+export interface Spec extends TurboModule {
+  add(a: number, b: number): Promise<number>;
+}
+
+export default TurboModuleRegistry.get<Spec>('CalcModule');
+```
+
+2.**使用 Codegen 生成接口代码**
+
+有了 TypeScript 定义后，我们使用 Codegen 工具自动生成类型安全的接口代码。Codegen 会分析 TypeScript 定义，生成对应的原生代码（包括 C++ 和 Objective-C 的接口文件），确保 JavaScript 和原生代码之间的类型一致性。
+
+```objc
+// CalcModule.h
+#import <React/RCTTurboModule.h>
+
+@interface CalcModule : NSObject <RCTTurboModule>
+@end
+
+// CalcModule.mm
+#import "CalcModule.h"
+#import "react/renderer/components/AppSpecs/RCTCalcModuleJSI.h"
+
+@implementation CalcModule
+
+RCT_EXPORT_TURBO_MODULE(CalcModule)
+
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react::CalcModuleJSI>(params);
+}
+
+- (NSNumber *)add:(NSInteger)a b:(NSInteger)b
+{
+    return @(a + b);
+}
+
+@end
+```
+
+3.**实现原生模块**
+
+最后，我们实现原生模块的具体功能。在新架构中，原生模块需要遵循 `RCTTurboModule` 协议，并通过 JSI 机制实现与 JavaScript 的直接通信。
+
+```javascript
+// Calculator.js
+import CalcModule from './CalcModule';
+
+export const add = async (a, b) => {
+  return await CalcModule.add(a, b);
+};
+```
+
+## 总结
+
+本文详细介绍了 React Native 架构的演进历程。在旧架构中，由于 Bridge 通信机制的局限性，导致了序列化开销大、线程切换频繁、布局计算效率低等性能问题。为了解决这些问题，React Native 团队推出了全新的架构设计，引入了五个核心组件：JSI 提供了 JavaScript 和原生代码的直接通信能力，消除了序列化开销；Fabric 重写了渲染核心，实现了跨平台的一致性和高效的并发渲染；TurboModules 优化了原生模块的加载和执行机制；Codegen 通过静态代码生成提供了类型安全保证；Hermes 引擎则通过字节码预编译和运行时优化提升了整体性能。这些改进不仅显著提升了 React Native 应用的性能，还为开发者提供了更好的开发体验。
