@@ -3,13 +3,15 @@ category: iOS
 tags:
   - 源码分析
 ---
-# SDWebImage 源代码剖析-缓存策略
+# SDWebImage 源代码剖析 - 缓存策略
 
-今天我们将对另外一个在iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的`SDWebImage`。
+今天我们将对另外一个在 iOS 开发中广泛使用的库的源代码进行分析，这个库就是鼎鼎大名的 `SDWebImage`。
+
 ## 使用方法
 
 `SDWebImage` 的使用非常简洁，往往可以用一行代码来完成图片设置工作。下面列出一些常用设置方法。
-```
+
+```objc
 - (void) sd_setImageWithURL:(nullable NSURL *) url;
 
 - (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder;
@@ -20,43 +22,44 @@ tags:
 
 - (void) sd_setImageWithURL:(nullable NSURL *) url placeholderImage:(nullable UIImage *) placeholder options:(SDWebImageOptions) options completed:(nullable SDExternalCompletionBlock) completedBlock;
 ```
-url 是远程图片的url 地址，placeholderImage 是远程图片尚未下载完成时显示的占位图片，completedBlock 是远程图片下载完成后将要执行的block，options 是一组NS_OPTIONS枚举值：
+
+url 是远程图片的 URL 地址，placeholderImage 是远程图片尚未下载完成时显示的占位图片，completedBlock 是远程图片下载完成后将要执行的 block，options 是一组 NS_OPTIONS 枚举值：
     
-```
+```objc
 typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 
-    // 当按照给出的url 下载失败后，这个url 会被加入黑名单，
-    // 如果下次这个url 再次出现，就不会尝试去下载
+    // 当按照给出的 URL 下载失败后，这个 URL 会被加入黑名单，
+    // 如果下次这个 URL 再次出现，就不会尝试去下载
     SDWebImageRetryFailed = 1 << 0,
     
-    // 通常来说，图像下载是在UI交互过程中进行的，
-    // 如果使用这个flag 的话就会延迟图片的下载
+    // 通常来说，图像下载是在 UI 交互过程中进行的，
+    // 如果使用这个 flag 的话就会延迟图片的下载
     SDWebImageLowPriority = 1 << 1,
     
-    // 禁止磁盘缓存，只允许内存缓存 
+    // 禁止磁盘缓存，只允许内存缓存
     SDWebImageCacheMemoryOnly = 1 << 2,
     
     // 允许渐进式加载。默认的是加载完成才显示
     SDWebImageProgressiveDownload = 1 << 3,
     
-    // 磁盘缓存将会由NSURLCache 而不是SDWebImage 来处理，因此可能带来轻微的性能下降。
-    // 使用于使用固定的图片url 但是图片内容可能变化的场景
+    // 磁盘缓存将会由 NSURLCache 而不是 SDWebImage 来处理，因此可能带来轻微的性能下降。
+    // 使用于使用固定的图片 URL 但是图片内容可能变化的场景
     SDWebImageRefreshCached = 1 << 4,
     
     // 如果应用进入后台状态，继续图片下载，应用因此将会额外活跃一段时间，
     // 如果这段时间用完但是下载任务尚未完成，那么下载就会被取消
     SDWebImageContinueInBackground = 1 << 5,
     
-    // 处理存储在NSHTTPCookieStore 中的cookie
+    // 处理存储在 NSHTTPCookieStore 中的 cookie
     SDWebImageHandleCookie = 1 << 6,
     
-    // 允许不受信任的SSL认证。通常用于测试环境，很少用于生产环境
+    // 允许不受信任的 SSL 认证。通常用于测试环境，很少用于生产环境
     SDWebImageAllowInvalidSSLCertificates = 1 << 7,
     
     // 提高该图片下载的优先级
     SDWebImageHighPriority = 1 << 8,
     
-    // 通常在图片加载时都会显示placeholder。但是这个flag 会将placeholder 的显示延迟到
+    // 通常在图片加载时都会显示 placeholder。但是这个 flag 会将 placeholder 的显示延迟到
     // 图片加载之后（不是很懂这个选项的意思）
     /**
      * By default, placeholder images are loaded while the image is loading. This flag will delay the loading
@@ -65,50 +68,52 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
     SDWebImageDelayPlaceholder = 1 << 9,
     
     // 并不常用的方法。用于对下载的图片进行变换。
-    // 这个变换工作由实现了transformDownloadedImage 的协议的类完成
+    // 这个变换工作由实现了 transformDownloadedImage 的协议的类完成
     SDWebImageTransformAnimatedImage = 1 << 10,
     
-    // 在下载完成之后将图片设置成imageView.image 之前，
+    // 在下载完成之后将图片设置成 imageView.image 之前，
     // 允许你对下载的图片进行额外的处理
     SDWebImageAvoidAutoSetImage = 1 << 11,
     
-    // 图片默认会被解码成它们的原始尺寸。这个flag 会将图片按照设备的内存来进行缩放。
-    // 如果SDWebImageProgressiveDownload 被设置了，那么这个选项就不起作用 
+    // 图片默认会被解码成它们的原始尺寸。这个 flag 会将图片按照设备的内存来进行缩放。
+    // 如果 SDWebImageProgressiveDownload 被设置了，那么这个选项就不起作用
     SDWebImageScaleDownLargeImages = 1 << 12
 };
-    
 ```
 
 ## 内部实现
+
 ### UIView+WebCache
+
 上面列出的方法其实是一个核心方法接受不同参数时的不同版本。
+```objc
+- (void)sd_setImageWithURL:(nullable NSURL *)url
+        placeholderImage:(nullable UIImage *)placeholder
+                options:(SDWebImageOptions)options
+                progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                completed:(nullable SDExternalCompletionBlock)completedBlock;
+```
 
-    - (void)sd_setImageWithURL:(nullable NSURL *)url
-          placeholderImage:(nullable UIImage *)placeholder
-                   options:(SDWebImageOptions)options
-                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
-                 completed:(nullable SDExternalCompletionBlock)completedBlock;
-                 
 这个核心方法内部是这样实现的：
-    
-    - (void)sd_setImageWithURL:(nullable NSURL *)url
-          placeholderImage:(nullable UIImage *)placeholder
-                   options:(SDWebImageOptions)options
-                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
-                 completed:(nullable SDExternalCompletionBlock)completedBlock {
-    [self sd_internalSetImageWithURL:url
-                    placeholderImage:placeholder
-                             options:options
-                        operationKey:nil
-                       setImageBlock:nil
-                            progress:progressBlock
-                           completed:completedBlock];
-    }
-
+```objc 
+- (void)sd_setImageWithURL:(nullable NSURL *)url
+        placeholderImage:(nullable UIImage *)placeholder
+                options:(SDWebImageOptions)options
+                progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                completed:(nullable SDExternalCompletionBlock)completedBlock {
+[self sd_internalSetImageWithURL:url
+                placeholderImage:placeholder
+                            options:options
+                    operationKey:nil
+                    setImageBlock:nil
+                        progress:progressBlock
+                        completed:completedBlock];
+}
+```
 
 进入`sd_internalSetImageWithURL:` 这个方法的内部：
 
-```
+```objc
 // UIView+WebCache.m
 - (void)sd_internalSetImageWithURL:(nullable NSURL *)url
                   placeholderImage:(nullable UIImage *)placeholder
@@ -186,23 +191,23 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
         });
     }
 }
-```                
+```
 
 1. 用当前视图的类名来作为一个key。`SDWebImage` 不仅能用来设置UIImageView，也可以用来设置UIButton。
 2. 在当前视图的operationDictionary 中进行查找，如果已经有key为operationKey 的operation，则取消这个operation。
 3. 将该远程图片的url 与当前视图的imageURLKey 用关联对象设置在一起。关于关联对象，网上也已经有很多不错的分析文章。
 4. 如果没有设置`SDWebImageDelayPlaceholder`这个选项，那么就先将当前视图设置成placeholder。
 5. 使用`SDWebImageManager`的`loadImageWithURL:` 创建一个operation 对象。
-6. 如果image下载完成了，并且设置了`SDWebImageAvoidAutoSetImage`选项，而且传入了对下载的图片进行处理的block，那么就进行对应处理。
-7. 如果image下载完成了，没有额外处理要求，那么将当前视图设置为image。
-8. 如果image下载失败了，那么还是将当前视图设置为placeholder。
-9. 将5中创建的operation 的key 设置为operationKey，然后加入当前视图的operationDictionary 中。
+6. 如果 image 下载完成了，并且设置了 `SDWebImageAvoidAutoSetImage` 选项，而且传入了对下载的图片进行处理的 block，那么就进行对应处理。
+7. 如果 image 下载完成了，没有额外处理要求，那么将当前视图设置为 image。
+8. 如果 image 下载失败了，那么还是将当前视图设置为 placeholder。
+9. 将 5 中创建的 operation 的 key 设置为 operationKey，然后加入当前视图的 operationDictionary 中。
 
 ### SDWebImageManager
-由代码可知，operation 这个对象是设置过程的核心与关键。既然它是`SDWebImageManager`创建的，我们自然要去探究下`SDWebImageManager`的内部秘密。
 
+由代码可知，operation 这个对象是设置过程的核心与关键。既然它是 `SDWebImageManager` 创建的，我们自然要去探究下 `SDWebImageManager` 的内部秘密。
 
-```
+```objc
 - (id <SDWebImageOperation>)loadImageWithURL:(nullable NSURL *)url
                                      options:(SDWebImageOptions)options
                                     progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
@@ -228,7 +233,7 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 
 #### 1
     
-```
+```objc
 // Invoking this method without a completedBlock is pointless
     NSAssert(completedBlock != nil, @"If you mean to prefetch the image, use -[SDWebImagePrefetcher prefetchURLs] instead");
 
@@ -258,32 +263,37 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
         return operation;
     }
 ```
-首先进行异常处理。这是编程时一个常见的习惯，将可能遇到的各种问题和对应的解决方案放在方法的开头，可以使得逻辑变得清晰，同时也避免了无谓的函数调用开销。SDWebImage 团队贴心地为我们处理了常见的误将NSString 类型的对象传入NSURL 类型的参数的错误。这启示我们，在编写自己的库时，应尽可能考虑到各种常见错误，并对它们进行处理，这样可以使得你的库对于别的开发者更加友好。
+
+首先进行异常处理。这是编程时一个常见的习惯，将可能遇到的各种问题和对应的解决方案放在方法的开头，可以使得逻辑变得清晰，同时也避免了无谓的函数调用开销。SDWebImage 团队贴心地为我们处理了常见的误将 NSString 类型的对象传入 NSURL 类型的参数的错误。这启示我们，在编写自己的库时，应尽可能考虑到各种常见错误，并对它们进行处理，这样可以使得你的库对于别的开发者更加友好。
 
 #### 2
-将operation 加入`SDWebImageManager` 的runningOperations 数组中。
+
+将 operation 加入 `SDWebImageManager` 的 runningOperations 数组中。
 
 #### 3
-获得远程图片url 所对应的key。
 
-    - (nullable NSString *)cacheKeyForURL:(nullable NSURL *)url {
+获得远程图片 URL 所对应的 key。
+```objc
+- (nullable NSString *)cacheKeyForURL:(nullable NSURL *)url {
     if (!url) {
         return @"";
     }
     
     if (self.cacheKeyFilter) {
-        // 如果定义了用来对url 进行过滤的filter，那么就用filter 来处理
+        // 如果定义了用来对 URL 进行过滤的 filter，那么就用 filter 来处理
         return self.cacheKeyFilter(url);
     } else {
-        // 否则就返回url 的string表示
+        // 否则就返回 URL 的 string 表示
         return url.absoluteString;
     }
-    }
-    
+}
+```
+
 #### 4
+
 先查询operation 的缓存操作。
 
-```
+```objc
 - (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key done:(nullable SDCacheQueryCompletedBlock)doneBlock {
     if (!key) {
         if (doneBlock) {
@@ -340,7 +350,7 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 
 在查询到operation 的缓存操作后，设置doneBlock:
 
-```
+```objc
 operation.cacheOperation = [self.imageCache queryCacheOperationForKey:key done:^(UIImage *cachedImage, NSData *cachedData, SDImageCacheType cacheType) {
         if (operation.isCancelled) {
             [self safelyRemoveOperationFromRunning:operation];
@@ -459,23 +469,22 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             [self safelyRemoveOperationFromRunning:operation];
         }
     }];
-
 ```
 
-1. 由if条件，假设后一条件成立，如果缓存存在，那么只有在设置了`SDWebImageRefreshCache`才会进入if 语句体中；如果缓存不存在，那么肯定会进入if 语句体中。
-2. 如果说缓存存在，而且设置了`SDWebImageRefreshCache`，那么就应该从server 上重新下载图片以更新本地缓存。
+1. 由 if 条件，假设后一条件成立，如果缓存存在，那么只有在设置了 `SDWebImageRefreshCache` 才会进入 if 语句体中；如果缓存不存在，那么肯定会进入 if 语句体中。
+2. 如果说缓存存在，而且设置了 `SDWebImageRefreshCache`，那么就应该从 server 上重新下载图片以更新本地缓存。
 3. 设置下载时的选项。
-4. 如果设置了`SDWebImageRefreshCache`，那么必须取消渐进式下载，而且还要忽略从NSURLCache 中获得的缓存响应。
-5. 调用imageDownloader 进行图片下载。
-6. 如果发生了错误，且错误原因不是列出来的这些原因中的一个，那么就把这个url 加入黑名单中。
-7. 如果缓存存在，设置了`SDWebImageRefreshCache`，而且downloadedImage为nil，那么说明命中了 NSURLCache 缓存，什么事也不做。
-8. 如果downloadedImage非nil，并且设置了`SDWebImageTransformAnimatedImage`，那么就在主线程中对图片进行变换，然后将变换后的图片存储在内存中或内存和磁盘上。如果不需要变换，那么直接将downloadedImage 存储在内存中或内存和磁盘上。
+4. 如果设置了 `SDWebImageRefreshCache`，那么必须取消渐进式下载，而且还要忽略从 NSURLCache 中获得的缓存响应。
+5. 调用 imageDownloader 进行图片下载。
+6. 如果发生了错误，且错误原因不是列出来的这些原因中的一个，那么就把这个 URL 加入黑名单中。
+7. 如果缓存存在，设置了 `SDWebImageRefreshCache`，而且 downloadedImage 为 nil，那么说明命中了 NSURLCache 缓存，什么事也不做。
+8. 如果 downloadedImage 非 nil，并且设置了 `SDWebImageTransformAnimatedImage`，那么就在主线程中对图片进行变换，然后将变换后的图片存储在内存中或内存和磁盘上。如果不需要变换，那么直接将 downloadedImage 存储在内存中或内存和磁盘上。
 9. 如果缓存存在，且其他条件都不成立，那么直接取出缓存中的图片，然后在主线程中更新视图。
-10. 如果缓存不存在，并且也不允许下载，那么直接调用completedBlock。
+10. 如果缓存不存在，并且也不允许下载，那么直接调用 completedBlock。
 
 ## 小结
-我们来小结一下`SDWebImage`的缓存策略。在给一个UIimageView 或者UIButton 设置了远端图片的url 后，`SDWebImage`首先以url 为key 在内存中寻找图片缓存，如果在内存中没找到就会去磁盘中寻找，如果找到了，则将磁盘中的缓存拷贝一份到内存中，然后使用缓存来设置视图。如果在
-磁盘和内存中都没有找到，那么才会下载远程图片，然后将远程图片缓存在内存中或者是内存和磁盘上。
+
+我们来小结一下 `SDWebImage` 的缓存策略。在给一个 UIImageView 或者 UIButton 设置了远端图片的 URL 后，`SDWebImage` 首先以 URL 为 key 在内存中寻找图片缓存，如果在内存中没找到就会去磁盘中寻找，如果找到了，则将磁盘中的缓存拷贝一份到内存中，然后使用缓存来设置视图。如果在磁盘和内存中都没有找到，那么才会下载远程图片，然后将远程图片缓存在内存中或者是内存和磁盘上。
 
 ```mermaid
 sequenceDiagram
