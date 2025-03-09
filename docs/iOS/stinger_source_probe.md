@@ -14,8 +14,9 @@ tags:
 ## 接口设计
 
 `Stinger` 提供了同 `Aspects` 类似的接口，分别用于 Hook 一个类以及 Hook 一个实例对象：
- ```
- @interface NSObject (Stinger)
+
+```
+@interface NSObject (Stinger)
  
 #pragma mark - For specific class
 + (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block;
@@ -26,8 +27,10 @@ tags:
 
 @end
 ```
+
 ### STOption
 `STOption` 用于设置 AOP 切面逻辑的执行时机及签名校验：
+
 ```
 typedef NS_OPTIONS(NSInteger, STOption) {
   STOptionAfter = 0,     // 在原方法调用后执行
@@ -37,7 +40,9 @@ typedef NS_OPTIONS(NSInteger, STOption) {
   STOptionWeakCheckSignature = 1 << 16, // 弱校验模式
 };
 ```
+
 在默认情况下，原方法和 hook block 的方法签名应该是完全相同的。
+
 ```
   //argument count
   if (strictCheck && methodSignature.numberOfArguments != blockSignature.numberOfArguments) {
@@ -59,6 +64,7 @@ typedef NS_OPTIONS(NSInteger, STOption) {
 当 `STOptionWeakCheckSignature` 选项开启时，`Stinger` 内部只会检查第一个参数和返回值的类型。
 ### STHookResult
 `STHookResult`表示 Hook 的结果，有以下几种取值：
+
 ```
 typedef NS_ENUM(NSInteger, STHookResult) {
   STHookResultSuccuss = 1, // fix typo
@@ -69,10 +75,13 @@ typedef NS_ENUM(NSInteger, STHookResult) {
   STHookResultOther = -4,
 };
 ```
+
 ### Hook 一个类
+
 > 当 Hook 的对象是一个类的时候，Hook 逻辑对于这个类的所有实例都生效。
 
 Hook 一个类时，实质是调用 `hookMethod` 这个静态方法，当 Hook 的为实例方法时，传入类对象本身，当 Hook 的为类方法时，传入类的元类。
+
 ```
 + (STHookResult)st_hookInstanceMethod:(SEL)sel option:(STOption)option usingIdentifier:(STIdentifier)identifier withBlock:(id)block {
   return hookMethod(self, sel, option, identifier, block);
@@ -84,6 +93,7 @@ Hook 一个类时，实质是调用 `hookMethod` 这个静态方法，当 Hook �
 ```
 
 ### Hook 一个类的实例
+
 > 当 Hook 的对象是一个类的实例的时候，Hook 逻辑仅对这个特定的实例对象生效。
 
 ```
@@ -110,10 +120,13 @@ Hook 一个类时，实质是调用 `hookMethod` 这个静态方法，当 Hook �
   }
 }
 ```
+
 Hook 类实例的时候，由于目的是只让 Hook 逻辑对于这个特定的实例生效，那么其实只要将这个实例的类对象通过 runtime 修改为一个唯一的类，就可以将逻辑转换为 Hook 类对象的方法，因此其核心仍然是 `hookMethod` 方法。
 
 ## hookMethod
+
 如前文所述，`hookMethod` 是 `Stinger` 的核心，它的实现如下：
+
 ```
 NS_INLINE STHookResult hookMethod(Class hookedCls, SEL sel, STOption option, STIdentifier identifier, id block) {
   NSCParameterAssert(hookedCls);
@@ -156,6 +169,7 @@ NS_INLINE STHookResult hookMethod(Class hookedCls, SEL sel, STOption option, STI
   }
 }
 ```
+
 粗略看来，这个方法内部的逻辑和 `Method Swizzling` 的步骤基本上类似，首先拿到被 hook 的 selector 的原始实现 originalImp，然后通过一个类 `STHookInfoPool` 的实例 hookInfoPool 拿到 stingerIMP，之后通过 `class_addMethod` 和 `class_replaceMethod` 来交换 selector 对应的实现。
 hookInfoPool 实例，先尝试通过 hookedClass 和 selector 来获取：
 
@@ -168,6 +182,7 @@ id<STHookInfoPool> st_getHookInfoPool(id obj, SEL key) {
 ```
 
 如果获得不到，则传入 selector 和 selector 对应的原方法的 IMP 的 type encoding 和 selector 来创建一个新的实例，并保存类对象和类的元类对象：
+
 ```
 // STHookInfoPool.m
 + (instancetype)poolWithTypeEncoding:(NSString *)typeEncoding originalIMP:(IMP)imp selector:(SEL)sel {
@@ -206,6 +221,7 @@ id<STHookInfoPool> st_getHookInfoPool(id obj, SEL key) {
 ```
 
 在方法交换后，将 hookInfoPool 对象关联到 hookedClass 上。
+
 ```
 void st_setHookInfoPool(id obj, SEL key, id<STHookInfoPool> infoPool) {
   NSCParameterAssert(obj);
@@ -213,14 +229,17 @@ void st_setHookInfoPool(id obj, SEL key, id<STHookInfoPool> infoPool) {
   objc_setAssociatedObject(obj, NSSelectorFromString([STSelectorPrefix stringByAppendingString:NSStringFromSelector(key)]), infoPool, OBJC_ASSOCIATION_RETAIN);
 }
 ```
+
 最后，通过 `st_isInstanceHook` 来判断是不是对 hookedCls 类实例的 hook，是的话直接返回，不是的话，生成一个 hookInfo 实例，加入到 hookInfoPool 中。
 
 ## libffi
+
 在继续分析之前，我们先停下来，简单了解下 `libffi` 的使用。
 
 FFI（Foreign Function Interface，外部函数接口）允许在一门语言中动态地去调用另一门语言的代码，而[libffi](https://github.com/libffi/libffi) 就是一种提供最底层支持、面向架构的 FFI。让我们通过两个例子来看下如何使用 `libffi`。
 
 ### 直接调用 C 方法
+
 ```
 int hello(int a , int b) {
     int x = a + b;
@@ -241,6 +260,7 @@ int main() {
     return 0;
 }
 ```
+
 总共分为以下几步：
 1. 首先先生成一个 `ffi_cif` 对象 ，这个对象相当于 Objective-C 中的 Method Signature。
 2. argsTypes 数组用于告诉 cif 每个参数的类型。
@@ -294,14 +314,19 @@ int main()
   return 0;
 }
 ```
+
 在上述的例子中，通过`ffi_prep_closure_loc`创建了一个新的指向 puts_binding 方法的函数指针 bounds_puts，并且将 stdout 作为 user_data 传入到了 puts_binding 中。
+
 ```
 fi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif, void (*fun) (ffi_cif *cif, void *ret, void **args, void *user_data), void *user_data, void *codeloc)
 ```
+
 实际上，可以将任意数据通过 user_data 塞到 fun 中。比如我们可以自定义一个类型，存储想要 hook 的方法的原始实现地址、方法参数、返回值等信息，那么我们就可以在 fun 中通过 user_data 拿到被 hook 方法的原始实现地址、方法参数及返回值，然后通过前面介绍的 `ffi_call` 来进行调用，这样便实现了一个能 hook 各种函数调用的通用闭包方法。
 
 ## stingerIMP
+
 stingerIMP 这个方法的实现就是对上文中 `libffi` 的利用：
+
 ```
 // STHookInfoPool.m
 - (StingerIMP)stingerIMP {
@@ -333,9 +358,11 @@ stingerIMP 这个方法的实现就是对上文中 `libffi` 的利用：
   return _stingerIMP;
 }
 ```
+
 前面我们分析过，被 hook 的 selector 的实现已经被替换为 stingerIMP，那么在调用selector 时，会调用 stingerIMP，进而调用 `_st_ffi_function`。
 
 ## _st_ffi_function
+
 ```
 NS_INLINE void _st_ffi_function(ffi_cif *cif, void *ret, void **args, void *userdata) {
   STHookInfoPool *hookedClassInfoPool = (__bridge STHookInfoPool *)userdata;
@@ -391,9 +418,11 @@ NS_INLINE void _st_ffi_function(ffi_cif *cif, void *ret, void **args, void *user
   if (instanceInfoPool) ffi_call_infos(instanceInfoPool->_afterInfos);
 }
 ```
+
 粗略来说，该方法就是从 hookInfoPool 中依次取出 beforeInfos、insteadInfos、afterInfos，然后遍历 infos 数组，从 info 中取出 block，然后通过 `ffi_call` 来调用各个 block。
 
 `ffi_call_infos` 是 `Stinger` 内部定义的宏：
+
 ```
 #define REAL_STATED_CALSS_INFO_POOL (statedClassInfoPool ?: hookedClassInfoPool)
 
@@ -408,6 +437,7 @@ for (NSUInteger i = 0; i < infos.count; i++) { \
   } \
 }  \
 ```
+
 在调用原始实现的时候，可以看到 `Stinger` 已经兼容了 `Aspects` 及 `JSPatch` 这种将被 selector 的原始实现交换为 `objc_msgForward` 的情况：
 
 ```
@@ -426,7 +456,9 @@ for (NSUInteger i = 0; i < infos.count; i++) { \
 ```
 
 ## 总结
+
 总结下 `Stinger` 实现 AOP 的基本原理：
+
 1. 将被 hook 的 selector 的实现交换为 stingerIMP。
 2. 使用 `libffi`的创建函数闭包的能力，将 stingerIMP 和 `_st_ffi_function` 绑定在一起。
 3. 执行被 hook 的 selector 的时候，转为执行 stingerIMP 方法，进而执行 `_st_ffi_function`。
