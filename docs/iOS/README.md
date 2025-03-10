@@ -4,6 +4,10 @@ article: false
 
 # iOS 知识总结
 
+[React Native 新架构学习](./react_native_new_arch.md)
+
+[React Native 通信机制详解 - 旧架构](./react_native_message_old.md)
+
 [KSCrash 实现原理 - 监控系统实现](./kscrash_monitor.md)
 
 [iOS 异常原理](./ios_exception_handling.md)
