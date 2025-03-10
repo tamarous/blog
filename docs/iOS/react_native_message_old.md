@@ -163,8 +163,6 @@ void RCTRegisterMethodInfo(Class moduleClass, RCTMethodInfo methodInfo)
 
 这个方法的实质则是将当前 module 对应的方法信息加入到一个全局的变量 methodsMap中。
 
-上述两个全局变量在 React Native 的运行时中扮演着重要角色：
-
 当 RCTBridge 初始化时，会遍历 `RCTModuleClasses` 数组，为每个注册的模块类创建实例：
 
 ```objc
@@ -182,24 +180,7 @@ void RCTRegisterMethodInfo(Class moduleClass, RCTMethodInfo methodInfo)
 }
 ```
 
-当 JavaScript 端调用 `CalcModule.add` 方法时，实际上会经过以下几个步骤：
-
-```javascript
-// Calculator.js
-import { NativeModules } from 'react-native';
-
-const { CalcModule } = NativeModules;
-
-export const add = (a, b) => {
-  return new Promise((resolve) => {
-    CalcModule.add(a, b, (result) => {
-      resolve(result);
-    });
-  });
-};
-```
-
-在 React Native 中，所有的原生方法调用都会先经过 MessageQueue：
+当 JavaScript 端调用 `CalcModule.add` 方法时，会先经过 MessageQueue：
 
 ```javascript
 // MessageQueue.js
