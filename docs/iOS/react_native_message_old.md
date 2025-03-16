@@ -8,13 +8,13 @@ tags:
 
 ## 一、概述
 
-在[前文](./react_native_new_arch.md)中，我们介绍了 React Native 的新旧两种架构，并在文章末尾给出了在新旧两种架构中，注册实现一个原生模块的方式。由于篇幅限制，并未对这个过程中的底层原理进行深入介绍。接下来，我们将聚焦于此，深入探讨 React Native 新旧架构下原生模块和 JavaScript 调用的底层实现。
+在[前文](./react_native_new_arch.md)中，我们介绍了 React Native 的新旧两种架构，并在文章末尾介绍了如何在这两种架构中注册和实现一个原生模块。由于篇幅限制，我们并未对其底层原理进行深入介绍。接下来，我们将聚焦于此，深入探讨 React Native 新旧架构下原生模块和 JavaScript 调用的底层实现。
 
-本篇是 React Native 通信机制详解的第一篇文章，主要介绍 React Native 旧架构下的通信机制。
+本篇是 React Native 通信机制详解系列的第一篇文章，主要介绍 React Native 旧架构下的通信机制。如果想要了解 React Native 新架构下的通信机制，请点击[这里](./react_native_message_new.md)。
 
 ## 二、示例
 
-回顾下前文中注册一个原生模块的过程：
+让我们回顾一下前文中注册原生模块的过程：
 
 1.**定义原生模块类**
 
@@ -131,7 +131,7 @@ void RCTRegisterModule(Class moduleClass)
 }
 ```
 
-这个方法的实质是将当前 module 加入到一个全局的变量 RCTModuleClasses中。
+这个方法的本质是将当前 module 添加到全局变量 RCTModuleClasses 中。
 
 ```objc
 // RCTRegisterMethodInfo 实现
@@ -161,7 +161,7 @@ void RCTRegisterMethodInfo(Class moduleClass, RCTMethodInfo methodInfo)
 }
 ```
 
-这个方法的实质则是将当前 module 对应的方法信息加入到一个全局的变量 methodsMap中。
+这个方法的本质是将当前 module 对应的方法信息添加到全局变量 methodsMap 中。
 
 当 RCTBridge 初始化时，会遍历 `RCTModuleClasses` 数组，为每个注册的模块类创建实例：
 
@@ -344,4 +344,4 @@ sequenceDiagram
 
 ## 五、小结
 
-本篇文章主要介绍了 React Native 旧架构下原生模块和 JavaScript 调用的底层实现。通过对模块注册机制和 JavaScript 调用流程的分析，我们深入了解了 React Native 新旧架构下的通信机制。希望本文能帮助你更好地理解 React Native 的通信机制。
+本篇文章主要介绍了 React Native 旧架构下原生模块和 JavaScript 调用的底层实现。通过对模块注册机制和 JavaScript 调用流程的分析，我们深入了解了 React Native 旧架构下的通信机制。希望本文能帮助你更好地理解 React Native 的通信机制。
