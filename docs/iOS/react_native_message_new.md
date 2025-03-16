@@ -525,24 +525,8 @@ sequenceDiagram
     JSIC->>HO: 绑定方法到JavaScript对象
     HO-->>JS: 返回JavaScript对象
 
-    %% 方法调用阶段
-    Note over JS,Native: 方法调用阶段
-    JS->>HO: 调用add方法
-    HO->>JSIC: 通过NativeCalcCxxSpec转发调用
-    JSIC->>OBJC: 调用NativeCalcSpecJSI.invokeObjCMethod
-    OBJC->>Native: 调用CalcModule的add方法
-    Native->>Native: 执行add运算
-
-    %% 结果返回阶段
-    Note over Native,JS: 结果返回阶段
-    Native-->>OBJC: 返回计算结果
-    OBJC-->>JSIC: 转换为JSI值类型
-    JSIC-->>HO: 传递JSI值
-    HO-->>JS: 通过Promise resolve返回结果
-    HO-->>TMR: 返回Host Object
-    TMR-->>JS: 返回JavaScript对象引用
-    
-    %% 方法调用
+    %% 方法调用和结果返回阶段
+    Note over JS,Native: 方法调用和结果返回阶段
     JS->>HO: CalcModule.add(a, b)
     HO->>JSIC: 调用__hostFunction_NativeCalcCxxSpecJSI_add
     JSIC->>JSIC: 参数类型检查和转换(args[0].asNumber())
@@ -551,10 +535,10 @@ sequenceDiagram
     OBJC->>OBJC: 创建Promise(resolve/reject回调)
     OBJC->>Native: 调用add:b:resolve:reject:
     Native->>Native: 执行原生计算逻辑
-    Native->>OBJC: 调用resolve回调返回结果
-    OBJC->>JSIC: 将ObjC值转换为JSI值类型
-    JSIC->>HO: 将结果传递给Promise对象
-    HO-->>JS: 返回Promise结果
+    Native-->>OBJC: 调用resolve回调返回结果
+    OBJC-->>JSIC: 将ObjC值转换为JSI值类型
+    JSIC-->>HO: 将结果传递给Promise对象
+    HO-->>JS: 通过Promise resolve返回结果
 ```
 
 ## 五、小结
